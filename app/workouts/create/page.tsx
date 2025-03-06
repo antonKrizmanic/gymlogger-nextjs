@@ -3,10 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { WorkoutService } from '@/src/Api/Services/WorkoutService';
-import { IWorkoutCreate, IExerciseWorkoutCreate } from '@/src/Models/Domain/Workout';
-import { cn } from '@/lib/utils';
+import { IWorkoutCreate } from '@/src/Models/Domain/Workout';
 import { SuccessSnackbar, ErrorSnackbar } from '@/components/Common/Snackbar';
-import { ExerciseList } from '@/components/Workout/ExerciseList';
 import { WorkoutForm } from '@/components/Workout/WorkoutForm';
 
 export default function CreateWorkoutPage() {
@@ -14,7 +12,7 @@ export default function CreateWorkoutPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [isSuccessSnackbarVisible, setIsSuccessSnackbarVisible] = useState(false);
     const [isErrorSnackbarVisible, setIsErrorSnackbarVisible] = useState(false);
-    const [formData, setFormData] = useState<IWorkoutCreate>({
+    const [formData,] = useState<IWorkoutCreate>({
         name: '',
         description: '',
         date: new Date(),

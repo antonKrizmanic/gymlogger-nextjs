@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { WorkoutCard } from '@/components/Workout/WorkoutCard';
 import { IWorkout } from '@/src/Models/Domain/Workout';
@@ -17,7 +17,7 @@ import { MuscleGroupSelect } from '@/components/Common/MuscleGroupSelect';
 const ITEMS_PER_PAGE_OPTIONS = [12, 24, 48];
 const DEFAULT_PAGE_SIZE = 12;
 
-export default function WorkoutsPage() {
+function WorkoutsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     
@@ -160,8 +160,6 @@ export default function WorkoutsPage() {
                     </div>
                 </div>
 
-                
-
                 {/* Filter card */}
                 {isFilterOpen && (
                     <div className={cn(
@@ -198,7 +196,7 @@ export default function WorkoutsPage() {
                         </div>
                     </div>
                 )}
-                {/* Search bar */}
+                
                 <SearchBar
                     value={searchTerm}
                     onChange={handleSearch}
@@ -230,5 +228,17 @@ export default function WorkoutsPage() {
                 pageSizeOptions={ITEMS_PER_PAGE_OPTIONS}
             />
         </div>
+    );
+}
+
+export default function WorkoutsPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex justify-center items-center min-h-[400px]">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+            </div>
+        }>
+            <WorkoutsContent />
+        </Suspense>
     );
 } 

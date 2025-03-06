@@ -1,4 +1,4 @@
-import { SortDirection } from './Enums';
+import { ExerciseLogType, SortDirection } from './Enums';
 
 export interface IPagingDataResponseDto {
     totalItems: number;
@@ -15,7 +15,7 @@ export interface IPagedResponse<T> {
 }
 
 export type IPagedRequest = {
-    [key: string]: string | number | boolean | null | undefined;
+    [key: string]: string | number | ExerciseLogType | Date | boolean | null | undefined;
     page: number;
     pageSize: number;
     search?: string;
