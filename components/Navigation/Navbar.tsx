@@ -45,7 +45,7 @@ export function Navbar() {
                         <Link href="/" className="flex-shrink-0 flex items-center">
                             <span className="text-xl font-bold text-gray-900 dark:text-white">GymLogger</span>
                         </Link>
-                        
+
                         {/* Desktop Navigation */}
                         <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                             {navItems.map((item) => (
@@ -55,7 +55,7 @@ export function Navbar() {
                                     className={cn(
                                         'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium',
                                         isActive(item.href)
-                                            ? 'border-primary-500 text-primary-600 dark:text-primary-400'
+                                            ? 'border-gray-700 text-gray-700 dark:text-gray-300 dark:border-gray-300'
                                             : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-700 hover:text-gray-700 dark:hover:text-gray-200'
                                     )}
                                 >
@@ -141,19 +141,13 @@ export function Navbar() {
                             className={cn(
                                 'block pl-3 pr-4 py-2 border-l-4 text-base font-medium',
                                 isActive(item.href)
-                                    ? 'border-primary-500 bg-primary-50 dark:bg-slate-800 text-primary-600 dark:text-primary-400'
-                                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:border-gray-300 dark:hover:border-slate-700 hover:text-gray-700 dark:hover:text-gray-200'
+                                    ? 'border-gray-700 text-gray-700 dark:text-gray-300 dark:border-gray-300'
+                                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-700 hover:text-gray-700 dark:hover:text-gray-200'
                             )}
                         >
                             {item.name}
                         </Link>
                     ))}
-                    <button
-                        onClick={handleLogout}
-                        className="w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800 hover:border-gray-300 dark:hover:border-slate-700 hover:text-gray-700 dark:hover:text-gray-200"
-                    >
-                        Sign out
-                    </button>
                 </div>
             </div>
         </nav>

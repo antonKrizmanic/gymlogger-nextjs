@@ -11,16 +11,17 @@ import { Grid } from '@/components/Common/Grid';
 import { Pagination } from '@/components/Common/Pagination';
 import { SearchBar } from '@/components/Common/SearchBar';
 import { ActionButton } from '@/components/Common/ActionButton';
-import { cn } from '@/lib/utils';
 import { MuscleGroupSelect } from '@/components/Common/MuscleGroupSelect';
+import { Card } from '@/components/Common/Card';
+import { DateInput } from '@/components/Form/TextInput';
 
-const ITEMS_PER_PAGE_OPTIONS = [12, 24, 48];
 const DEFAULT_PAGE_SIZE = 12;
+
 
 function WorkoutsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    
+
     const [workouts, setWorkouts] = useState<IWorkout[]>([]);
     const [totalItems, setTotalItems] = useState(0);
     const [currentPage, setCurrentPage] = useState(Number(searchParams.get('page')) || 0);
@@ -39,8 +40,8 @@ function WorkoutsContent() {
     const totalPages = Math.ceil(totalItems / pageSize);
 
     const updateUrl = useCallback((
-        page: number, 
-        search: string, 
+        page: number,
+        search: string,
         size: number,
         date?: Date,
         muscleGroup?: string
@@ -48,7 +49,7 @@ function WorkoutsContent() {
         const params = new URLSearchParams();
         if (page > 0) params.set('page', page.toString());
         if (search) params.set('search', search);
-        if (size !== DEFAULT_PAGE_SIZE) params.set('size', size.toString());
+        if (size) params.set('size', size.toString());
         if (date) params.set('date', date.toISOString().split('T')[0]);
         if (muscleGroup) params.set('muscleGroup', muscleGroup);
         const query = params.toString();
@@ -77,7 +78,7 @@ function WorkoutsContent() {
         } finally {
             setIsLoading(false);
         }
-    }, [currentPage, pageSize, debouncedSearchTerm, workoutDate, selectedMuscleGroup]);    
+    }, [currentPage, pageSize, debouncedSearchTerm, workoutDate, selectedMuscleGroup]);
 
     useEffect(() => {
         fetchWorkouts();
@@ -118,7 +119,7 @@ function WorkoutsContent() {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="container max-w-7xl mx-auto px-4 py-8">
             {/* Top controls */}
             <div className="mb-8 space-y-4">
                 <div className="flex justify-between items-center">
@@ -155,48 +156,29 @@ function WorkoutsContent() {
                                     d="M12 4.5v15m7.5-7.5h-15"
                                 />
                             </svg>
-                            New Workout
+                            New
                         </ActionButton>
                     </div>
                 </div>
 
                 {/* Filter card */}
                 {isFilterOpen && (
-                    <div className={cn(
-                        'p-4 rounded-lg',
-                        'bg-white dark:bg-slate-800',
-                        'border border-gray-300 dark:border-gray-700',
-                        'space-y-4'
-                    )}>
+                    <Card>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <MuscleGroupSelect
-                                    selectedMuscleGroup={selectedMuscleGroup}
-                                    onMuscleGroupChange={handleMuscleGroupChange}
-                                />                                
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="workoutDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Workout Date
-                                </label>
-                                <input
-                                    type="date"
-                                    id="workoutDate"
-                                    value={workoutDate?.toISOString().split('T')[0] || ''}
-                                    onChange={(e) => handleDateChange(e.target.value ? new Date(e.target.value) : undefined)}
-                                    className={cn(
-                                        'w-full px-3 py-2 rounded-lg',
-                                        'bg-white dark:bg-slate-800',
-                                        'border border-gray-300 dark:border-gray-700',
-                                        'focus:outline-none focus:ring-2 focus:ring-primary-500',
-                                        'text-gray-900 dark:text-white'
-                                    )}
-                                />
-                            </div>
+                            <MuscleGroupSelect
+                                selectedMuscleGroup={selectedMuscleGroup}
+                                onMuscleGroupChange={handleMuscleGroupChange}
+                            />
+                            <DateInput
+                                label="Workout Date"
+                                id="workoutDate"
+                                value={workoutDate?.toISOString().split('T')[0] || ''}
+                                onChange={(value) => handleDateChange(value ? new Date(value) : undefined)}
+                            />
                         </div>
-                    </div>
+                    </Card>
                 )}
-                
+
                 <SearchBar
                     value={searchTerm}
                     onChange={handleSearch}
@@ -224,8 +206,7 @@ function WorkoutsContent() {
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
                 pageSize={pageSize}
-                onPageSizeChange={handlePageSizeChange}
-                pageSizeOptions={ITEMS_PER_PAGE_OPTIONS}
+                onPageSizeChange={handlePageSizeChange}                
             />
         </div>
     );

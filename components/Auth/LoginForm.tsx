@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { AuthService } from '../../src/Api/Services/AuthService';
+import { cn } from '@/lib/utils';
 
 const loginSchema = z.object({
     email: z.string().email('Invalid email address'),
@@ -30,9 +31,7 @@ export function LoginForm() {
                 password: data.password,
             });
             createCookie();
-            // Refresh the router to update auth state
             router.refresh();
-            // Force a hard navigation to '/'
             window.location.href = '/';
         } catch (_err) {
             setError('Invalid email or password');
@@ -43,7 +42,6 @@ export function LoginForm() {
     const createCookie = () => {
         const date = new Date();
         date.setDate(date.getDate() + 10);
-        console.log(date);
         document.cookie = 'GymLogger.Auth=1222; path=/; expires=' + date.toUTCString();
     }
 
@@ -57,7 +55,14 @@ export function LoginForm() {
                     type="email"
                     id="email"
                     {...register('email')}
-                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className={cn(
+                        'w-full px-4 py-2 rounded-lg',
+                        'bg-white dark:bg-slate-800',
+                        'border border-gray-300 dark:border-gray-700',
+                        'focus:outline-none focus:ring-2 focus:ring-primary-500',
+                        'text-gray-900 dark:text-white',
+                        'placeholder-gray-500 dark:placeholder-gray-400'
+                    )}
                 />
                 {errors.email && (
                     <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
@@ -72,7 +77,14 @@ export function LoginForm() {
                     type="password"
                     id="password"
                     {...register('password')}
-                    className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    className={cn(
+                        'w-full px-4 py-2 rounded-lg',
+                        'bg-white dark:bg-slate-800',
+                        'border border-gray-300 dark:border-gray-700',
+                        'focus:outline-none focus:ring-2 focus:ring-primary-500',
+                        'text-gray-900 dark:text-white',
+                        'placeholder-gray-500 dark:placeholder-gray-400'
+                    )}
                 />
                 {errors.password && (
                     <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
@@ -88,7 +100,14 @@ export function LoginForm() {
             <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                className={cn(
+                    'w-full px-4 py-2 rounded-lg',
+                    'bg-white dark:bg-slate-800',
+                    'border border-gray-300 dark:border-gray-700',
+                    'text-gray-700 dark:text-gray-300',
+                    'hover:bg-gray-50 dark:hover:bg-slate-700',
+                    'disabled:opacity-50 disabled:cursor-not-allowed',                    
+                )}                
             >
                 {isSubmitting ? 'Signing in...' : 'Sign in'}
             </button>

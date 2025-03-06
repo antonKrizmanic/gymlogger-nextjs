@@ -1,21 +1,22 @@
 import { cn } from '@/lib/utils';
 
+const ITEMS_PER_PAGE_OPTIONS = [12, 24, 48];
+const DEFAULT_PAGE_SIZE = 12;
+
 interface PaginationProps {
     currentPage: number;
     totalPages: number;
     onPageChange: (page: number) => void;
     pageSize: number;
     onPageSizeChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-    pageSizeOptions?: number[];
 }
 
 export function Pagination({
     currentPage,
     totalPages,
     onPageChange,
-    pageSize,
-    onPageSizeChange,
-    pageSizeOptions = [12, 24, 48]
+    pageSize = DEFAULT_PAGE_SIZE,
+    onPageSizeChange    
 }: PaginationProps) {
     const getPageNumbers = () => {
         const delta = 2;
@@ -120,7 +121,7 @@ export function Pagination({
                         'text-gray-900 dark:text-white'
                     )}
                 >
-                    {pageSizeOptions.map(size => (
+                    {ITEMS_PER_PAGE_OPTIONS.map(size => (
                         <option key={size} value={size}>
                             {size}
                         </option>

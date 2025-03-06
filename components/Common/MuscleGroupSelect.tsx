@@ -80,7 +80,7 @@ export function MuscleGroupSelect({
                                 value={{ id: '', name: 'All Muscle Groups' }}
                                 className={({ active }) => cn(
                                     'relative cursor-default select-none py-2 pl-10 pr-4',
-                                    active ? 'bg-primary-100 dark:bg-slate-700 text-primary-900 dark:text-white' : 'text-gray-900 dark:text-white'
+                                    active ? 'bg-primary-100 dark:bg-slate-700 text-gray-900 dark:text-white' : 'text-gray-900 dark:text-white'
                                 )}
                             >
                                 {({ selected }) => (
@@ -91,7 +91,7 @@ export function MuscleGroupSelect({
                                         {selected ? (
                                             <span className={cn(
                                                 'absolute inset-y-0 left-0 flex items-center pl-3',
-                                                'text-primary-600 dark:text-primary-400'
+                                                'text-gray-600 dark:text-primary-400'
                                             )}>
                                                 <CheckIcon className="h-5 w-5" aria-hidden="true" />
                                             </span>
@@ -105,7 +105,7 @@ export function MuscleGroupSelect({
                                     value={group}
                                     className={({ active }) => cn(
                                         'relative cursor-default select-none py-2 pl-10 pr-4',
-                                        active ? 'bg-primary-100 dark:bg-slate-700 text-primary-900 dark:text-white' : 'text-gray-900 dark:text-white'
+                                        active ? 'bg-gray-100 dark:bg-slate-700 text-gray-900 hover:bg-gray-100 dark:hover:bg-slate-700 dark:text-white' : 'text-gray-900 dark:text-white'
                                     )}
                                 >
                                     {({ selected }) => (

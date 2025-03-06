@@ -12,6 +12,7 @@ export function EditButton({ onClick }: EditButtonProps) {
                 'action-button p-1.5 rounded-md',
                 'text-gray-500 dark:text-gray-400',
                 'hover:bg-gray-100 dark:hover:bg-slate-700',
+                'cursor-pointer',
                 'transition-colors'
             )}
         >
