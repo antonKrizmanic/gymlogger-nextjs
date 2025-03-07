@@ -6,6 +6,7 @@ import { WorkoutService } from '@/src/Api/Services/WorkoutService';
 import { IWorkoutCreate, IWorkoutUpdate } from '@/src/Models/Domain/Workout';
 import { ErrorSnackbar, SuccessSnackbar } from '@/components/Common/Snackbar';
 import { WorkoutForm } from '@/components/Workout/WorkoutForm';
+import { Container } from '@/components/ui/Container';
 
 
 type EditWorkoutPageProps = Promise<{
@@ -80,13 +81,14 @@ export default function EditWorkoutPage(props: {params:EditWorkoutPageProps}) {
     }
 
     return (
-        <div className="container mx-auto px-4 py-8">
+        <Container>
             <WorkoutForm
                 title="Edit Workout"
                 workout={formData}
                 isLoading={isLoading}
                 onSubmit={handleSubmit}
                 onCancel={handleCancel}
+                workoutId={id}
             />
 
             <SuccessSnackbar
@@ -97,6 +99,6 @@ export default function EditWorkoutPage(props: {params:EditWorkoutPageProps}) {
                 isVisible={isErrorSnackbarVisible}
                 onClose={() => setIsErrorSnackbarVisible(false)}
             />
-        </div>
+        </Container>
     );
 } 

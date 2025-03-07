@@ -4,7 +4,7 @@ import { IExerciseWorkout } from '../../Models/Domain/Workout';
 import { IPagedRequest, IPagedResponse } from '../../Types/Common';
 
 export interface IExerciseWorkoutRequest extends IPagedRequest {
-    exerciseId: string;
+    exerciseId: string | null;
     workoutId: string;
 }
 
@@ -13,8 +13,8 @@ export class ExerciseWorkoutService extends BaseService {
         return this.get<IPagedResponse<IExerciseWorkout>>(Endpoints.ExerciseWorkout.Base, request);
     }
 
-    public async getLatestExerciseWorkout(exerciseId: string, workoutId: string): Promise<IPagedResponse<IExerciseWorkout>> {
-        return this.get<IPagedResponse<IExerciseWorkout>>(
+    public async getLatestExerciseWorkout(exerciseId: string, workoutId: string | null): Promise<IExerciseWorkout> {
+        return this.get<IExerciseWorkout>(
             Endpoints.ExerciseWorkout.GetLatest(exerciseId, workoutId)
         );
     }

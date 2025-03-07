@@ -1,3 +1,5 @@
+import { ExerciseLogType } from "@/src/Types/Enums";
+
 export interface IWorkout {
     id: string;
     name?: string;
@@ -38,6 +40,7 @@ export interface IExerciseWorkout {
     exerciseId: string;
     exerciseName?: string;
     workoutId: string;
+    exerciseLogType: ExerciseLogType;
     totalWeight?: number;
     totalReps?: number;
     totalSets?: number;

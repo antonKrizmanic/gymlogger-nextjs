@@ -6,6 +6,7 @@ import { WorkoutService } from '@/src/Api/Services/WorkoutService';
 import { IWorkoutCreate } from '@/src/Models/Domain/Workout';
 import { SuccessSnackbar, ErrorSnackbar } from '@/components/Common/Snackbar';
 import { WorkoutForm } from '@/components/Workout/WorkoutForm';
+import { Container } from '@/components/ui/Container';
 
 export default function CreateWorkoutPage() {
     const router = useRouter();
@@ -40,10 +41,11 @@ export default function CreateWorkoutPage() {
     };    
 
     return (
-        <>
+        <Container>
             <WorkoutForm
                 title="Create New Workout"
                 workout={formData}
+                workoutId={null}
                 isLoading={isLoading}
                 onSubmit={handleSubmit}
                 onCancel={handleCancel}
@@ -59,6 +61,6 @@ export default function CreateWorkoutPage() {
                 isVisible={isErrorSnackbarVisible}
                 onClose={() => setIsErrorSnackbarVisible(false)}
             />
-        </>
+        </Container>
     );
 } 

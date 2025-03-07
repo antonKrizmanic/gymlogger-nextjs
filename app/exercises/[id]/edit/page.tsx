@@ -6,16 +6,20 @@ import { ExerciseService } from '@/src/Api/Services/ExerciseService';
 import { ExerciseLogType } from '@/src/Types/Enums';
 import { IExerciseCreate } from '@/src/Models/Domain/Exercise';
 import { ExerciseForm } from '@/components/Exercise/ExerciseForm';
+import { ErrorSnackbar, SuccessSnackbar } from '@/components/Common/Snackbar';
+import { Container } from '@/components/ui/Container';
 
 type EditExercisePageProps = Promise<{
     id: string;
 }>
 
-export default function EditExercisePage(props: {params:EditExercisePageProps}) {
+export default function EditExercisePage(props: { params: EditExercisePageProps }) {
     const params = use(props.params);
     const id = params.id;
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const [isSuccessSnackbarVisible, setIsSuccessSnackbarVisible] = useState(false);
+    const [isErrorSnackbarVisible, setIsErrorSnackbarVisible] = useState(false);
     const [isFetching, setIsFetching] = useState(true);
     const [formData, setFormData] = useState<IExerciseCreate>({
         name: '',
@@ -31,7 +35,7 @@ export default function EditExercisePage(props: {params:EditExercisePageProps}) 
                 // Fetch exercise data
                 const exerciseService = new ExerciseService();
                 const exercise = await exerciseService.getExercise(id);
-                
+
                 setFormData({
                     name: exercise.name,
                     muscleGroupId: exercise.muscleGroupId,
@@ -58,10 +62,11 @@ export default function EditExercisePage(props: {params:EditExercisePageProps}) 
                 ...exercise,
                 id: id
             });
+            setIsSuccessSnackbarVisible(true);
             router.push('/exercises');
         } catch (error) {
             console.error('Failed to update exercise:', error);
-            // Here you might want to show an error message to the user
+            setIsErrorSnackbarVisible(true);
         } finally {
             setIsLoading(false);
         }
@@ -80,12 +85,25 @@ export default function EditExercisePage(props: {params:EditExercisePageProps}) 
     }
 
     return (
-        <ExerciseForm
-            title="Edit Exercise"
-            exercise={formData}
-            isLoading={isLoading}
-            onSubmit={handleSubmit}
-            onCancel={handleCancel}
-        />
+        <Container>
+            <ExerciseForm
+                title="Edit Exercise"
+                exercise={formData}
+                isLoading={isLoading}
+                onSubmit={handleSubmit}
+                onCancel={handleCancel}
+            />
+
+            <SuccessSnackbar
+                text="Exercise updated successfully!"
+                isVisible={isSuccessSnackbarVisible}
+                onClose={() => setIsSuccessSnackbarVisible(false)}
+            />
+            <ErrorSnackbar
+                text="Exercise update failed!"
+                isVisible={isErrorSnackbarVisible}
+                onClose={() => setIsErrorSnackbarVisible(false)}
+            />
+        </Container>
     );
 } 

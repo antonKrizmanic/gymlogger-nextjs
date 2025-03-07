@@ -11,16 +11,20 @@ import { DeleteButton } from '../Common/DeleteButton';
 import { Card } from '../Common/Card';
 
 interface ExerciseCardProps {
-    exercise: IExercise;
-    onClick?: (exercise: IExercise) => void;
+    exercise: IExercise;    
     onDelete?: (exercise: IExercise) => void;
     onDeleteComplete?: () => void;
 }
 
-export function ExerciseCard({ exercise, onClick, onDelete, onDeleteComplete }: ExerciseCardProps) {
+export function ExerciseCard({ exercise, onDelete, onDeleteComplete }: ExerciseCardProps) {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const router = useRouter();    
+
+    const handleClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        router.push(`/exercises/${exercise.id}`);
+    }    
 
     const handleEdit = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -64,12 +68,12 @@ export function ExerciseCard({ exercise, onClick, onDelete, onDeleteComplete }: 
                 <div className="mt-auto pt-2 flex justify-between items-center">
                     <span className="text-sm text-gray-500 dark:text-gray-400 truncate">
                         {exercise.muscleGroupName}
-                    </span>
-                    <div className="flex gap-2">
-                        <DetailButton onClick={() => {onClick?.(exercise)}}/>
-                        <EditButton onClick={handleEdit}/>
-                        <DeleteButton onClick={handleDelete}/>                        
-                    </div>
+                    </span>                    
+                </div>
+                <div className="mt-auto flex justify-between items-center px-0">                                        
+                    <DetailButton onClick={handleClick}/>                    
+                    <EditButton onClick={handleEdit}/>
+                    <DeleteButton onClick={handleDelete}/>
                 </div>
             </Card>
 
