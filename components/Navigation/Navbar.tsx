@@ -32,7 +32,11 @@ export function Navbar() {
 
     const handleLogout = () => {
         // Remove the authentication cookie
-        document.cookie = 'GymLogger.Auth=1; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        //document.cookie = 'GymLogger.Auth=1; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('tokenType');
+        localStorage.removeItem('expiresIn');
         router.push('/login');
     };
 

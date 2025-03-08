@@ -13,8 +13,8 @@ export class AuthService extends BaseService {
         return this.post<void, IRegisterRequest>(Endpoints.Auth.Register, request);
     }
 
-    public async login(request: ILoginRequest): Promise<void> {
-        return this.post<void, ILoginRequest>(Endpoints.Auth.Login, request);
+    public async login(request: ILoginRequest): Promise<IAccessTokenResponse> {
+        return this.post<IAccessTokenResponse, ILoginRequest>(Endpoints.Auth.Login, request);
     }
 
     public async logout(): Promise<void> {

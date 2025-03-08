@@ -2,7 +2,7 @@ export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export const Endpoints = {
     Auth: {
         Register: `/register`,
-        Login: '/login?useCookies=true',
+        Login: '/login',
         Logout: '/logout',
         Refresh: '/refresh',
         Info: '/manage/info',
