@@ -20,12 +20,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="data-theme">
-          <div className="min-h-screen bg-white dark:bg-slate-950">
-            <Navbar />
-            <main className="min-h-[calc(100vh-4rem)] bg-gray-50 dark:bg-slate-900">
-              {children}
-            </main>
-          </div>
+            <div className="min-h-screen bg-white dark:bg-slate-950">
+              <Navbar />
+              <main className="min-h-[calc(100vh-4rem)] bg-gray-50 dark:bg-slate-900">
+                {children}
+              </main>
+            </div>
         </ThemeProvider>
       </body>
     </html>

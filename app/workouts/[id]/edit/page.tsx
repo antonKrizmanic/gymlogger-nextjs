@@ -1,13 +1,21 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { WorkoutService } from '@/src/Api/Services/WorkoutService';
 import { IWorkoutCreate, IWorkoutUpdate } from '@/src/Models/Domain/Workout';
 import { ErrorSnackbar, SuccessSnackbar } from '@/components/Common/Snackbar';
 import { WorkoutForm } from '@/components/Workout/WorkoutForm';
+import { Container } from '@/components/ui/Container';
 
-export default function EditWorkoutPage({ params }: { params: { id: string } }) {
+
+type EditWorkoutPageProps = Promise<{
+    id: string;
+}>
+
+export default function EditWorkoutPage(props: {params:EditWorkoutPageProps}) {
+    const params = use(props.params);
+    const id = params.id;
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [isFetching, setIsFetching] = useState(true);
@@ -26,7 +34,7 @@ export default function EditWorkoutPage({ params }: { params: { id: string } }) 
             try {
                 setIsFetching(true);
                 const service = new WorkoutService();
-                const workout = await service.getWorkoutForEdit(params.id);
+                const workout = await service.getWorkoutForEdit(id);
                 console.log(workout);
                 setFormData(workout);
             } catch (error) {
@@ -38,7 +46,7 @@ export default function EditWorkoutPage({ params }: { params: { id: string } }) 
         };
 
         fetchWorkout();
-    }, [params.id, router]);
+    }, [id, router]);
 
     const handleSubmit = async (workout: IWorkoutCreate) => {        
         setIsLoading(true);
@@ -47,9 +55,9 @@ export default function EditWorkoutPage({ params }: { params: { id: string } }) 
             const service = new WorkoutService();
             const updateData: IWorkoutUpdate = {
                 ...workout,
-                id: params.id
+                id: id
             };
-            await service.updateWorkout(params.id, updateData);
+            await service.updateWorkout(id, updateData);
             setIsSuccessSnackbarVisible(true);
             router.push('/workouts');
         } catch (error) {
@@ -73,13 +81,14 @@ export default function EditWorkoutPage({ params }: { params: { id: string } }) 
     }
 
     return (
-        <div className="container mx-auto px-4 py-8">
+        <Container>
             <WorkoutForm
                 title="Edit Workout"
                 workout={formData}
                 isLoading={isLoading}
                 onSubmit={handleSubmit}
                 onCancel={handleCancel}
+                workoutId={id}
             />
 
             <SuccessSnackbar
@@ -90,6 +99,6 @@ export default function EditWorkoutPage({ params }: { params: { id: string } }) 
                 isVisible={isErrorSnackbarVisible}
                 onClose={() => setIsErrorSnackbarVisible(false)}
             />
-        </div>
+        </Container>
     );
 } 

@@ -7,6 +7,7 @@ import { ExerciseLogType } from '@/src/Types/Enums';
 import { IExerciseCreate } from '@/src/Models/Domain/Exercise';
 import { ExerciseForm } from '@/components/Exercise/ExerciseForm';
 import { ErrorSnackbar, SuccessSnackbar } from '@/components/Common/Snackbar';
+import { Container } from '@/components/ui/Container';
 
 export default function CreateExercisePage() {
     const router = useRouter();
@@ -18,9 +19,7 @@ export default function CreateExercisePage() {
         muscleGroupId: '',
         description: '',
         exerciseLogType: ExerciseLogType.WeightAndReps
-    });
-
-    
+    });    
 
     const handleSubmit = async (exercise: IExerciseCreate) => {        
         setIsLoading(true);
@@ -43,7 +42,7 @@ export default function CreateExercisePage() {
     };
 
     return (
-        <>
+        <Container>
             <ExerciseForm
                 title="Create New Exercise"
                 exercise={formData}
@@ -61,6 +60,6 @@ export default function CreateExercisePage() {
                 isVisible={isErrorSnackbarVisible}
                 onClose={() => setIsErrorSnackbarVisible(false)}
             />
-        </>
+        </Container>
     );
 } 

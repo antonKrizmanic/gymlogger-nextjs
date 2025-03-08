@@ -1,22 +1,25 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { ExerciseCard } from '@/components/Exercise/ExerciseCard';
 import { IExercise } from '@/src/Models/Domain/Exercise';
 import { ExerciseService, IExerciseRequest } from '@/src/Api/Services/ExerciseService';
 import { ExerciseLogType, SortDirection } from '@/src/Types/Enums';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { cn } from '@/lib/utils';
 import { useDebounce } from '@/hooks/useDebounce';
 import { SearchBar } from '@/components/Common/SearchBar';
 import { Pagination } from '@/components/Common/Pagination';
 import { Grid } from '@/components/Common/Grid';
 import { MuscleGroupSelect } from '@/components/Common/MuscleGroupSelect';
+import { ActionButton } from '@/components/Common/ActionButton';
+import { Card } from '@/components/Common/Card';
+import { LogTypeSelect } from '@/components/Common/LogTypeSelect';
+import { Container } from '@/components/ui/Container';
+import { FilterIcon, PlusIcon } from '@/components/Icons';
 
-const ITEMS_PER_PAGE_OPTIONS = [12, 24, 48];
 const DEFAULT_PAGE_SIZE = 12;
 
-export default function ExercisesPage() {
+function ExercisesContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -50,7 +53,7 @@ export default function ExercisesPage() {
         if (logType !== undefined) params.set('logType', logType.toString());
         const query = params.toString();
         router.push(`/exercises${query ? `?${query}` : ''}`);
-    }, [router]);    
+    }, [router]);
 
     const fetchExercises = useCallback(async () => {
         setIsLoading(true);
@@ -74,7 +77,7 @@ export default function ExercisesPage() {
         } finally {
             setIsLoading(false);
         }
-    }, [currentPage, pageSize, debouncedSearchTerm, selectedMuscleGroup, selectedLogType]);    
+    }, [currentPage, pageSize, debouncedSearchTerm, selectedMuscleGroup, selectedLogType]);
 
     useEffect(() => {
         fetchExercises();
@@ -94,9 +97,8 @@ export default function ExercisesPage() {
         setCurrentPage(0);
     };
 
-    const handleLogTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const value = event.target.value ? Number(event.target.value) as ExerciseLogType : undefined;
-        setSelectedLogType(value);
+    const handleLogTypeChange = (newValue: ExerciseLogType) => {
+        setSelectedLogType(newValue);
         setCurrentPage(0);
     };
 
@@ -112,112 +114,43 @@ export default function ExercisesPage() {
     };
 
     const handleExerciseDelete = () => {
-        // After successful deletion, refresh the list
         fetchExercises();
     };
 
     return (
-        <div className="container mx-auto px-4 py-8">
+        <Container>
+            <div className="pb-4">
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-200">Exercises</h1>
+            </div>
             {/* Top controls */}
             <div className="mb-8 space-y-4">
                 <div className="flex justify-between items-center">
                     <div className="flex gap-2">
-                        <button
-                            onClick={() => setIsFilterOpen(!isFilterOpen)}
-                            className={cn(
-                                'px-4 py-2 rounded-lg',
-                                'bg-white dark:bg-slate-800',
-                                'border border-gray-300 dark:border-gray-700',
-                                'text-gray-700 dark:text-gray-300',
-                                'hover:bg-gray-50 dark:hover:bg-slate-700',
-                                'flex items-center gap-2'
-                            )}
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="w-5 h-5"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z"
-                                />
-                            </svg>
+                        <ActionButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
+                            <FilterIcon />
                             Filter
-                        </button>
-                        <button
-                            onClick={() => router.push('/exercises/create')}
-                            className={cn(
-                                'px-4 py-2 rounded-lg',
-                                'bg-white dark:bg-slate-800',
-                                'border border-gray-300 dark:border-gray-700',
-                                'text-gray-700 dark:text-gray-300',
-                                'hover:bg-gray-50 dark:hover:bg-slate-700',
-                                'flex items-center gap-2'
-                            )}
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="w-5 h-5"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M12 4.5v15m7.5-7.5h-15"
-                                />
-                            </svg>
+                        </ActionButton>
+                        <ActionButton onClick={() => router.push('/exercises/create')}>
+                            <PlusIcon />
                             New
-                        </button>
+                        </ActionButton>
                     </div>
                 </div>
 
                 {/* Filter card */}
                 {isFilterOpen && (
-                    <div className={cn(
-                        'p-4 rounded-lg',
-                        'bg-white dark:bg-slate-800',
-                        'border border-gray-300 dark:border-gray-700',
-                        'space-y-4'
-                    )}>
+                    <Card>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <MuscleGroupSelect
-                                    selectedMuscleGroup={selectedMuscleGroup}
-                                    onMuscleGroupChange={handleMuscleGroupChange}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="logType" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Log Type
-                                </label>
-                                <select
-                                    id="logType"
-                                    value={selectedLogType?.toString() ?? ''}
-                                    onChange={handleLogTypeChange}
-                                    className={cn(
-                                        'w-full px-3 py-2 rounded-lg',
-                                        'bg-white dark:bg-slate-800',
-                                        'border border-gray-300 dark:border-gray-700',
-                                        'focus:outline-none focus:ring-2 focus:ring-primary-500',
-                                        'text-gray-900 dark:text-white'
-                                    )}
-                                >
-                                    <option value="">All Log Types</option>
-                                    <option value={ExerciseLogType.WeightAndReps}>Weight and Reps</option>
-                                    <option value={ExerciseLogType.TimeOnly}>Time Only</option>
-                                    <option value={ExerciseLogType.RepsOnly}>Reps Only</option>
-                                </select>
-                            </div>
+                            <MuscleGroupSelect
+                                selectedMuscleGroup={selectedMuscleGroup}
+                                onMuscleGroupChange={handleMuscleGroupChange}
+                            />
+                            <LogTypeSelect
+                                selectedLogType={selectedLogType ?? ExerciseLogType.WeightAndReps}
+                                onLogTypeChange={handleLogTypeChange}
+                            />
                         </div>
-                    </div>
+                    </Card>
                 )}
 
                 {/* Search bar */}
@@ -248,10 +181,20 @@ export default function ExercisesPage() {
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
                 pageSize={pageSize}
-                onPageSizeChange={handlePageSizeChange}
-                pageSizeOptions={ITEMS_PER_PAGE_OPTIONS}
+                onPageSizeChange={handlePageSizeChange}                
             />
+        </Container>
+    );
+}
 
-        </div>
+export default function ExercisesPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex justify-center items-center min-h-[400px]">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+            </div>
+        }>
+            <ExercisesContent />
+        </Suspense>
     );
 } 

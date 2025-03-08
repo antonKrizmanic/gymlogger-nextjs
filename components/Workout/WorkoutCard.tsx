@@ -9,17 +9,22 @@ import { Card } from '../Common/Card';
 import { DeleteButton } from '../Common/DeleteButton';
 
 interface WorkoutCardProps {
-    workout: IWorkout;
-    onClick?: (workout: IWorkout) => void;
+    workout: IWorkout;    
     onDelete?: (workout: IWorkout) => void;
     onDeleteComplete?: () => void;
 }
 
-export function WorkoutCard({ workout, onClick, onDelete, onDeleteComplete }: WorkoutCardProps) {
+export function WorkoutCard({ workout, onDelete, onDeleteComplete }: WorkoutCardProps) {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const router = useRouter();
     
+
+    const handleClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        router.push(`/workouts/${workout.id}`);
+    }    
+
     const handleEdit = (e: React.MouseEvent) => {
         e.stopPropagation();
         router.push(`/workouts/${workout.id}/edit`);
@@ -51,7 +56,7 @@ export function WorkoutCard({ workout, onClick, onDelete, onDeleteComplete }: Wo
             <Card>
                 <div className="flex items-center justify-between">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
-                        {workout.name}
+                        {workout.name} <span className="text-sm text-gray-500 dark:text-gray-400">&nbsp;{new Date(workout.date).toLocaleDateString()}</span>
                     </h3>
                 </div>
                 
@@ -68,12 +73,12 @@ export function WorkoutCard({ workout, onClick, onDelete, onDeleteComplete }: Wo
                     </span>
                     <span className="text-sm text-gray-500 dark:text-gray-400">
                         {workout.totalWeight || 0} kg
-                    </span>
-                    <div className="flex gap-2">
-                        <DetailButton onClick={() => {onClick?.(workout)}}/>
-                        <EditButton onClick={handleEdit}/>
-                        <DeleteButton onClick={handleDelete}/>                        
-                    </div>
+                    </span>                    
+                </div>
+                <div className="mt-auto flex justify-between items-center px-0">                                        
+                    <DetailButton onClick={handleClick}/>                    
+                    <EditButton onClick={handleEdit}/>
+                    <DeleteButton onClick={handleDelete}/>
                 </div>
             </Card>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { WorkoutCard } from '@/components/Workout/WorkoutCard';
 import { IWorkout } from '@/src/Models/Domain/Workout';
@@ -11,16 +11,19 @@ import { Grid } from '@/components/Common/Grid';
 import { Pagination } from '@/components/Common/Pagination';
 import { SearchBar } from '@/components/Common/SearchBar';
 import { ActionButton } from '@/components/Common/ActionButton';
-import { cn } from '@/lib/utils';
 import { MuscleGroupSelect } from '@/components/Common/MuscleGroupSelect';
+import { Card } from '@/components/Common/Card';
+import { DateInput } from '@/components/Form/TextInput';
+import { FilterIcon, PlusIcon } from '@/components/Icons';
+import { Container } from '@/components/ui/Container';
 
-const ITEMS_PER_PAGE_OPTIONS = [12, 24, 48];
 const DEFAULT_PAGE_SIZE = 12;
 
-export default function WorkoutsPage() {
+
+function WorkoutsContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    
+
     const [workouts, setWorkouts] = useState<IWorkout[]>([]);
     const [totalItems, setTotalItems] = useState(0);
     const [currentPage, setCurrentPage] = useState(Number(searchParams.get('page')) || 0);
@@ -39,8 +42,8 @@ export default function WorkoutsPage() {
     const totalPages = Math.ceil(totalItems / pageSize);
 
     const updateUrl = useCallback((
-        page: number, 
-        search: string, 
+        page: number,
+        search: string,
         size: number,
         date?: Date,
         muscleGroup?: string
@@ -48,7 +51,7 @@ export default function WorkoutsPage() {
         const params = new URLSearchParams();
         if (page > 0) params.set('page', page.toString());
         if (search) params.set('search', search);
-        if (size !== DEFAULT_PAGE_SIZE) params.set('size', size.toString());
+        if (size) params.set('size', size.toString());
         if (date) params.set('date', date.toISOString().split('T')[0]);
         if (muscleGroup) params.set('muscleGroup', muscleGroup);
         const query = params.toString();
@@ -77,7 +80,7 @@ export default function WorkoutsPage() {
         } finally {
             setIsLoading(false);
         }
-    }, [currentPage, pageSize, debouncedSearchTerm, workoutDate, selectedMuscleGroup]);    
+    }, [currentPage, pageSize, debouncedSearchTerm, workoutDate, selectedMuscleGroup]);
 
     useEffect(() => {
         fetchWorkouts();
@@ -118,87 +121,43 @@ export default function WorkoutsPage() {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8">
+        <Container>
+            <div className="pb-4">
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-200">Workouts</h1>
+            </div>
             {/* Top controls */}
             <div className="mb-8 space-y-4">
                 <div className="flex justify-between items-center">
                     <div className="flex gap-2">
                         <ActionButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="w-5 h-5"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z"
-                                />
-                            </svg>
+                            <FilterIcon />
                             Filter
                         </ActionButton>
                         <ActionButton onClick={() => router.push('/workouts/create')}>
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="w-5 h-5"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M12 4.5v15m7.5-7.5h-15"
-                                />
-                            </svg>
-                            New Workout
+                            <PlusIcon />
+                            New
                         </ActionButton>
                     </div>
                 </div>
 
-                
-
                 {/* Filter card */}
                 {isFilterOpen && (
-                    <div className={cn(
-                        'p-4 rounded-lg',
-                        'bg-white dark:bg-slate-800',
-                        'border border-gray-300 dark:border-gray-700',
-                        'space-y-4'
-                    )}>
+                    <Card>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <MuscleGroupSelect
-                                    selectedMuscleGroup={selectedMuscleGroup}
-                                    onMuscleGroupChange={handleMuscleGroupChange}
-                                />                                
-                            </div>
-                            <div className="space-y-2">
-                                <label htmlFor="workoutDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Workout Date
-                                </label>
-                                <input
-                                    type="date"
-                                    id="workoutDate"
-                                    value={workoutDate?.toISOString().split('T')[0] || ''}
-                                    onChange={(e) => handleDateChange(e.target.value ? new Date(e.target.value) : undefined)}
-                                    className={cn(
-                                        'w-full px-3 py-2 rounded-lg',
-                                        'bg-white dark:bg-slate-800',
-                                        'border border-gray-300 dark:border-gray-700',
-                                        'focus:outline-none focus:ring-2 focus:ring-primary-500',
-                                        'text-gray-900 dark:text-white'
-                                    )}
-                                />
-                            </div>
+                            <MuscleGroupSelect
+                                selectedMuscleGroup={selectedMuscleGroup}
+                                onMuscleGroupChange={handleMuscleGroupChange}
+                            />
+                            <DateInput
+                                label="Workout Date"
+                                id="workoutDate"
+                                value={workoutDate?.toISOString().split('T')[0] || ''}
+                                onChange={(value) => handleDateChange(value ? new Date(value) : undefined)}
+                            />
                         </div>
-                    </div>
+                    </Card>
                 )}
-                {/* Search bar */}
+
                 <SearchBar
                     value={searchTerm}
                     onChange={handleSearch}
@@ -226,9 +185,20 @@ export default function WorkoutsPage() {
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
                 pageSize={pageSize}
-                onPageSizeChange={handlePageSizeChange}
-                pageSizeOptions={ITEMS_PER_PAGE_OPTIONS}
+                onPageSizeChange={handlePageSizeChange}                
             />
-        </div>
+        </Container>
+    );
+}
+
+export default function WorkoutsPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex justify-center items-center min-h-[400px]">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+            </div>
+        }>
+            <WorkoutsContent />
+        </Suspense>
     );
 } 

@@ -8,6 +8,7 @@ interface ActionButtonProps {
     type?: 'button' | 'submit' | 'reset';
     isLoading?: boolean;
     loadingText?: string;
+    className?: string;
 }
 
 export function ActionButton({
@@ -16,7 +17,8 @@ export function ActionButton({
     disabled = false,
     type = 'button',
     isLoading = false,
-    loadingText = 'Loading...'
+    loadingText = 'Loading...',
+    className = ''
 }: ActionButtonProps) {
     return (
         <button
@@ -30,7 +32,8 @@ export function ActionButton({
                 'text-gray-700 dark:text-gray-300',
                 'hover:bg-gray-50 dark:hover:bg-slate-700',
                 'disabled:opacity-50 disabled:cursor-not-allowed',
-                'flex items-center gap-2'
+                'flex items-center gap-2',
+                className
             )}
         >
             {isLoading ? (

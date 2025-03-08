@@ -91,7 +91,7 @@ export function ExerciseSelect({ selectedExerciseId, onExerciseSelect, required 
                                     className={({ active }) =>
                                         cn(
                                             'relative cursor-default select-none py-2 pl-10 pr-4',
-                                            active ? 'bg-primary-500 text-white' : 'text-gray-900 dark:text-white'
+                                            active ? 'bg-gray-100 dark:bg-slate-700 text-black dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700'
                                         )
                                     }
                                     value={exercise}

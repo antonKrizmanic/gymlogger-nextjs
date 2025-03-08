@@ -22,7 +22,7 @@ export const Endpoints = {
     },
     ExerciseWorkout: {
         Base: `${apiPrefix}/exerciseWorkout`,
-        GetLatest: (exerciseId: string, workoutId: string) => `${apiPrefix}/exerciseWorkout/GetLatest/${exerciseId}/${workoutId}`,
+        GetLatest: (exerciseId: string, workoutId: string | null) => workoutId ? `${apiPrefix}/exerciseWorkout/GetLatest/${exerciseId}/${workoutId}` : `${apiPrefix}/exerciseWorkout/GetLatest/${exerciseId}`,
     },
     MuscleGroup: {
         Base: `${apiPrefix}/muscleGroup`,

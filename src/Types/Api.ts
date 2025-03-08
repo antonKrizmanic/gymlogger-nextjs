@@ -1,5 +1,7 @@
+import { ExerciseLogType } from "./Enums";
+
 export type QueryParams = {
-    [key: string]: string | number | boolean | null | undefined;
+    [key: string]: string | number | Date | ExerciseLogType | boolean | null | undefined;
 };
 
 export interface IApiError {
