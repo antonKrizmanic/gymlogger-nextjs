@@ -52,6 +52,7 @@ export default function WorkoutDetailPage(props: {params: WorkoutDetailPageProps
 
                 setWorkout(workoutData);
                 setExercises(exercisesResponse.items || []);
+                console.log(exercisesResponse.items);
             } catch (err) {
                 setError('Failed to load workout details');
                 console.error('Error fetching workout:', err);

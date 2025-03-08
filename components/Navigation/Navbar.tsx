@@ -31,8 +31,7 @@ export function Navbar() {
     const isActive = (path: string) => pathname === path;
 
     const handleLogout = () => {
-        // Remove the authentication cookie
-        //document.cookie = 'GymLogger.Auth=1; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        // Remove the authentication from local storage        
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('tokenType');

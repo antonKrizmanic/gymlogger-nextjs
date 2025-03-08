@@ -26,28 +26,17 @@ export function LoginForm() {
         try {
             setError(null);
             const authService = new AuthService();
-            const response = await authService.login({
+            await authService.login({
                 email: data.email,
                 password: data.password,
-            });
-            localStorage.setItem('accessToken', response.accessToken);
-            localStorage.setItem('refreshToken', response.refreshToken);
-            localStorage.setItem('tokenType', response.tokenType ?? '');
-            localStorage.setItem('expiresIn', response.expiresIn.toString());
-            // createCookie();
+            });            
             router.push('/');
-            //window.location.href = '/';
         } catch (_err) {
             setError('Invalid email or password');
             console.error(_err);
         }
     };
-
-    // const createCookie = () => {
-    //     const date = new Date();
-    //     date.setDate(date.getDate() + 10);
-    //     document.cookie = 'GymLogger.Auth=1222; path=/; expires=' + date.toUTCString();
-    // }
+    
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

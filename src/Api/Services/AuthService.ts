@@ -13,16 +13,36 @@ export class AuthService extends BaseService {
         return this.post<void, IRegisterRequest>(Endpoints.Auth.Register, request);
     }
 
-    public async login(request: ILoginRequest): Promise<IAccessTokenResponse> {
-        return this.post<IAccessTokenResponse, ILoginRequest>(Endpoints.Auth.Login, request);
+    public async login(request: ILoginRequest): Promise<void> {
+        const response = await this.post<IAccessTokenResponse, ILoginRequest>(Endpoints.Auth.Login, request);
+        if (typeof window !== "undefined") {
+            localStorage.setItem('accessToken', response.accessToken);
+            localStorage.setItem('refreshToken', response.refreshToken);
+            localStorage.setItem('tokenType', response.tokenType ?? '');
+            localStorage.setItem('expiresIn', response.expiresIn.toString());        
+        }
     }
 
     public async logout(): Promise<void> {
         return this.post<void>(Endpoints.Auth.Logout);
     }
 
-    public async refresh(request: IRefreshTokenRequest): Promise<IAccessTokenResponse> {
-        return this.post<IAccessTokenResponse, IRefreshTokenRequest>(Endpoints.Auth.Refresh, request);
+    public async refresh(): Promise<string> {
+        if (typeof window !== "undefined") {
+            const request = {
+                refreshToken: localStorage.getItem('refreshToken') ?? ''
+            };
+            const response = await this.post<IAccessTokenResponse, IRefreshTokenRequest>(Endpoints.Auth.Refresh, request);
+            
+            localStorage.setItem('accessToken', response.accessToken);
+            localStorage.setItem('refreshToken', response.refreshToken);
+            localStorage.setItem('tokenType', response.tokenType ?? '');
+            localStorage.setItem('expiresIn', response.expiresIn.toString());
+            return response.accessToken;
+        }
+        else {
+            throw new Error('Refresh token not found');
+        }
     }
 
     public async getUserInfo(): Promise<IUserInfo> {

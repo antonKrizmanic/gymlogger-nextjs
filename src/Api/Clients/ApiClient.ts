@@ -1,23 +1,26 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { AuthService } from '../Services/AuthService';
 
 export class ApiClient {
     private static instance: AxiosInstance;
 
     private static createInstance(): AxiosInstance {
-        let accessToken = '';
-        if(typeof window !== 'undefined'){
-            // now access your localStorage
-            accessToken = localStorage.getItem('accessToken') ?? '';
-          }
-
         const instance = axios.create({
             baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
             timeout: 10000,
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${accessToken}`
-            },
-            //withCredentials: true, // Enable cookies            
+                'Content-Type': 'application/json',                
+            },            
+        });
+
+        instance.interceptors.request.use((config) => {
+            if (typeof window !== 'undefined') {
+                const token = localStorage.getItem('accessToken');
+                if (token) {
+                    config.headers['Authorization'] = `Bearer ${token}`;
+                }
+            }
+            return config;
         });
 
         return instance;
@@ -36,20 +39,21 @@ export class ApiClient {
             (response: AxiosResponse) => {
                 return response;
             },
-            (error) => {
-                // Handle 302 redirects or 401 unauthorized
-                if (error.response?.status === 302 || error.response?.status === 401) {
-                    const loginUrl = error.response.headers?.location;
-                    if (loginUrl) {
-                        // If we're not already on the login page, redirect to it
-                        if (!window.location.pathname.includes('/login')) {
-                            window.location.href = loginUrl;
-                            return new Promise(() => {}); // Prevent further error handling
-                        }
+            async (error) => {
+                const originalRequest = error.config;
+
+                if (error.response?.status === 401 && !originalRequest._retry) {
+                    originalRequest._retry = true;
+
+                    const authService = new AuthService();
+                    const newAccessToken = await authService.refresh();
+                    
+                    if (newAccessToken) {
+                        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+                        return ApiClient.instance(originalRequest); 
                     } else {
-                        // Fallback to default login page if no location header
-                        window.location.href = '/login';
-                        return new Promise(() => {});
+                        window.location.href = "/login"; 
+                        return Promise.reject(error);
                     }
                 }
                 return Promise.reject(error);
