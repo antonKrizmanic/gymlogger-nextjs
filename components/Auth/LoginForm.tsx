@@ -43,11 +43,11 @@ export function LoginForm() {
         }
     };
 
-    const createCookie = () => {
-        const date = new Date();
-        date.setDate(date.getDate() + 10);
-        document.cookie = 'GymLogger.Auth=1222; path=/; expires=' + date.toUTCString();
-    }
+    // const createCookie = () => {
+    //     const date = new Date();
+    //     date.setDate(date.getDate() + 10);
+    //     document.cookie = 'GymLogger.Auth=1222; path=/; expires=' + date.toUTCString();
+    // }
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
