@@ -1,5 +1,4 @@
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-const apiPrefix = 'api';
 export const Endpoints = {
     Auth: {
         Register: `/register`,
@@ -14,23 +13,23 @@ export const Endpoints = {
         TwoFactor: '/manage/2fa'
     },
     Dashboard: {
-        Base: `${apiPrefix}/dashboard`,
+        Base: `/dashboard`,
     },
     Exercise: {
-        Base: `${apiPrefix}/exercise`,
-        ById: (id: string) => `${apiPrefix}/exercise/${id}`,
+        Base: `/exercise`,
+        ById: (id: string) => `/exercise/${id}`,
     },
     ExerciseWorkout: {
-        Base: `${apiPrefix}/exerciseWorkout`,
-        GetLatest: (exerciseId: string, workoutId: string | null) => workoutId ? `${apiPrefix}/exerciseWorkout/GetLatest/${exerciseId}/${workoutId}` : `${apiPrefix}/exerciseWorkout/GetLatest/${exerciseId}`,
+        Base: `/exerciseWorkout`,
+        GetLatest: (exerciseId: string, workoutId: string | null) => workoutId ? `/exerciseWorkout/GetLatest/${exerciseId}/${workoutId}` : `/exerciseWorkout/GetLatest/${exerciseId}`,
     },
     MuscleGroup: {
-        Base: `${apiPrefix}/muscleGroup`,
-        ById: (id: string) => `${apiPrefix}/muscleGroup/${id}`,
+        Base: `/muscleGroup`,
+        ById: (id: string) => `/muscleGroup/${id}`,
     },
     Workout: {
-        Base: `${apiPrefix}/workout`,
-        ById: (id: string) => `${apiPrefix}/workout/${id}`,
-        GetForEdit: (id: string) => `${apiPrefix}/workout/GetForEdit/${id}`,
+        Base: `/workout`,
+        ById: (id: string) => `/workout/${id}`,
+        GetForEdit: (id: string) => `/workout/GetForEdit/${id}`,
     },
 } as const; 
