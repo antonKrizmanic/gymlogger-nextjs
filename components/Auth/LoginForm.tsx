@@ -22,17 +22,21 @@ export function LoginForm() {
         resolver: zodResolver(loginSchema),
     });
 
-    const onSubmit = async (data: LoginFormData) => {
+    const onSubmit = async (data: LoginFormData) => {        
         try {
             setError(null);
             const authService = new AuthService();
-            await authService.login({
+            const response = await authService.login({
                 email: data.email,
                 password: data.password,
             });
-            createCookie();
-            router.refresh();
-            window.location.href = '/';
+            localStorage.setItem('accessToken', response.accessToken);
+            localStorage.setItem('refreshToken', response.refreshToken);
+            localStorage.setItem('tokenType', response.tokenType ?? '');
+            localStorage.setItem('expiresIn', response.expiresIn.toString());
+            // createCookie();
+            router.push('/');
+            //window.location.href = '/';
         } catch (_err) {
             setError('Invalid email or password');
             console.error(_err);
@@ -48,7 +52,7 @@ export function LoginForm() {
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Email
                 </label>
                 <input
@@ -70,7 +74,7 @@ export function LoginForm() {
             </div>
 
             <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Password
                 </label>
                 <input

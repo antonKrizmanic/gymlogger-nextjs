@@ -9,8 +9,9 @@ export class ApiClient {
             timeout: 10000,
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
             },
-            withCredentials: true, // Enable cookies
+            //withCredentials: true, // Enable cookies            
         });
 
         return instance;
