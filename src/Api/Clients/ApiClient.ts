@@ -4,12 +4,18 @@ export class ApiClient {
     private static instance: AxiosInstance;
 
     private static createInstance(): AxiosInstance {
+        let accessToken = '';
+        if(typeof window !== 'undefined'){
+            // now access your localStorage
+            accessToken = localStorage.getItem('accessToken') ?? '';
+          }
+
         const instance = axios.create({
             baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
             timeout: 10000,
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                'Authorization': `Bearer ${accessToken}`
             },
             //withCredentials: true, // Enable cookies            
         });
