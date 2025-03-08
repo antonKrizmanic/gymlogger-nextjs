@@ -10,11 +10,10 @@ export function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-    // Check if user is authenticated by checking for auth cookie
-    const authCookie = request.cookies.get('.AspNetCore.Identity.Application');
+    // Check if user is authenticated by checking for auth cookie   
     const additionalAuthCookie = request.cookies.get('GymLogger.Auth');
     
-    if (!authCookie || !additionalAuthCookie) {
+    if (!additionalAuthCookie) {
         // Redirect to login page if not authenticated        
         const loginUrl = new URL('/login', request.url);
         return NextResponse.redirect(loginUrl);
