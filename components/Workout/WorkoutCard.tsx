@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { ConfirmationModal } from '../Common/ConfirmationModal';
 import { IWorkout } from '@/src/Models/Domain/Workout';
 import { WorkoutService } from '@/src/Api/Services/WorkoutService';
@@ -17,18 +16,6 @@ interface WorkoutCardProps {
 export function WorkoutCard({ workout, onDelete, onDeleteComplete }: WorkoutCardProps) {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
-    const router = useRouter();
-    
-
-    const handleClick = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        router.push(`/workouts/${workout.id}`);
-    }    
-
-    const handleEdit = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        router.push(`/workouts/${workout.id}/edit`);
-    };
 
     const handleDelete = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -76,8 +63,8 @@ export function WorkoutCard({ workout, onDelete, onDeleteComplete }: WorkoutCard
                     </span>                    
                 </div>
                 <div className="mt-auto flex justify-between items-center px-0">                                        
-                    <DetailButton onClick={handleClick}/>                    
-                    <EditButton onClick={handleEdit}/>
+                    <DetailButton href={`/workouts/${workout.id}`}/>                    
+                    <EditButton href={`/workouts/${workout.id}/edit`}/>
                     <DeleteButton onClick={handleDelete}/>
                 </div>
             </Card>

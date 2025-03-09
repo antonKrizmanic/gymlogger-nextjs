@@ -133,7 +133,7 @@ function WorkoutsContent() {
                             <FilterIcon />
                             Filter
                         </ActionButton>
-                        <ActionButton onClick={() => router.push('/workouts/create')}>
+                        <ActionButton href={'/workouts/create'}>
                             <PlusIcon />
                             New
                         </ActionButton>

@@ -93,13 +93,13 @@ export default function ExerciseDetailPage(props: {params: ExerciseDetailPagePro
                     {/* Action buttons */}
                     <div className="flex items-center gap-2 ">
                         {/* Back button */}
-                        <ActionButton onClick={() => router.push('/exercises')}>
+                        <ActionButton href="/exercises">
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                             </svg>
                             Back
                         </ActionButton>                        
-                        <ActionButton onClick={() => router.push(`/exercises/${exercise.id}/edit`)}>
+                        <ActionButton href={`/exercises/${exercise.id}/edit`}>
                             <PencilIcon /> Edit
                         </ActionButton>
                         <ActionButton onClick={handleDelete}>
