@@ -10,15 +10,7 @@ export function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
-    // Check if user is authenticated by checking for auth cookie   
-    // const additionalAuthCookie = request.cookies.get('GymLogger.Auth');
-    // const accessToken = localStorage.getItem('accessToken');
-    // if (!accessToken) {
-    //     // Redirect to login page if not authenticated        
-    //     const loginUrl = new URL('/login', request.url);
-    //     return NextResponse.redirect(loginUrl);
-    // }
-
+    // Check if user is authenticated by checking for auth cookie
     return NextResponse.next();
 }
 

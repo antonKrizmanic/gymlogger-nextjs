@@ -6,7 +6,7 @@ import { WorkoutService } from '@/src/Api/Services/WorkoutService';
 import { IWorkoutCreate } from '@/src/Models/Domain/Workout';
 import { SuccessSnackbar, ErrorSnackbar } from '@/components/Common/Snackbar';
 import { WorkoutForm } from '@/components/Workout/WorkoutForm';
-import { Container } from '@/components/ui/Container';
+import { Container } from '@/components/Common/Container';
 
 export default function CreateWorkoutPage() {
     const router = useRouter();

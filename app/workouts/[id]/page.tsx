@@ -8,12 +8,12 @@ import { Card } from '@/components/Common/Card';
 import { ConfirmationModal } from '@/components/Common/ConfirmationModal';
 import { SuccessSnackbar } from '@/components/Common/Snackbar';
 import { ErrorSnackbar } from '@/components/Common/Snackbar';
-import { Container } from '@/components/ui/Container';
+import { Container } from '@/components/Common/Container';
 import { WorkoutExerciseList } from '@/components/Workout/WorkoutExerciseList';
 import { ExerciseWorkoutService } from '@/src/Api/Services/ExerciseWorkoutService';
 import { IExerciseWorkout } from '@/src/Models/Domain/Workout';
 import { SortDirection } from '@/src/Types/Enums';
-import { PencilIcon, TrashIcon } from '@/components/Icons';
+import { LeftArrowIcon, PencilIcon, TrashIcon } from '@/components/Icons';
 import { ActionButton } from '@/components/Common/ActionButton';
 
 type WorkoutDetailPageProps = Promise<{
@@ -112,9 +112,7 @@ export default function WorkoutDetailPage(props: {params: WorkoutDetailPageProps
                     <div className="flex items-center gap-2 ">
                         {/* Back button */}
                         <ActionButton href="/workouts">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                            </svg>
+                            <LeftArrowIcon />
                             Back
                         </ActionButton>                        
                         <ActionButton href={`/workouts/${workout.id}/edit`}>

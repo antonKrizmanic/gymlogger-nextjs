@@ -3,7 +3,7 @@
 import { ActionButton } from '@/components/Common/ActionButton';
 import { Card } from '@/components/Common/Card';
 import { PlusIcon } from '@/components/Icons';
-import { Container } from '@/components/ui/Container';
+import { Container } from '@/components/Common/Container';
 import { WorkoutChartSection } from '@/components/Dashboard/WorkoutChartSection';
 import { DashboardService } from '@/src/Api/Services/DashboardService';
 import { IDashboard } from '@/src/Models/Domain/Dashboard';
@@ -36,7 +36,7 @@ export default function HomePage() {
         <Container>
             <div className="flex flex-col space-y-2">
                 <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Welcome to GymLogger</h1>
-                <p className="text-lg text-gray-600">
+                <p className="text-lg text-gray-600">                    
                     Track your workouts and progress with ease.
                 </p>
                 <ActionButton onClick={handleNewWorkoutClick} className="w-fit">

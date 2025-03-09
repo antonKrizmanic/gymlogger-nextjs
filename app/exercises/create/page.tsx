@@ -7,7 +7,7 @@ import { ExerciseLogType } from '@/src/Types/Enums';
 import { IExerciseCreate } from '@/src/Models/Domain/Exercise';
 import { ExerciseForm } from '@/components/Exercise/ExerciseForm';
 import { ErrorSnackbar, SuccessSnackbar } from '@/components/Common/Snackbar';
-import { Container } from '@/components/ui/Container';
+import { Container } from '@/components/Common/Container';
 
 export default function CreateExercisePage() {
     const router = useRouter();

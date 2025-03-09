@@ -1,5 +1,5 @@
 import { Fragment, useState, useEffect } from 'react';
-import { Combobox, Transition } from '@headlessui/react';
+import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions, Transition } from '@headlessui/react';
 import { IExercise } from '@/src/Models/Domain/Exercise';
 import { ExerciseService } from '@/src/Api/Services/ExerciseService';
 import { cn } from '@/lib/utils';
@@ -53,7 +53,7 @@ export function ExerciseSelect({ selectedExerciseId, onExerciseSelect, required 
         <Combobox value={selectedExercise} onChange={(exercise) => onExerciseSelect(exercise?.id || '')}>
             <div className="relative">
                 <div className="relative w-full">
-                    <Combobox.Input
+                    <ComboboxInput
                         className={cn(
                             'w-full px-3 py-2 rounded-lg',
                             'bg-white dark:bg-slate-800',
@@ -75,7 +75,7 @@ export function ExerciseSelect({ selectedExerciseId, onExerciseSelect, required 
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
-                    <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-white dark:bg-slate-800 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                    <ComboboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-white dark:bg-slate-800 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                         {isLoading ? (
                             <div className="relative cursor-default select-none py-2 px-4 text-gray-700 dark:text-gray-300">
                                 Loading exercises...
@@ -86,24 +86,24 @@ export function ExerciseSelect({ selectedExerciseId, onExerciseSelect, required 
                             </div>
                         ) : (
                             filteredExercises.map((exercise) => (
-                                <Combobox.Option
+                                <ComboboxOption
                                     key={exercise.id}
-                                    className={({ active }) =>
+                                    className={({ focus }) =>
                                         cn(
                                             'relative cursor-default select-none py-2 pl-10 pr-4',
-                                            active ? 'bg-gray-100 dark:bg-slate-700 text-black dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700'
+                                            focus ? 'bg-gray-100 dark:bg-slate-700 text-black dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700' : 'text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-slate-700'
                                         )
                                     }
                                     value={exercise}
                                 >
-                                    {({ selected, active }) => (
+                                    {({ selected, focus }) => (
                                         <>
                                             <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
                                                 {exercise.name}
                                             </span>
                                             <span className={cn(
                                                 'absolute inset-y-0 left-0 flex items-center pl-3',
-                                                active ? 'text-white' : 'text-primary-500'
+                                                focus ? 'text-white' : 'text-primary-500'
                                             )}>
                                                 {selected && (
                                                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -113,10 +113,10 @@ export function ExerciseSelect({ selectedExerciseId, onExerciseSelect, required 
                                             </span>
                                         </>
                                     )}
-                                </Combobox.Option>
+                                </ComboboxOption>
                             ))
                         )}
-                    </Combobox.Options>
+                    </ComboboxOptions>
                 </Transition>
             </div>
         </Combobox>

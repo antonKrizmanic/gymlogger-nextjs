@@ -15,7 +15,7 @@ import { MuscleGroupSelect } from '@/components/Common/MuscleGroupSelect';
 import { Card } from '@/components/Common/Card';
 import { DateInput } from '@/components/Form/TextInput';
 import { FilterIcon, PlusIcon } from '@/components/Icons';
-import { Container } from '@/components/ui/Container';
+import { Container } from '@/components/Common/Container';
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -90,8 +90,8 @@ function WorkoutsContent() {
         updateUrl(currentPage, debouncedSearchTerm, pageSize, workoutDate, selectedMuscleGroup);
     }, [currentPage, debouncedSearchTerm, pageSize, workoutDate, selectedMuscleGroup, updateUrl]);
 
-    const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchTerm(event.target.value);
+    const handleSearch = (searchTerm: string) => {
+        setSearchTerm(searchTerm);
         setCurrentPage(0);
     };
 

@@ -6,7 +6,7 @@ import { WorkoutService } from '@/src/Api/Services/WorkoutService';
 import { IWorkoutCreate, IWorkoutUpdate } from '@/src/Models/Domain/Workout';
 import { ErrorSnackbar, SuccessSnackbar } from '@/components/Common/Snackbar';
 import { WorkoutForm } from '@/components/Workout/WorkoutForm';
-import { Container } from '@/components/ui/Container';
+import { Container } from '@/components/Common/Container';
 
 
 type EditWorkoutPageProps = Promise<{

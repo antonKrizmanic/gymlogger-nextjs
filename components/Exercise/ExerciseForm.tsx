@@ -36,6 +36,8 @@ export function ExerciseForm({ title, exercise, isLoading, onSubmit, cancelHref 
                     <MuscleGroupSelect
                         selectedMuscleGroup={formData.muscleGroupId}
                         onMuscleGroupChange={(e) => setFormData({ ...formData, muscleGroupId: e })}
+                        showAllOption={false}
+                        showMessageOption={true}
                     />
                 </div>
 
@@ -45,6 +47,7 @@ export function ExerciseForm({ title, exercise, isLoading, onSubmit, cancelHref 
                         selectedLogType={formData.exerciseLogType}
                         onLogTypeChange={(logType) => setFormData({ ...formData, exerciseLogType: logType })}
                         required
+                        showAllOption={false}
                     />
                 </div>
 

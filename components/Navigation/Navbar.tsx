@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { ThemeSwitcher } from '../Theme/ThemeSwitcher';
+import { CloseIcon, HamburgerIcon, LogoutIcon } from '../Icons';
 
 // Paths where navigation should not be shown
 const HIDDEN_NAV_PATHS = [
@@ -83,20 +84,8 @@ export function Navbar() {
                             )}
                             title="Sign out"
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth={1.5}
-                                stroke="currentColor"
-                                className="w-5 h-5"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
-                                />
-                            </svg>
+                            <LogoutIcon />
+                            
                         </button>
 
                         {/* Mobile menu button */}
@@ -107,27 +96,9 @@ export function Navbar() {
                                 className="inline-flex items-center justify-center p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500"
                                 aria-expanded="false"
                             >
-                                <span className="sr-only">Open main menu</span>
-                                {/* Hamburger icon */}
-                                <svg
-                                    className={cn('h-6 w-6', isMobileMenuOpen ? 'hidden' : 'block')}
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                                </svg>
-                                {/* Close icon */}
-                                <svg
-                                    className={cn('h-6 w-6', isMobileMenuOpen ? 'block' : 'hidden')}
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                >
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
+                                <span className="sr-only">Open main menu</span>                                
+                                <HamburgerIcon className={cn('h-6 w-6', isMobileMenuOpen ? 'hidden' : 'block')}/>                                
+                                <CloseIcon className={cn('h-6 w-6', isMobileMenuOpen ? 'block' : 'hidden')}/>                                
                             </button>
                         </div>
                     </div>

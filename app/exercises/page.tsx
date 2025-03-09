@@ -14,7 +14,7 @@ import { MuscleGroupSelect } from '@/components/Common/MuscleGroupSelect';
 import { ActionButton } from '@/components/Common/ActionButton';
 import { Card } from '@/components/Common/Card';
 import { LogTypeSelect } from '@/components/Common/LogTypeSelect';
-import { Container } from '@/components/ui/Container';
+import { Container } from '@/components/Common/Container';
 import { FilterIcon, PlusIcon } from '@/components/Icons';
 
 const DEFAULT_PAGE_SIZE = 12;
@@ -87,8 +87,8 @@ function ExercisesContent() {
         updateUrl(currentPage, debouncedSearchTerm, pageSize, selectedMuscleGroup, selectedLogType);
     }, [currentPage, debouncedSearchTerm, pageSize, selectedMuscleGroup, selectedLogType, updateUrl]);
 
-    const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchTerm(event.target.value);
+    const handleSearch = (searchTerm: string) => {
+        setSearchTerm(searchTerm);
         setCurrentPage(0);
     };
 
