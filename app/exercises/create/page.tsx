@@ -37,17 +37,13 @@ export default function CreateExercisePage() {
         }
     };
 
-    const handleCancel = () => {
-        router.push('/exercises');
-    };
-
     return (
         <Container>
             <ExerciseForm
                 title="Create New Exercise"
                 exercise={formData}
                 onSubmit={handleSubmit}
-                onCancel={handleCancel}
+                cancelHref="/exercises"
                 isLoading={isLoading}
             />
             <SuccessSnackbar

@@ -9,6 +9,8 @@ import { DashboardService } from '@/src/Api/Services/DashboardService';
 import { IDashboard } from '@/src/Models/Domain/Dashboard';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { DetailButton } from '@/components/Common/DetailButton';
+import { EditButton } from '@/components/Common/EditButton';
 
 export default function HomePage() {
     const router = useRouter();
@@ -26,9 +28,9 @@ export default function HomePage() {
         fetchDashboard();
     }, []);
 
-    const handleClick = () => {
+    const handleNewWorkoutClick = () => {
         router.push(`/workouts/create`);
-    }
+    }    
 
     return (
         <Container>
@@ -37,9 +39,9 @@ export default function HomePage() {
                 <p className="text-lg text-gray-600">
                     Track your workouts and progress with ease.
                 </p>
-                <ActionButton onClick={handleClick} className="w-fit">
+                <ActionButton onClick={handleNewWorkoutClick} className="w-fit">
                     <PlusIcon />
-                    Add Workout
+                    New Workout
                 </ActionButton>
             </div>
 
@@ -55,6 +57,11 @@ export default function HomePage() {
                                 <p className="text-sm text-gray-400"><b>Total sets:</b> {dashboard.lastWorkout.totalSets}</p>
                                 <p className="text-sm text-gray-400"><b>Total reps:</b> {dashboard.lastWorkout.totalReps}</p>
                                 <p className="text-sm text-gray-400"><b>Total weights:</b> {dashboard.lastWorkout.totalWeight} kg</p>
+
+                                <div className="mt-auto flex justify-between items-center px-0">
+                                    <DetailButton href={`/workouts/${dashboard.lastWorkout.id}`} />
+                                    <EditButton href={`/workouts/${dashboard.lastWorkout.id}/edit`} />                                    
+                                </div>
                             </Card>
                         )}
                         <Card>

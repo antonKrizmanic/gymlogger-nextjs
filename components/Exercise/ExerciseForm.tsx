@@ -12,10 +12,10 @@ interface ExerciseFormProps {
     exercise: IExerciseCreate;
     isLoading: boolean;
     onSubmit: (exercise: IExerciseCreate) => void;
-    onCancel: () => void;
+    cancelHref: string;
 }
 
-export function ExerciseForm({ title, exercise, isLoading, onSubmit, onCancel }: ExerciseFormProps) {
+export function ExerciseForm({ title, exercise, isLoading, onSubmit, cancelHref }: ExerciseFormProps) {
     const [formData, setFormData] = useState<IExerciseCreate>(exercise);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -52,9 +52,9 @@ export function ExerciseForm({ title, exercise, isLoading, onSubmit, onCancel }:
                 <TextareaInput label="Description" id="description" value={formData.description} onChange={(value) => setFormData({ ...formData, description: value })} />
 
                 {/* Form buttons */}
-                <div className="flex justify-end gap-4">
-                    <ActionButton onClick={onCancel}>Cancel</ActionButton>
-                    <ActionButton type="submit" isLoading={isLoading} loadingText="Saving..." > <SaveIcon /> Save</ActionButton>
+                <div className="flex md:flex-row flex-col justify-end gap-4">
+                    <ActionButton className="justify-center" href={cancelHref}>Cancel</ActionButton>
+                    <ActionButton className="justify-center"type="submit" isLoading={isLoading} loadingText="Saving..." > <SaveIcon /> Save</ActionButton>
                 </div>
             </form>
         </>

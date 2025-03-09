@@ -3,7 +3,6 @@ import { useState } from "react";
 import { ExerciseList } from "./ExerciseList";
 import { ActionButton } from "../Common/ActionButton";
 import { DateInput, TextInput } from "../Form/TextInput";
-import { TextareaInput } from "../Form/TextareaInput";
 import { SaveIcon } from "../Icons";
 
 interface WorkoutFormProps {
@@ -12,10 +11,10 @@ interface WorkoutFormProps {
     workout: IWorkoutCreate;
     isLoading: boolean;
     onSubmit: (workout: IWorkoutCreate) => void;
-    onCancel: () => void;
+    cancelHref: string;
 }
 
-export function WorkoutForm({ workoutId, title, workout, isLoading, onSubmit, onCancel }: WorkoutFormProps) {
+export function WorkoutForm({ workoutId, title, workout, isLoading, onSubmit, cancelHref }: WorkoutFormProps) {
 
     const [formData, setFormData] = useState<IWorkoutCreate>(workout);
 
@@ -36,7 +35,7 @@ export function WorkoutForm({ workoutId, title, workout, isLoading, onSubmit, on
                 <DateInput label="Date" id="date" value={formData.date ? new Date(formData.date).toISOString().split('T')[0] : ''} onChange={(value) => setFormData({ ...formData, date: new Date(value) })} />
 
                 {/* Description field */}
-                <TextareaInput label="Description" id="description" value={formData.description || ''} onChange={(value) => setFormData({ ...formData, description: value })} />
+                <TextInput label="Description" id="description" value={formData.description || ''} onChange={(value) => setFormData({ ...formData, description: value })} />
 
                 {/* Exercise list */}
                 <ExerciseList
@@ -46,9 +45,9 @@ export function WorkoutForm({ workoutId, title, workout, isLoading, onSubmit, on
                 />
 
                 {/* Submit and Cancel buttons */}
-                <div className="flex justify-end gap-4">
-                    <ActionButton onClick={onCancel}>Cancel</ActionButton>
-                    <ActionButton type="submit" isLoading={isLoading} loadingText="Saving..." > <SaveIcon /> Save</ActionButton>
+                <div className="flex md:flex-row flex-col justify-end gap-4">
+                    <ActionButton className="justify-center" href={cancelHref}>Cancel</ActionButton>
+                    <ActionButton className="justify-center" type="submit" isLoading={isLoading} loadingText="Saving..." > <SaveIcon /> Save</ActionButton>
                 </div>
             </form>
         </>

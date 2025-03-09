@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { IExercise } from '@/src/Models/Domain/Exercise';
 import { ConfirmationModal } from '../Common/ConfirmationModal';
 import { ExerciseService } from '@/src/Api/Services/ExerciseService';
-import { useRouter } from 'next/navigation';
 import { DetailButton } from '../Common/DetailButton';
 import { EditButton } from '../Common/EditButton';
 import { DeleteButton } from '../Common/DeleteButton';
@@ -19,17 +18,6 @@ interface ExerciseCardProps {
 export function ExerciseCard({ exercise, onDelete, onDeleteComplete }: ExerciseCardProps) {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
-    const router = useRouter();    
-
-    const handleClick = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        router.push(`/exercises/${exercise.id}`);
-    }    
-
-    const handleEdit = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        router.push(`/exercises/${exercise.id}/edit`);
-    };
 
     const handleDelete = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -71,8 +59,8 @@ export function ExerciseCard({ exercise, onDelete, onDeleteComplete }: ExerciseC
                     </span>                    
                 </div>
                 <div className="mt-auto flex justify-between items-center px-0">                                        
-                    <DetailButton onClick={handleClick}/>                    
-                    <EditButton onClick={handleEdit}/>
+                    <DetailButton href={`/exercises/${exercise.id}`}/>                    
+                    <EditButton href={`/exercises/${exercise.id}/edit`}/>
                     <DeleteButton onClick={handleDelete}/>
                 </div>
             </Card>

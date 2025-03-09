@@ -68,9 +68,6 @@ export default function EditWorkoutPage(props: {params:EditWorkoutPageProps}) {
         }
     };
 
-    const handleCancel = () => {
-        router.push('/workouts');
-    };
 
     if (isFetching) {
         return (
@@ -87,7 +84,7 @@ export default function EditWorkoutPage(props: {params:EditWorkoutPageProps}) {
                 workout={formData}
                 isLoading={isLoading}
                 onSubmit={handleSubmit}
-                onCancel={handleCancel}
+                cancelHref="/workouts"
                 workoutId={id}
             />
 

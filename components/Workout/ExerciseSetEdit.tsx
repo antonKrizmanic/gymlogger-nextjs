@@ -1,6 +1,7 @@
 import { IExerciseSetCreate } from '@/src/Models/Domain/Workout';
 import { ExerciseLogType } from '@/src/Types/Enums';
-import { cn } from '@/lib/utils';
+import { NumberInput, TextInput } from '../Form/TextInput';
+import { CloseIcon } from '../Icons/CloseIcon';
 
 interface ExerciseSetEditProps {
     set: IExerciseSetCreate;
@@ -12,23 +13,20 @@ interface ExerciseSetEditProps {
 }
 
 export function ExerciseSetEdit({ set, index, exerciseType, onSetChange, onCopy, onRemove }: ExerciseSetEditProps) {
-    const handleWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const weight = parseFloat(e.target.value) || 0;
+    const handleWeightChange = (weight: number) => {        
         onSetChange({ ...set, weight });
     };
 
-    const handleRepsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const reps = parseInt(e.target.value) || 0;
+    const handleRepsChange = (reps: number) => {        
         onSetChange({ ...set, reps });
     };
 
-    const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const time = parseInt(e.target.value) || 0;
+    const handleTimeChange = (time: number) => {
         onSetChange({ ...set, time });
     };
 
-    const handleNoteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        onSetChange({ ...set, note: e.target.value });
+    const handleNoteChange = (note: string) => {
+        onSetChange({ ...set, note });
     };
 
     return (
@@ -39,85 +37,50 @@ export function ExerciseSetEdit({ set, index, exerciseType, onSetChange, onCopy,
             {exerciseType === ExerciseLogType.WeightAndReps && (
                 <>
                     <div className="flex-1">
-                        <input
-                            type="number"
-                            value={set.weight || ''}
-                            onChange={handleWeightChange}
-                            placeholder="Weight"
-                            className={cn(
-                                'w-full px-3 py-1 rounded-lg text-sm',
-                                'bg-white dark:bg-slate-800',
-                                'border border-gray-300 dark:border-gray-700',
-                                'focus:outline-none focus:ring-2 focus:ring-primary-500',
-                                'text-gray-900 dark:text-white'
-                            )}
-                        />
+                        <NumberInput 
+                            label='' 
+                            placeholder='Weight'
+                            id={`weight-${index}`} 
+                            value={set.weight || 0} 
+                            onChange={handleWeightChange} />                        
                     </div>
                     <div className="flex-1">
-                        <input
-                            type="number"
-                            value={set.reps || ''}
-                            onChange={handleRepsChange}
-                            placeholder="Reps"
-                            className={cn(
-                                'w-full px-3 py-1 rounded-lg text-sm',
-                                'bg-white dark:bg-slate-800',
-                                'border border-gray-300 dark:border-gray-700',
-                                'focus:outline-none focus:ring-2 focus:ring-primary-500',
-                                'text-gray-900 dark:text-white'
-                            )}
-                        />
+                        <NumberInput
+                            label=''
+                            placeholder='Reps'
+                            id={`reps-${index}`}
+                            value={set.reps || 0}
+                            onChange={handleRepsChange} />                        
                     </div>
                 </>
             )}
             {exerciseType === ExerciseLogType.RepsOnly && (
                 <div className="flex-1">
-                    <input
-                        type="number"
-                        value={set.reps || ''}
-                        onChange={handleRepsChange}
-                        placeholder="Reps"
-                        className={cn(
-                            'w-full px-3 py-1 rounded-lg text-sm',
-                            'bg-white dark:bg-slate-800',
-                            'border border-gray-300 dark:border-gray-700',
-                            'focus:outline-none focus:ring-2 focus:ring-primary-500',
-                            'text-gray-900 dark:text-white'
-                        )}
-                    />
+                    <NumberInput
+                            label=''
+                            placeholder='Reps'
+                            id={`reps-${index}`}
+                            value={set.reps || 0}
+                            onChange={handleRepsChange} />                        
                 </div>
             )}
             {exerciseType === ExerciseLogType.TimeOnly && (
                 <div className="flex-1">
-                    <input
-                        type="number"
-                        value={set.time || ''}
-                        onChange={handleTimeChange}
-                        placeholder="Time (s)"
-                        className={cn(
-                            'w-full px-3 py-1 rounded-lg text-sm',
-                            'bg-white dark:bg-slate-800',
-                            'border border-gray-300 dark:border-gray-700',
-                            'focus:outline-none focus:ring-2 focus:ring-primary-500',
-                            'text-gray-900 dark:text-white'
-                        )}
-                    />
+                    <NumberInput
+                        label=''
+                        placeholder='Time (s)'
+                        id={`time-${index}`}
+                        value={set.time || 0}
+                        onChange={handleTimeChange} />                    
                 </div>
             )}
             <div className="flex-1">
-                <input
-                    type="text"
+                <TextInput
+                    label=''
+                    placeholder='Notes'
+                    id={`note-${index}`}
                     value={set.note || ''}
-                    onChange={handleNoteChange}
-                    placeholder="Notes"
-                    className={cn(
-                        'w-full px-3 py-1 rounded-lg text-sm',
-                        'bg-white dark:bg-slate-800',
-                        'border border-gray-300 dark:border-gray-700',
-                        'focus:outline-none focus:ring-2 focus:ring-primary-500',
-                        'text-gray-900 dark:text-white'
-                    )}
-                />
+                    onChange={handleNoteChange} />                
             </div>
             <div className="flex items-center gap-2">
                 <button
@@ -134,9 +97,7 @@ export function ExerciseSetEdit({ set, index, exerciseType, onSetChange, onCopy,
                     onClick={onRemove}
                     className="p-1 text-gray-400 hover:text-red-500"
                 >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <CloseIcon />
                 </button>
             </div>
         </div>
