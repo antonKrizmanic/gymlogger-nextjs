@@ -35,11 +35,7 @@ export default function CreateWorkoutPage() {
             setIsLoading(false);
         }
     };
-
-    const handleCancel = () => {
-        router.push('/workouts');
-    };    
-
+    
     return (
         <Container>
             <WorkoutForm
@@ -48,7 +44,7 @@ export default function CreateWorkoutPage() {
                 workoutId={null}
                 isLoading={isLoading}
                 onSubmit={handleSubmit}
-                onCancel={handleCancel}
+                cancelHref="/workouts"
             />
 
             <SuccessSnackbar

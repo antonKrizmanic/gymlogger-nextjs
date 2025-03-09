@@ -5,7 +5,13 @@ import { ExerciseLogType } from "@/src/Types/Enums";
 import { ExerciseSetEdit } from "./ExerciseSetEdit";
 import { useEffect, useState } from "react";
 import { ExerciseWorkoutService } from "@/src/Api/Services/ExerciseWorkoutService";
-import { ExerciseSet } from "./ExerciseSet";
+import { ExerciseSets } from "./ExerciseSets";
+import { TextInput } from "../Form/TextInput";
+import { IExercise } from "@/src/Models/Domain/Exercise";
+import { ExerciseService } from "@/src/Api/Services/ExerciseService";
+import { PlusIcon } from "../Icons";
+import { ActionButton } from "../Common/ActionButton";
+import { CloseIcon } from "../Icons/CloseIcon";
 
 interface ExerciseListItemProps {
     exercise: IExerciseWorkoutCreate;
@@ -13,11 +19,12 @@ interface ExerciseListItemProps {
     workoutId: string | null;
     onExerciseChange: (exercise: IExerciseWorkoutCreate, index: number) => void;
     onRemoveExercise: (index: number) => void;
-    onAddExercise: (index: number, exerciseId: string) => void;    
+    onAddExercise: (index: number, exerciseId: string) => void;
 }
 
 export function ExerciseListItem({ exercise, index, workoutId, onExerciseChange, onRemoveExercise, onAddExercise }: ExerciseListItemProps) {
     const [lastExercise, setLastExercise] = useState<IExerciseWorkout | null>(null);
+    const [selectedExercise, setSelectedExercise] = useState<IExercise | null>(null);
 
     useEffect(() => {
         const fetchLastExercise = async () => {
@@ -36,6 +43,10 @@ export function ExerciseListItem({ exercise, index, workoutId, onExerciseChange,
             const exerciseWorkoutService = new ExerciseWorkoutService();
             const response = await exerciseWorkoutService.getLatestExerciseWorkout(exerciseId, workoutId || null);
             setLastExercise(response || null);
+
+            const exerciseService = new ExerciseService();
+            const exerciseResponse = await exerciseService.getExercise(exerciseId);
+            setSelectedExercise(exerciseResponse || null);
         } catch (error) {
             console.error('Error fetching latest exercise:', error);
             setLastExercise(null);
@@ -59,46 +70,46 @@ export function ExerciseListItem({ exercise, index, workoutId, onExerciseChange,
     };
 
     const handleSetChange = (setIndex: number, updatedSet: IExerciseSetCreate) => {
-        exercise.sets = exercise.sets?.map((set, i) => 
+        exercise.sets = exercise.sets?.map((set, i) =>
             i === setIndex ? updatedSet : set
         );
         onExerciseChange(exercise, index);
     };
 
 
-    const handleCopySet = (setIndex: number) => {        
+    const handleCopySet = (setIndex: number) => {
         const setToCopy = exercise.sets?.[setIndex];
-        
+
         if (setToCopy) {
             const newSet: IExerciseSetCreate = {
                 ...setToCopy,
                 index: setIndex + 1
             };
-            
+
             // Insert the new set after the copied set
             exercise.sets = [
                 ...(exercise.sets?.slice(0, setIndex + 1) || []),
                 newSet,
                 ...(exercise.sets?.slice(setIndex + 1) || [])
             ];
-            
+
             // Update indices
             exercise.sets.forEach((set, i) => {
                 set.index = i;
             });
-            
+
             onExerciseChange(exercise, index);
         }
     };
 
-    const handleRemoveSet = (setIndex: number) => {        
+    const handleRemoveSet = (setIndex: number) => {
         exercise.sets = exercise.sets?.filter((_, i) => i !== setIndex);
-        
+
         // Update indices
         exercise.sets?.forEach((set, i) => {
             set.index = i;
         });
-        
+
         onExerciseChange(exercise, index);
     };
 
@@ -128,30 +139,20 @@ export function ExerciseListItem({ exercise, index, workoutId, onExerciseChange,
                     onClick={() => onRemoveExercise(index)}
                     className="p-2 text-gray-400 hover:text-red-500"
                 >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    <CloseIcon />
                 </button>
+            </div>
+            <div className="flex items-start gap-2">
+                <p>{selectedExercise?.description}</p>
             </div>
 
             {/* Notes field */}
             <div>
-                <label htmlFor={`note-${index}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Notes
-                </label>
-                <textarea
+                <TextInput
+                    label="Notes"
                     id={`note-${index}`}
-                    value={exercise.note || ''}
-                    onChange={(e) => handleNoteChange(e.target.value)}
-                    rows={2}
-                    className={cn(
-                        'mt-1 w-full px-3 py-2 rounded-lg',
-                        'bg-white dark:bg-slate-800',
-                        'border border-gray-300 dark:border-gray-700',
-                        'focus:outline-none focus:ring-2 focus:ring-primary-500',
-                        'text-gray-900 dark:text-white'
-                    )}
-                />
+                    value={exercise.note}
+                    onChange={(value) => handleNoteChange(value)} />
             </div>
             {lastExercise && (
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
@@ -170,47 +171,7 @@ export function ExerciseListItem({ exercise, index, workoutId, onExerciseChange,
                             </svg>
                         </summary>
                         <div className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                            <table className="w-full">
-                                <thead>
-                                    <tr className="border-b border-gray-200 dark:border-gray-700">
-                                        <th className="py-2 px-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
-                                            Set
-                                        </th>
-                                        {lastExercise.exerciseLogType === ExerciseLogType.WeightAndReps && (
-                                            <>
-                                                <th className="py-2 px-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                    Weight
-                                                </th>
-                                                <th className="py-2 px-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                    Reps
-                                                </th>
-                                            </>
-                                        )}
-                                        {lastExercise.exerciseLogType === ExerciseLogType.RepsOnly && (
-                                            <th className="py-2 px-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                Reps
-                                            </th>
-                                        )}
-                                        {lastExercise.exerciseLogType === ExerciseLogType.TimeOnly && (
-                                            <th className="py-2 px-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
-                                                Time
-                                            </th>
-                                        )}
-                                        <th className="py-2 px-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
-                                            Notes
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {lastExercise.sets?.map((set) => (
-                                        <ExerciseSet
-                                            key={set.id}
-                                            set={set}
-                                            exerciseType={lastExercise.exerciseLogType}
-                                        />
-                                    ))}
-                                </tbody>
-                            </table>
+                            <ExerciseSets exercise={lastExercise} />
                         </div>
                     </details>
                 </div>
@@ -220,23 +181,6 @@ export function ExerciseListItem({ exercise, index, workoutId, onExerciseChange,
                 <div className="space-y-4">
                     <div className="flex items-center justify-between">
                         <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Sets</h3>
-                        <button
-                            type="button"
-                            onClick={handleAddSet}
-                            className={cn(
-                                'px-3 py-1 rounded-lg text-sm',
-                                'bg-white dark:bg-slate-800',
-                                'border border-gray-300 dark:border-gray-700',
-                                'text-gray-700 dark:text-gray-300',
-                                'hover:bg-gray-50 dark:hover:bg-slate-700',
-                                'flex items-center gap-1'
-                            )}
-                        >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                            </svg>
-                            Add Set
-                        </button>
                     </div>
 
                     <div className="space-y-2">
@@ -252,6 +196,10 @@ export function ExerciseListItem({ exercise, index, workoutId, onExerciseChange,
                             />
                         ))}
                     </div>
+                    <ActionButton onClick={handleAddSet}>
+                        <PlusIcon />
+                        Add Set
+                    </ActionButton>
                 </div>
             )}
         </div>

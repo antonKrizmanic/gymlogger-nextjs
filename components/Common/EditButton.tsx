@@ -1,11 +1,12 @@
 import { cn } from "@/lib/utils";
 import { PencilIcon } from "@/components/Icons";
+import Link from "next/link";
 
 interface EditButtonProps {
-    onClick: (e: React.MouseEvent) => void;
+    href: string;
 }
 
-export function EditButton({ onClick }: EditButtonProps) {
+export function EditButton({ href }: EditButtonProps) {
     return (
         <div className={cn(
             'border border-gray-300 dark:border-gray-700 p-1 w-full flex justify-center items-center',
@@ -13,8 +14,8 @@ export function EditButton({ onClick }: EditButtonProps) {
             'cursor-pointer',
             'transition-colors'
         )}>
-            <button
-                onClick={onClick}
+            <Link
+                href={href}
                 className={cn(
                     'action-button p-1.5 rounded-md',
                     'text-gray-500 dark:text-gray-400',
@@ -22,7 +23,7 @@ export function EditButton({ onClick }: EditButtonProps) {
                 )}
             >
                 <PencilIcon />
-            </button>
+            </Link>
         </div>
     );
 }

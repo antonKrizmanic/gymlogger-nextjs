@@ -72,9 +72,6 @@ export default function EditExercisePage(props: { params: EditExercisePageProps 
         }
     };
 
-    const handleCancel = () => {
-        router.push('/exercises');
-    };
 
     if (isFetching) {
         return (
@@ -91,7 +88,7 @@ export default function EditExercisePage(props: { params: EditExercisePageProps 
                 exercise={formData}
                 isLoading={isLoading}
                 onSubmit={handleSubmit}
-                onCancel={handleCancel}
+                cancelHref="/exercises"
             />
 
             <SuccessSnackbar

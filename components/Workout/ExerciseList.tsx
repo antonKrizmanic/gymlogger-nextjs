@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
 import { IExerciseWorkoutCreate } from '@/src/Models/Domain/Workout';
 import { ExerciseListItem } from './ExerciseListItem';
+import { PlusIcon } from '../Icons';
 
 interface ExerciseListProps {
     exercises: IExerciseWorkoutCreate[];
@@ -47,7 +48,7 @@ export function ExerciseList({ exercises, onExercisesChange, workoutId }: Exerci
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-4">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Exercises</h2>
             
             {exercises.map((exercise, index) => (
@@ -75,9 +76,7 @@ export function ExerciseList({ exercises, onExercisesChange, workoutId }: Exerci
                     'flex items-center justify-center gap-2'
                 )}
             >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                </svg>
+                <PlusIcon />
                 Add Exercise
             </button>
         </div>

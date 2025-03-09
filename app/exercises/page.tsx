@@ -130,7 +130,7 @@ function ExercisesContent() {
                             <FilterIcon />
                             Filter
                         </ActionButton>
-                        <ActionButton onClick={() => router.push('/exercises/create')}>
+                        <ActionButton href={'/exercises/create'}>
                             <PlusIcon />
                             New
                         </ActionButton>
