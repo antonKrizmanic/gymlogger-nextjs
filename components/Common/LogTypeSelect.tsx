@@ -16,9 +16,11 @@ const logTypeOptions = [
 ];
 
 export function LogTypeSelect({ selectedLogType, onLogTypeChange, required = false, showAllOption = true }: LogTypeSelectProps) {
-    const selectedOption = logTypeOptions.find(option => option.value === selectedLogType) || logTypeOptions[0];
-
     const options = showAllOption ? [{ value: ExerciseLogType.Unknown, label: 'All Log Types' }, ...logTypeOptions] : logTypeOptions;
+
+    const selectedOption = options.find(option => option.value === selectedLogType) || options[0];
+
+    
 
     return (
         <div className="space-y-2">

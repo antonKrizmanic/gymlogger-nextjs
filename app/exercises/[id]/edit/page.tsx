@@ -13,7 +13,7 @@ type EditExercisePageProps = Promise<{
     id: string;
 }>
 
-export default function EditExercisePage(props: { params: EditExercisePageProps }) {
+export default function EditExercisePage(props: { params: Promise<EditExercisePageProps> }) {
     const params = use(props.params);
     const id = params.id;
     const router = useRouter();

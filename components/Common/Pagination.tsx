@@ -33,8 +33,6 @@ export function Pagination({
         return range;
     };
 
-    if (totalPages <= 1) return null;
-
     return (
         <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
             {/* Pagination buttons */}
@@ -48,6 +46,7 @@ export function Pagination({
                         'border border-gray-300 dark:border-gray-700',
                         'text-gray-700 dark:text-gray-300',
                         'disabled:opacity-50 disabled:cursor-not-allowed',
+                        'cursor-pointer',
                         'hover:bg-gray-50 dark:hover:bg-slate-700'
                     )}
                 >
@@ -65,7 +64,7 @@ export function Pagination({
                                     'border',
                                     currentPage === page
                                         ? 'bg-primary-500 text-white border-primary-500'
-                                        : 'bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700'
+                                        : 'bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 cursor-pointer'
                                 )}
                             >
                                 {page + 1}
@@ -81,7 +80,7 @@ export function Pagination({
                                 'border',
                                 currentPage === page
                                     ? 'bg-gray-400 dark:bg-slate-900 text-white border-primary-500'
-                                    : 'bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700'
+                                    : 'bg-white dark:bg-slate-800 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 cursor-pointer'
                             )}
                         >
                             {page + 1}
@@ -96,6 +95,7 @@ export function Pagination({
                         'bg-white dark:bg-slate-800',
                         'border border-gray-300 dark:border-gray-700',
                         'text-gray-700 dark:text-gray-300',
+                        'cursor-pointer',
                         'disabled:opacity-50 disabled:cursor-not-allowed',
                         'hover:bg-gray-50 dark:hover:bg-slate-700'
                     )}

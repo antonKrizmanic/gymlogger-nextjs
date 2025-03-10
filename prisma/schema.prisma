@@ -1,0 +1,177 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model AspNetRoleClaims {
+  Id          Int         @id(map: "PK_AspNetRoleClaims") @default(autoincrement())
+  RoleId      String
+  ClaimType   String?
+  ClaimValue  String?
+  AspNetRoles AspNetRoles @relation(fields: [RoleId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_AspNetRoleClaims_AspNetRoles_RoleId")
+
+  @@index([RoleId], map: "IX_AspNetRoleClaims_RoleId")
+}
+
+model AspNetRoles {
+  Id               String             @id(map: "PK_AspNetRoles")
+  Name             String?            @db.VarChar(256)
+  NormalizedName   String?            @unique(map: "RoleNameIndex") @db.VarChar(256)
+  ConcurrencyStamp String?
+  AspNetRoleClaims AspNetRoleClaims[]
+  AspNetUserRoles  AspNetUserRoles[]
+}
+
+model AspNetUserClaims {
+  Id          Int         @id(map: "PK_AspNetUserClaims") @default(autoincrement())
+  UserId      String
+  ClaimType   String?
+  ClaimValue  String?
+  AspNetUsers AspNetUsers @relation(fields: [UserId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_AspNetUserClaims_AspNetUsers_UserId")
+
+  @@index([UserId], map: "IX_AspNetUserClaims_UserId")
+}
+
+model AspNetUserLogins {
+  LoginProvider       String
+  ProviderKey         String
+  ProviderDisplayName String?
+  UserId              String
+  AspNetUsers         AspNetUsers @relation(fields: [UserId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_AspNetUserLogins_AspNetUsers_UserId")
+
+  @@id([LoginProvider, ProviderKey], map: "PK_AspNetUserLogins")
+  @@index([UserId], map: "IX_AspNetUserLogins_UserId")
+}
+
+model AspNetUserRoles {
+  UserId      String
+  RoleId      String
+  AspNetRoles AspNetRoles @relation(fields: [RoleId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_AspNetUserRoles_AspNetRoles_RoleId")
+  AspNetUsers AspNetUsers @relation(fields: [UserId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_AspNetUserRoles_AspNetUsers_UserId")
+
+  @@id([UserId, RoleId], map: "PK_AspNetUserRoles")
+  @@index([RoleId], map: "IX_AspNetUserRoles_RoleId")
+}
+
+model AspNetUserTokens {
+  UserId        String
+  LoginProvider String
+  Name          String
+  Value         String?
+  AspNetUsers   AspNetUsers @relation(fields: [UserId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_AspNetUserTokens_AspNetUsers_UserId")
+
+  @@id([UserId, LoginProvider, Name], map: "PK_AspNetUserTokens")
+}
+
+model AspNetUsers {
+  Id                   String             @id(map: "PK_AspNetUsers")
+  UserName             String?            @db.VarChar(256)
+  NormalizedUserName   String?            @unique(map: "UserNameIndex") @db.VarChar(256)
+  Email                String?            @db.VarChar(256)
+  NormalizedEmail      String?            @db.VarChar(256)
+  EmailConfirmed       Boolean
+  PasswordHash         String?
+  SecurityStamp        String?
+  ConcurrencyStamp     String?
+  PhoneNumber          String?
+  PhoneNumberConfirmed Boolean
+  TwoFactorEnabled     Boolean
+  LockoutEnd           DateTime?          @db.Timestamptz(6)
+  LockoutEnabled       Boolean
+  AccessFailedCount    Int
+  AspNetUserClaims     AspNetUserClaims[]
+  AspNetUserLogins     AspNetUserLogins[]
+  AspNetUserRoles      AspNetUserRoles[]
+  AspNetUserTokens     AspNetUserTokens[]
+
+  @@index([NormalizedEmail], map: "EmailIndex")
+}
+
+model ExerciseSets {
+  Id                String           @id(map: "PK_ExerciseSets") @db.Uuid
+  ExerciseWorkoutId String           @db.Uuid
+  Index             Int
+  Weight            Decimal?         @db.Decimal(18, 6)
+  Reps              Decimal?         @db.Decimal(18, 6)
+  Time              Decimal?         @db.Decimal(18, 6)
+  CreatedAt         DateTime         @db.Timestamptz(6)
+  UpdatedAt         DateTime         @db.Timestamptz(6)
+  Note              String?
+  ExerciseWorkouts  ExerciseWorkouts @relation(fields: [ExerciseWorkoutId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_ExerciseSets_ExerciseWorkouts_ExerciseWorkoutId")
+
+  @@index([ExerciseWorkoutId], map: "IX_ExerciseSets_ExerciseWorkoutId")
+}
+
+model ExerciseWorkouts {
+  Id              String         @id(map: "PK_ExerciseWorkouts") @db.Uuid
+  WorkoutId       String         @db.Uuid
+  ExerciseId      String         @db.Uuid
+  TotalWeight     Decimal?       @db.Decimal(18, 6)
+  TotalReps       Decimal?       @db.Decimal(18, 6)
+  TotalSets       Decimal?       @db.Decimal(18, 6)
+  CreatedAt       DateTime       @db.Timestamptz(6)
+  UpdatedAt       DateTime       @db.Timestamptz(6)
+  Note            String?
+  Index           Int            @default(0)
+  BelongsToUserId String?
+  ExerciseSets    ExerciseSets[]
+  Exercises       Exercises      @relation(fields: [ExerciseId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_ExerciseWorkouts_Exercises_ExerciseId")
+  Workouts        Workouts       @relation(fields: [WorkoutId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_ExerciseWorkouts_Workouts_WorkoutId")
+
+  @@index([ExerciseId], map: "IX_ExerciseWorkouts_ExerciseId")
+  @@index([WorkoutId], map: "IX_ExerciseWorkouts_WorkoutId")
+}
+
+model Exercises {
+  Id               String             @id(map: "PK_Exercises") @db.Uuid
+  Name             String
+  MuscleGroupId    String             @db.Uuid
+  ExerciseLogType  Int
+  Description      String?
+  BelongsToUserId  String?
+  CreatedAt        DateTime           @db.Timestamptz(6)
+  UpdatedAt        DateTime           @db.Timestamptz(6)
+  ExerciseWorkouts ExerciseWorkouts[]
+  MuscleGroups     MuscleGroups       @relation(fields: [MuscleGroupId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Exercises_MuscleGroups_MuscleGroupId")
+
+  @@index([MuscleGroupId], map: "IX_Exercises_MuscleGroupId")
+}
+
+model MuscleGroups {
+  Id          String      @id(map: "PK_MuscleGroups") @db.Uuid
+  Name        String
+  Description String?
+  CreatedAt   DateTime    @db.Timestamptz(6)
+  UpdatedAt   DateTime    @db.Timestamptz(6)
+  Exercises   Exercises[]
+  Workouts    Workouts[]
+}
+
+model Workouts {
+  Id               String             @id(map: "PK_Workouts") @db.Uuid
+  Name             String
+  Description      String?
+  Date             DateTime           @db.Timestamptz(6)
+  MuscleGroupId    String             @db.Uuid
+  TotalWeight      Decimal?           @db.Decimal(18, 6)
+  TotalReps        Decimal?           @db.Decimal(18, 6)
+  TotalSets        Decimal?           @db.Decimal(18, 6)
+  BelongsToUserId  String?
+  CreatedAt        DateTime           @db.Timestamptz(6)
+  UpdatedAt        DateTime           @db.Timestamptz(6)
+  ExerciseWorkouts ExerciseWorkouts[]
+  MuscleGroups     MuscleGroups       @relation(fields: [MuscleGroupId], references: [Id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Workouts_MuscleGroups_MuscleGroupId")
+
+  @@index([MuscleGroupId], map: "IX_Workouts_MuscleGroupId")
+}
+
+model EFMigrationsHistory {
+  MigrationId    String @id(map: "PK___EFMigrationsHistory") @db.VarChar(150)
+  ProductVersion String @db.VarChar(32)
+
+  @@map("__EFMigrationsHistory")
+}

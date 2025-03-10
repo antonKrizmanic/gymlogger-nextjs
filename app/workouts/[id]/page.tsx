@@ -20,7 +20,7 @@ type WorkoutDetailPageProps = Promise<{
         id: string;
 }>
 
-export default function WorkoutDetailPage(props: {params: WorkoutDetailPageProps}) {
+export default function WorkoutDetailPage(props: {params: Promise<WorkoutDetailPageProps>}) {
     const params = use(props.params);
     const id = params.id;
     const router = useRouter();

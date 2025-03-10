@@ -19,4 +19,16 @@ export interface IExerciseCreate {
 
 export interface IExerciseUpdate extends IExerciseCreate {
     id: string;
-} 
+}
+
+export function mapExerciseToIExercise(exercise: any): IExercise {
+    return {
+        id: exercise.Id,
+        name: exercise.Name,
+        muscleGroupId: exercise.MuscleGroupId,
+        muscleGroupName: exercise.MuscleGroups?.Name,
+        description: exercise.Description,
+        exerciseLogType: exercise.ExerciseLogType,
+        isPublic: exercise.BelongsToUserId === null,
+    };
+}

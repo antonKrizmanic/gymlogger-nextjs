@@ -42,6 +42,7 @@ export function ExerciseCard({ exercise, onDelete, onDeleteComplete }: ExerciseC
 
     return (
         <>
+            <p>Test</p>
             <Card>
                 <div className="flex items-center justify-between">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
@@ -61,7 +62,7 @@ export function ExerciseCard({ exercise, onDelete, onDeleteComplete }: ExerciseC
                 <div className="mt-auto flex justify-between items-center px-0">                                        
                     <DetailButton href={`/exercises/${exercise.id}`}/>                    
                     <EditButton href={`/exercises/${exercise.id}/edit`}/>
-                    <DeleteButton onClick={handleDelete}/>
+                    {/* <DeleteButton onClick={handleDelete}/> */}
                 </div>
             </Card>
 
