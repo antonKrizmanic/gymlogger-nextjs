@@ -11,7 +11,7 @@ export interface IExerciseRequest extends IPagedRequest {
 }
 
 export class ExerciseService extends BaseService {
-    public async getExercises(request: IExerciseRequest): Promise<IPagedResponse<IExercise>> {
+    public async getExercises(request: URLSearchParams): Promise<IPagedResponse<IExercise>> {
         return this.get<IPagedResponse<IExercise>>(Endpoints.Exercise.Base, request);
     }
 

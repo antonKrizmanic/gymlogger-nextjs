@@ -6,15 +6,16 @@ import { ActionButton } from "@/components/Common/ActionButton";
 import { ConfirmationModal } from "@/components/Common/ConfirmationModal";
 import { ErrorSnackbar, SuccessSnackbar } from "@/components/Common/Snackbar";
 import { TrashIcon } from "@/components/Icons";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
 
-interface DeleteButtonProps {
+interface DeleteExerciseButtonProps {
     exercise: IExercise;
     onDelete?: () => void; // Optional callback when deletion is successful
 }
 
-export function DeleteButton({ exercise, onDelete }: DeleteButtonProps) {
+export default function DeleteExerciseButton({ exercise, onDelete }: DeleteExerciseButtonProps) {
+    const router = useRouter();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -34,6 +35,9 @@ export function DeleteButton({ exercise, onDelete }: DeleteButtonProps) {
             // Call the onDelete callback if provided
             if (onDelete) {
                 onDelete();
+            } else {
+                // Only redirect if no callback was provided
+                router.push('/exercises');
             }
         } catch (err) {
             setError('Failed to delete exercise');
@@ -46,23 +50,9 @@ export function DeleteButton({ exercise, onDelete }: DeleteButtonProps) {
 
     return (
         <>
-            <div className={cn(
-            'border border-gray-300 dark:border-gray-700 p-1 w-full flex justify-center items-center',
-            'hover:bg-gray-100 dark:hover:bg-slate-700',
-            'cursor-pointer',
-            'transition-colors'
-        )}>
-            <button
-                onClick={handleDelete}
-                className={cn(
-                    'action-button p-1.5 rounded-md',
-                    'text-gray-500 dark:text-gray-400',                    
-                    'cursor-pointer'
-                )}
-            >
-                <TrashIcon />
-            </button>
-        </div>
+            <ActionButton onClick={handleDelete}>
+                <TrashIcon /> Delete
+            </ActionButton>
 
             <ConfirmationModal
                 isOpen={isDeleteModalOpen}

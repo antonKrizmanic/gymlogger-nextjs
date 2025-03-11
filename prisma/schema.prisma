@@ -127,7 +127,7 @@ model ExerciseWorkouts {
 }
 
 model Exercises {
-  Id               String             @id(map: "PK_Exercises") @db.Uuid
+  Id               String             @id(map: "PK_Exercises") @default(uuid()) @db.Uuid
   Name             String
   MuscleGroupId    String             @db.Uuid
   ExerciseLogType  Int

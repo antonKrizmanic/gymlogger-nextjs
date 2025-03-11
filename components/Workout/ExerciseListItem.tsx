@@ -27,31 +27,34 @@ export function ExerciseListItem({ exercise, index, workoutId, onExerciseChange,
     const [selectedExercise, setSelectedExercise] = useState<IExercise | null>(null);
 
     useEffect(() => {
-        const fetchLastExercise = async () => {
-            const exerciseWorkoutService = new ExerciseWorkoutService();
-            if (exercise.exerciseId) {
-                const response = await exerciseWorkoutService.getLatestExerciseWorkout(exercise.exerciseId, workoutId);
-                setLastExercise(response || null);
+        const fetchExerciseData = async () => {
+            if (!exercise.exerciseId) return;
+
+            try {
+                // Fetch the exercise details
+                const exerciseService = new ExerciseService();
+                const exerciseResponse = await exerciseService.getExercise(exercise.exerciseId);
+                setSelectedExercise(exerciseResponse || null);
+
+                // Fetch the last exercise workout
+                const exerciseWorkoutService = new ExerciseWorkoutService();
+                const lastWorkoutResponse = await exerciseWorkoutService.getLatestExerciseWorkout(
+                    exercise.exerciseId, 
+                    workoutId
+                );
+                setLastExercise(lastWorkoutResponse || null);
+            } catch (error) {
+                console.error('Error fetching exercise data:', error);
+                setLastExercise(null);
+                setSelectedExercise(null);
             }
         };
-        fetchLastExercise();
-    }, [exercise, index, workoutId]);
+
+        fetchExerciseData();
+    }, [exercise.exerciseId, workoutId]);
 
     const handleExerciseSelect = async (exerciseId: string) => {
-        // Fetch last exercise in the background
-        try {
-            const exerciseWorkoutService = new ExerciseWorkoutService();
-            const response = await exerciseWorkoutService.getLatestExerciseWorkout(exerciseId, workoutId || null);
-            setLastExercise(response || null);
-
-            const exerciseService = new ExerciseService();
-            const exerciseResponse = await exerciseService.getExercise(exerciseId);
-            setSelectedExercise(exerciseResponse || null);
-        } catch (error) {
-            console.error('Error fetching latest exercise:', error);
-            setLastExercise(null);
-        }
-
+        // Let the parent component know about the change
         onAddExercise(index, exerciseId);
     };
 
@@ -112,6 +115,9 @@ export function ExerciseListItem({ exercise, index, workoutId, onExerciseChange,
 
         onExerciseChange(exercise, index);
     };
+
+    // Get the exercise type for the sets
+    const exerciseLogType = selectedExercise?.exerciseLogType || ExerciseLogType.WeightAndReps;
 
     return (
         <div
@@ -189,7 +195,7 @@ export function ExerciseListItem({ exercise, index, workoutId, onExerciseChange,
                                 key={setIndex}
                                 set={set}
                                 index={setIndex}
-                                exerciseType={ExerciseLogType.WeightAndReps} // TODO: Get from exercise
+                                exerciseType={exerciseLogType}
                                 onSetChange={(updatedSet) => handleSetChange(setIndex, updatedSet)}
                                 onCopy={() => handleCopySet(setIndex)}
                                 onRemove={() => handleRemoveSet(setIndex)}

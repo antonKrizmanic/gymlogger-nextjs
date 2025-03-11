@@ -10,12 +10,11 @@ import { Pagination } from "@/components/Common/Pagination";
 import { SearchBar } from "@/components/Common/SearchBar";
 import { ExerciseCard } from "@/components/Exercise/ExerciseCard";
 import { FilterIcon, PlusIcon } from "@/components/Icons";
-import { useDebounce } from "@/hooks/useDebounce";
 import { IExercise } from "@/src/Models/Domain/Exercise";
 import { ExerciseLogType } from "@/src/Types/Enums";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -23,14 +22,14 @@ interface ExerciseIndexProps {
     exercises: IExercise[];
     currentPage: number;
     pageSize: number;
-    totalPages: number;
-    isLoading: boolean;
+    totalPages: number;    
 }
 
-export function ExerciseIndex({ exercises, currentPage, pageSize, totalPages, isLoading }: ExerciseIndexProps) {
+export function ExerciseIndex({ exercises, currentPage, pageSize, totalPages }: ExerciseIndexProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
     
+    const [isLoading, setIsLoading] = useState(false);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string>(searchParams.get('muscleGroup') || '');
     const [selectedLogType, setSelectedLogType] = useState<ExerciseLogType | undefined>(
@@ -39,13 +38,18 @@ export function ExerciseIndex({ exercises, currentPage, pageSize, totalPages, is
 
     const [searchTerm, setSearchTerm] = useState('');
 
+    useEffect(() => {
+        setIsLoading(false);
+    },[exercises]);    
+
     const updateUrl = useCallback((
         page: number,
         search: string,
         size: number,
         muscleGroup?: string,
         logType?: ExerciseLogType
-    ) => {        
+    ) => {  
+        setIsLoading(true);      
         const params = new URLSearchParams();
         if (page > 0) params.set('page', page.toString());
         if (search) params.set('search', search);
@@ -56,37 +60,38 @@ export function ExerciseIndex({ exercises, currentPage, pageSize, totalPages, is
         router.push(`/exercises${query ? `?${query}` : ''}`);
     }, [router]);
 
-    const handleSearch = (value: string) => {
+    const handleSearch = (value: string) => {        
         setSearchTerm(value);
-        currentPage = 0;
-        updateUrl(currentPage, value, pageSize, selectedMuscleGroup, selectedLogType);
+        const newPage = 0;
+        updateUrl(newPage, value, pageSize, selectedMuscleGroup, selectedLogType);
     };
 
     const handleMuscleGroupChange = (muscleGroupId: string) => {
         setSelectedMuscleGroup(muscleGroupId);
-        currentPage = 0;
-        updateUrl(currentPage, searchTerm, pageSize, muscleGroupId, selectedLogType);
+        const newPage = 0;
+        updateUrl(newPage, searchTerm, pageSize, muscleGroupId, selectedLogType);
     };
 
-    const handleLogTypeChange = (newValue: ExerciseLogType) => {
-        console.log('Log type changed:', newValue);
+    const handleLogTypeChange = (newValue: ExerciseLogType) => {        
         setSelectedLogType(newValue);
-        currentPage = 0;
-        updateUrl(currentPage, searchTerm, pageSize, selectedMuscleGroup, newValue);
+        const newPage = 0;
+        updateUrl(newPage, searchTerm, pageSize, selectedMuscleGroup, newValue);
     };
 
     const handlePageSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const newSize = Number(event.target.value);
-        updateUrl(currentPage, searchTerm, newSize, selectedMuscleGroup, selectedLogType);
+        const newPage = 0;
+        updateUrl(newPage, searchTerm, newSize, selectedMuscleGroup, selectedLogType);
     };
 
     const handlePageChange = (page: number) => {
         updateUrl(page, searchTerm, pageSize, selectedMuscleGroup, selectedLogType);
     };
 
-    // const handleExerciseDelete = () => {
-    //     fetchExercises();
-    // };
+    const handleExerciseDelete = useCallback(() => {
+        // Refresh the current page
+        updateUrl(currentPage, searchTerm, pageSize, selectedMuscleGroup, selectedLogType);
+    }, [currentPage, searchTerm, pageSize, selectedMuscleGroup, selectedLogType, updateUrl]);    
 
     return (
         <Container>
@@ -139,11 +144,11 @@ export function ExerciseIndex({ exercises, currentPage, pageSize, totalPages, is
                     <ExerciseCard
                         key={exercise.id}
                         exercise={exercise}
-                    // onDeleteComplete={handleExerciseDelete}
+                        onDelete={handleExerciseDelete}                        
                     />
                 )}
                 isLoading={isLoading}
-                emptyMessage="No workouts found"
+                emptyMessage="No exercises found"
             />
 
             {/* Pagination */}

@@ -1,46 +1,37 @@
-import { useEffect, useState } from 'react';
+'use client';
 import { IMuscleGroup } from '@/src/Models/Domain/MuscleGroup';
-import { MuscleGroupService } from '@/src/Api/Services/MuscleGroupService';
-import { SortDirection } from '@/src/Types/Enums';
 import { Select } from '../Form/Select';
+import { MuscleGroupService } from '@/src/Api/Services/MuscleGroupService';
+import { useEffect, useState } from 'react';
 
-
-interface MuscleGroupSelectProps {
+interface MuscleGroupSelectProps {    
     selectedMuscleGroup: string;
     onMuscleGroupChange: (muscleGroupId: string) => void;
     showAllOption?: boolean;
     showMessageOption?: boolean;
 }
 
-export function MuscleGroupSelect({
+export function MuscleGroupSelect({    
     selectedMuscleGroup,
     onMuscleGroupChange,
     showAllOption = true,
     showMessageOption = false,
 }: MuscleGroupSelectProps) {
-    const [muscleGroups, setMuscleGroups] = useState<IMuscleGroup[]>([]);
+    const[groups, setGroups] = useState<IMuscleGroup[]>([]);
+    const[selectedOption, setSelectedOption] = useState<IMuscleGroup>({ id: '', name: '' });
 
     useEffect(() => {
         const fetchMuscleGroups = async () => {
-            try {
-                const service = new MuscleGroupService();
-                const response = await service.getMuscleGroups({
-                    page: 0,
-                    pageSize: 100,
-                    sortColumn: 'name',
-                    sortDirection: SortDirection.Ascending
-                });
-                setMuscleGroups(response.items ?? []);
-            } catch (error) {
-                console.error('Failed to fetch muscle groups:', error);
-            }
-        };
-
-        fetchMuscleGroups();
-    }, []);
-
-    const options = showAllOption ? [{ id: '', name: 'All Muscle Groups' }, ...muscleGroups] : showMessageOption ? [{ id: '', name: 'Select Muscle Group' }, ...muscleGroups] : muscleGroups;
-    const selectedOption = options.find(group => group.id === selectedMuscleGroup) || options[0];    
+            const service = new MuscleGroupService();
+            const groups = await service.getMuscleGroups();
+            
+            const options = showAllOption ? [{ id: '', name: 'All Muscle Groups' }, ...groups] : showMessageOption ? [{ id: '', name: 'Select Muscle Group' }, ...groups] : groups;            
+            setGroups(options);
+            const option = options.find(group => group.id === selectedMuscleGroup) || options[0];    
+            setSelectedOption(option);
+        }
+        fetchMuscleGroups();        
+    },[selectedMuscleGroup]);    
 
     return (
 
@@ -49,7 +40,7 @@ export function MuscleGroupSelect({
                 Muscle Group
             </label>
             <Select
-                options={options}
+                options={groups}
                 selected={selectedOption}
                 onChange={(group) => onMuscleGroupChange(group.id)}
                 getOptionLabel={(group) => group.name ?? ''}

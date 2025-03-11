@@ -1,9 +1,10 @@
-import { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState, useEffect, useMemo } from 'react';
 import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions, Transition } from '@headlessui/react';
 import { IExercise } from '@/src/Models/Domain/Exercise';
 import { ExerciseService } from '@/src/Api/Services/ExerciseService';
 import { cn } from '@/lib/utils';
 import { SortDirection } from '@/src/Types/Enums';
+import { useDebounce } from '@/hooks/useDebounce';
 
 interface ExerciseSelectProps {
     selectedExerciseId?: string;
@@ -15,6 +16,7 @@ export function ExerciseSelect({ selectedExerciseId, onExerciseSelect, required 
     const [exercises, setExercises] = useState<IExercise[]>([]);
     const [query, setQuery] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const debouncedQuery = useDebounce(query, 300);
 
     useEffect(() => {
         const fetchExercises = async () => {
@@ -38,19 +40,31 @@ export function ExerciseSelect({ selectedExerciseId, onExerciseSelect, required 
         fetchExercises();
     }, []);
 
-    const filteredExercises = query === ''
-        ? exercises
-        : exercises.filter((exercise) =>
+    // Memoized filtered exercises based on the debounced query
+    const filteredExercises = useMemo(() => {
+        if (!debouncedQuery) return exercises;
+        
+        const normalizedQuery = debouncedQuery.toLowerCase().replace(/\s+/g, '');
+        
+        return exercises.filter((exercise) =>
             exercise.name
                 .toLowerCase()
                 .replace(/\s+/g, '')
-                .includes(query.toLowerCase().replace(/\s+/g, ''))
+                .includes(normalizedQuery)
         );
+    }, [debouncedQuery, exercises]);
 
-    const selectedExercise = exercises.find(ex => ex.id === selectedExerciseId);
+    const selectedExercise = useMemo(() => 
+        exercises.find(ex => ex.id === selectedExerciseId), 
+        [exercises, selectedExerciseId]
+    );
+
+    const handleSelect = (exercise: IExercise | null) => {
+        onExerciseSelect(exercise?.id || '');
+    };
 
     return (
-        <Combobox value={selectedExercise} onChange={(exercise) => onExerciseSelect(exercise?.id || '')}>
+        <Combobox value={selectedExercise} onChange={handleSelect}>
             <div className="relative">
                 <div className="relative w-full">
                     <ComboboxInput
@@ -121,4 +135,4 @@ export function ExerciseSelect({ selectedExerciseId, onExerciseSelect, required 
             </div>
         </Combobox>
     );
-} 
+}

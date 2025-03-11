@@ -1,19 +1,5 @@
-import { IExercise } from '@/src/Models/Domain/Exercise';
-import { IPagedResponse } from '@/src/Types/Common';
+import { ExerciseService } from '@/src/Api/Services/ExerciseService';
 import { ExerciseIndex } from '@/views/exercise/ExerciseIndex';
-
-async function getExercises(searchParams: URLSearchParams): Promise<IPagedResponse<IExercise>> {
-    const queryString = searchParams.toString();
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/exercises?${queryString}`, {
-      cache: "no-store",
-    });
-  
-    if (!res.ok) {
-      throw new Error("Failed to fetch exercises");
-    }
-    
-    return res.json();
-  }
 
 export default async function ExercisesPage(
   props: {
@@ -21,15 +7,17 @@ export default async function ExercisesPage(
     }
 ) {
   const searchParams = await props.searchParams;
+  
   // Konstruiramo URLSearchParams objekt na temelju searchParams
   const params = new URLSearchParams(
       Object.entries(searchParams)
         .flatMap(([key, value]) =>
           Array.isArray(value) ? value.map((v) => [key, v]) : [[key, value ?? ""]]
         )
-    );
-  const { items: exercises, pagingData } = await getExercises(params);
-
+    );  
+  
+  const exerciseService = new ExerciseService();
+  const { items: exercises, pagingData } = await exerciseService.getExercises(params);  
 
   if(exercises === undefined) {
     return <div>Loading...</div>;
@@ -39,7 +27,6 @@ export default async function ExercisesPage(
       exercises={exercises}
       currentPage={pagingData.page}
       pageSize={pagingData.pageSize}
-      totalPages={pagingData.totalPages}      
-      isLoading={false}/>    
+      totalPages={pagingData.totalPages} />    
   );
 }

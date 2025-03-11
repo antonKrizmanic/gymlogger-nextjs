@@ -1,3 +1,4 @@
+'use client';
 import { IExerciseCreate } from "@/src/Models/Domain/Exercise";
 import { useState } from "react";
 import { MuscleGroupSelect } from "../Common/MuscleGroupSelect";
