@@ -1,98 +1,21 @@
-'use client';
-
-import { use, useEffect, useState } from 'react';
 import { WorkoutService } from '@/src/Api/Services/WorkoutService';
-import { IWorkout } from '@/src/Models/Domain/Workout';
-import { useRouter } from 'next/navigation';
-import { Card } from '@/components/Common/Card';
-import { ConfirmationModal } from '@/components/Common/ConfirmationModal';
-import { SuccessSnackbar } from '@/components/Common/Snackbar';
-import { ErrorSnackbar } from '@/components/Common/Snackbar';
 import { Container } from '@/components/Common/Container';
-import { WorkoutExerciseList } from '@/components/Workout/WorkoutExerciseList';
-import { ExerciseWorkoutService } from '@/src/Api/Services/ExerciseWorkoutService';
-import { IExerciseWorkout } from '@/src/Models/Domain/Workout';
-import { SortDirection } from '@/src/Types/Enums';
-import { LeftArrowIcon, PencilIcon, TrashIcon } from '@/components/Icons';
 import { ActionButton } from '@/components/Common/ActionButton';
+import { LeftArrowIcon, PencilIcon } from '@/components/Icons';
 
-type WorkoutDetailPageProps = Promise<{
-        id: string;
-}>
+import { Card } from '@/components/Common/Card';
+import { WorkoutExerciseList } from '@/components/Workout/WorkoutExerciseList';
+import DeleteWorkoutButton from '@/components/Workout/DeleteWorkoutButton';
 
-export default function WorkoutDetailPage(props: {params: Promise<WorkoutDetailPageProps>}) {
-    const params = use(props.params);
-    const id = params.id;
-    const router = useRouter();
-    const [workout, setWorkout] = useState<IWorkout | null>(null);
-    const [exercises, setExercises] = useState<IExerciseWorkout[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
+async function getWorkout(id: string) {
+    const service = new WorkoutService();
+    return service.getWorkout(id);
+}
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const workoutService = new WorkoutService();
-                const exerciseWorkoutService = new ExerciseWorkoutService();
-
-                const [workoutData, exercisesResponse] = await Promise.all([
-                    workoutService.getWorkout(id),
-                    exerciseWorkoutService.getExerciseWorkouts({
-                        workoutId: id,
-                        exerciseId: null,
-                        page: 0,
-                        pageSize: 100,
-                        sortColumn: 'index',
-                        sortDirection: SortDirection.Ascending
-                    })
-                ]);
-
-                setWorkout(workoutData);
-                setExercises(exercisesResponse.items || []);
-                console.log(exercisesResponse.items);
-            } catch (err) {
-                setError('Failed to load workout details');
-                console.error('Error fetching workout:', err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [id]);
-
-    const handleDelete = () => {
-        setIsDeleteModalOpen(true);
-    };
-
-    const handleDeleteConfirm = async () => {
-        if (!workout) return;
-
-        setIsDeleting(true);
-        try {
-            const workoutService = new WorkoutService();
-            await workoutService.deleteWorkout(workout.id);
-            setSuccess('Workout deleted successfully');
-            router.push('/workouts');
-        } catch (err) {
-            setError('Failed to delete workout');
-            console.error('Error deleting workout:', err);
-        } finally {
-            setIsDeleting(false);
-            setIsDeleteModalOpen(false);
-        }
-    };
-
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-white"></div>
-            </div>
-        );
-    }
+export default async function WorkoutDetailPage({ params }: { params: { id: string } }) {
+    const id = await params.id;
+    const workout = await getWorkout(id);
+    console.log(workout);
 
     if (!workout) {
         return (
@@ -103,27 +26,25 @@ export default function WorkoutDetailPage(props: {params: Promise<WorkoutDetailP
     }
 
     return (
-        <>
-            <Container>
-                <div className="space-y-4 pb-4">
-                    {/* Title */}
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-200">{workout.name || 'Unnamed Workout'}</h1>
-                    {/* Action buttons */}
-                    <div className="flex items-center gap-2 ">
-                        {/* Back button */}
-                        <ActionButton href="/workouts">
-                            <LeftArrowIcon />
-                            Back
-                        </ActionButton>                        
-                        <ActionButton href={`/workouts/${workout.id}/edit`}>
-                            <PencilIcon /> Edit
-                        </ActionButton>
-                        <ActionButton onClick={handleDelete}>
-                            <TrashIcon /> Delete
-                        </ActionButton>
-                    </div>
+        <Container>
+            <div className="space-y-4 pb-4">
+                {/* Title */}
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-200">
+                    {workout.name || 'Unnamed Workout'}
+                </h1>
+                {/* Action buttons */}
+                <div className="flex items-center gap-2">
+                    {/* Back button */}
+                    <ActionButton href="/workouts">
+                        <LeftArrowIcon />
+                        Back
+                    </ActionButton>                        
+                    <ActionButton href={`/workouts/${workout.id}/edit`}>
+                        <PencilIcon /> Edit
+                    </ActionButton>
+                    
+                    <DeleteWorkoutButton workout={workout} />
                 </div>
-
                 <Card>
                     <div className="space-y-6">
                         <div className="grid grid-cols-3 gap-4">
@@ -166,29 +87,9 @@ export default function WorkoutDetailPage(props: {params: Promise<WorkoutDetailP
                 </Card>
 
                 <div className="mt-4">
-                    <WorkoutExerciseList exercises={exercises} />
+                    <WorkoutExerciseList exercises={workout.exercises} />
                 </div>
-            </Container>
-
-            <ConfirmationModal
-                isOpen={isDeleteModalOpen}
-                title="Delete Workout"
-                message={`Are you sure you want to delete "${workout.name}"? This action cannot be undone.`}
-                onConfirm={handleDeleteConfirm}
-                onCancel={() => setIsDeleteModalOpen(false)}
-                isLoading={isDeleting}
-            />
-
-            <SuccessSnackbar
-                text={success || ''}
-                isVisible={!!success}
-                onClose={() => setSuccess(null)}
-            />
-            <ErrorSnackbar
-                text={error || ''}
-                isVisible={!!error}
-                onClose={() => setError(null)}
-            />
-        </>
+            </div>
+        </Container>
     );
-} 
+}

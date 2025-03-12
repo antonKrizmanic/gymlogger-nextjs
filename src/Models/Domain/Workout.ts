@@ -10,6 +10,7 @@ export interface IWorkout {
     totalWeight?: number;
     totalReps?: number;
     totalSets?: number;
+    exercises: IExerciseWorkout[];
 }
 
 export interface IWorkoutCreate {
