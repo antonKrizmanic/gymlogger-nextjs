@@ -1,3 +1,4 @@
+'use client';
 import { IWorkoutCreate } from "@/src/Models/Domain/Workout";
 import { useState } from "react";
 import { ExerciseList } from "./ExerciseList";

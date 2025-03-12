@@ -15,11 +15,7 @@ export class WorkoutService extends BaseService {
 
     public async getWorkout(id: string): Promise<IWorkout> {
         return this.get<IWorkout>(Endpoints.Workout.ById(id));
-    }
-
-    public async getWorkoutForEdit(id: string): Promise<IWorkoutUpdate> {
-        return this.get<IWorkoutUpdate>(Endpoints.Workout.GetForEdit(id));
-    }
+    }    
 
     public async createWorkout(workout: IWorkoutCreate): Promise<IWorkout> {
         return this.post<IWorkout, IWorkoutCreate>(Endpoints.Workout.Base, workout);

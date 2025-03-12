@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from "@prisma/client";
+import { v4 as uuidv4 } from 'uuid';
 import { SortDirection } from '@/src/Types/Enums';
 
 const prisma = new PrismaClient();
@@ -131,9 +132,92 @@ export async function GET(request: NextRequest) {
 export async function POST(request: Request) {
     try {
         const data = await request.json();
-        // TODO: Implement workout creation
-        return NextResponse.json({ message: 'Workout created' });
+
+        // Calculate total reps, weight, and sets
+        const exercises = data.exercises.map((exercise: any) => {
+            const totalReps = exercise.sets.reduce((acc: number, set: any) => acc + (set.reps || 0), 0);
+            const totalWeight = exercise.sets.reduce((acc: number, set: any) => acc + ((set.weight || 0) * (set.reps || 0)), 0);
+            const totalSets = exercise.sets.length;
+            return {
+                ...exercise,
+                totalReps,
+                totalWeight,
+                totalSets
+            };
+        });
+
+        const exerciseIds = exercises.map((exercise: any) => exercise.exerciseId);
+        const exercisesInDb = await prisma.exercises.findMany({
+            select: {
+                Id: true,
+                MuscleGroupId: true
+            },
+            where: {
+                Id: {
+                    in: exerciseIds
+                }
+            }
+        });
+
+        // Get most often used muscle group
+        const mostTrainedMuscleGroup = exercisesInDb.reduce((acc: any, exercise: any) => {
+            if (!acc[exercise.MuscleGroupId]) {
+                acc[exercise.MuscleGroupId] = 0;
+            }
+            acc[exercise.MuscleGroupId] += 1;
+            return acc;
+        });
+        const muscleGroup = mostTrainedMuscleGroup.MuscleGroupId;
+        // Create workout
+        const workout = await prisma.workouts.create({
+            data: {
+                Id: uuidv4(),
+                Name: data.name,
+                MuscleGroups: {
+                    connect: {
+                        Id: muscleGroup
+                    }
+                },
+                //MuscleGroupId: muscleGroup,
+                Description: data.description,
+                Date: new Date(data.date),
+                CreatedAt: new Date(),
+                UpdatedAt: new Date,
+                ExerciseWorkouts: {
+                    create: exercises.map((exercise: any) => ({   
+                        Id:uuidv4(),                     
+                        Exercises: {
+                            connect: {
+                                Id: exercise.exerciseId
+                            }
+                        },
+                        Index: exercise.index,
+                        Note: exercise.note,
+                        TotalReps: exercise.totalReps,
+                        TotalWeight: exercise.totalWeight,
+                        TotalSets: exercise.totalSets,
+                        CreatedAt: new Date(),
+                        UpdatedAt: new Date(),
+                        ExerciseSets: {
+                            create: exercise.sets.map((set: any) => ({                                
+                                Id:uuidv4(),                                
+                                Index: set.index,
+                                Time: set.time,
+                                Weight: set.weight,
+                                Reps: set.reps,
+                                Note: set.note,
+                                CreatedAt: new Date(),
+                                UpdatedAt: new Date(),
+                            }))
+                        }
+                    }))
+                }
+            }
+        });
+
+        return NextResponse.json({ message: 'Workout created', workout });
     } catch (error) {
+        console.error('Error creating workout:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }

@@ -35,22 +35,22 @@ export function ExerciseSetEdit({ set, index, exerciseType, onSetChange, onCopy,
                 {index + 1}
             </span>
             {exerciseType === ExerciseLogType.WeightAndReps && (
-                <>
-                    <div className="flex-1">
-                        <NumberInput 
-                            label='' 
-                            placeholder='Weight'
-                            id={`weight-${index}`} 
-                            value={set.weight || 0} 
-                            onChange={handleWeightChange} />                        
-                    </div>
+                <>                    
                     <div className="flex-1">
                         <NumberInput
                             label=''
                             placeholder='Reps'
                             id={`reps-${index}`}
-                            value={set.reps || 0}
+                            value={set.reps || undefined}
                             onChange={handleRepsChange} />                        
+                    </div>
+                    <div className="flex-1">
+                        <NumberInput 
+                            label='' 
+                            placeholder='Weight'
+                            id={`weight-${index}`} 
+                            value={set.weight || undefined} 
+                            onChange={handleWeightChange} />                        
                     </div>
                 </>
             )}
@@ -60,7 +60,7 @@ export function ExerciseSetEdit({ set, index, exerciseType, onSetChange, onCopy,
                             label=''
                             placeholder='Reps'
                             id={`reps-${index}`}
-                            value={set.reps || 0}
+                            value={set.reps || undefined}
                             onChange={handleRepsChange} />                        
                 </div>
             )}
@@ -70,7 +70,7 @@ export function ExerciseSetEdit({ set, index, exerciseType, onSetChange, onCopy,
                         label=''
                         placeholder='Time (s)'
                         id={`time-${index}`}
-                        value={set.time || 0}
+                        value={set.time || undefined}
                         onChange={handleTimeChange} />                    
                 </div>
             )}

@@ -152,7 +152,7 @@ model MuscleGroups {
 }
 
 model Workouts {
-  Id               String             @id(map: "PK_Workouts") @db.Uuid
+  Id               String             @id(map: "PK_Workouts") @default(uuid()) @db.Uuid
   Name             String
   Description      String?
   Date             DateTime           @db.Timestamptz(6)

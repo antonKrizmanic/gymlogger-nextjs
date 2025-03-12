@@ -1,3 +1,4 @@
+'use client';
 import { cn } from "@/lib/utils";
 import { IExerciseSetCreate, IExerciseWorkout, IExerciseWorkoutCreate } from "@/src/Models/Domain/Workout";
 import { ExerciseSelect } from "./ExerciseSelect";
@@ -148,7 +149,7 @@ export function ExerciseListItem({ exercise, index, workoutId, onExerciseChange,
                     <CloseIcon />
                 </button>
             </div>
-            <div className="flex items-start gap-2">
+            <div className="flex items-start gap-2 text-gray-600 dark:text-gray-400">
                 <p>{selectedExercise?.description}</p>
             </div>
 

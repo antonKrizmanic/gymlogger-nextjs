@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/src/lib/prisma';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
     try {
@@ -104,6 +105,83 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         console.error('Error fetching workout:', error);
         return NextResponse.json(
             { message: 'Failed to fetch workout' },
+            { status: 500 }
+        );
+    }
+}
+
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+    try {
+        const { id } = params;
+        const body = await request.json();
+
+        // Validate GUID format
+        const guidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+        if (!id || !guidRegex.test(id)) {
+            return NextResponse.json({ error: 'Invalid GUID format' }, { status: 400 });
+        }
+
+        // Calculate total reps, weight, and sets
+        const exercises = body.exercises.map((exercise: any) => {
+            const totalReps = exercise.sets.reduce((acc: number, set: any) => acc + (set.reps || 0), 0);
+            const totalWeight = exercise.sets.reduce((acc: number, set: any) => acc + ((set.weight || 0) * (set.reps || 0)), 0);
+            const totalSets = exercise.sets.length;
+            return {
+                ...exercise,
+                totalReps,
+                totalWeight,
+                totalSets
+            };
+        });
+
+        // Update workout
+        const updatedWorkout = await prisma.workouts.update({
+            where: { Id: id },
+            data: {
+                Name: body.name,
+                MuscleGroupId: body.muscleGroupId,
+                Description: body.description,
+                Date: new Date(body.date),
+                ExerciseWorkouts: {
+                    deleteMany: {}, // Delete existing exercise workouts
+                    create: exercises.map((exercise: any) => ({
+                        Id:uuidv4(),
+                        ExerciseId: exercise.exerciseId,                        
+                        Index: exercise.index,
+                        Note: exercise.note,
+                        TotalReps: exercise.totalReps,
+                        TotalWeight: exercise.totalWeight,
+                        TotalSets: exercise.totalSets,
+                        CreatedAt: new Date(),
+                        UpdatedAt: new Date(),
+                        ExerciseSets: {
+                            create: exercise.sets.map((set: any) => ({
+                                Id:uuidv4(),
+                                Index: set.index,
+                                Time: set.time,
+                                Weight: set.weight,
+                                Reps: set.reps,
+                                Note: set.note,
+                                CreatedAt: new Date(),
+                                UpdatedAt: new Date(),
+                            }))
+                        }
+                    }))
+                }
+            }
+        });
+
+        return NextResponse.json({
+            id: updatedWorkout.Id,
+            name: updatedWorkout.Name,
+            muscleGroupId: updatedWorkout.MuscleGroupId,
+            description: updatedWorkout.Description,
+            date: updatedWorkout.Date
+        });
+    } catch (error) {
+        console.error('Error updating workout:', error);
+        return NextResponse.json(
+            { message: 'Failed to update workout' },
             { status: 500 }
         );
     }
