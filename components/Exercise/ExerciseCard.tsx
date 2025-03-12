@@ -5,6 +5,7 @@ import { DetailButton } from '../Common/DetailButton';
 import { EditButton } from '../Common/EditButton';
 import { DeleteButton } from '../Common/DeleteButton';
 import { Card } from '../Common/Card';
+import { ExerciseService } from '@/src/Api/Services/ExerciseService';
 
 interface ExerciseCardProps {
     exercise: IExercise;    
@@ -12,6 +13,12 @@ interface ExerciseCardProps {
 }
 
 export function ExerciseCard({ exercise, onDelete }: ExerciseCardProps) {
+
+    const deleteAction = async () => {
+        const service = new ExerciseService();
+        await service.deleteExercise(exercise.id);
+    }
+
     return (
         <>
             <Card>
@@ -33,7 +40,11 @@ export function ExerciseCard({ exercise, onDelete }: ExerciseCardProps) {
                 <div className="mt-auto flex justify-between items-center px-0">                                        
                     <DetailButton href={`/exercises/${exercise.id}`}/>                    
                     <EditButton href={`/exercises/${exercise.id}/edit`}/>
-                    <DeleteButton exercise={exercise} onDelete={onDelete}/>
+                    <DeleteButton
+                        entityName={exercise.name}  
+                        entityType="exercise"
+                        deleteAction={deleteAction}
+                        onDelete={onDelete}/>
                 </div>
             </Card>            
         </>

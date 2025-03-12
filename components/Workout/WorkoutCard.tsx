@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import { ConfirmationModal } from '../Common/ConfirmationModal';
 import { IWorkout } from '@/src/Models/Domain/Workout';
 import { WorkoutService } from '@/src/Api/Services/WorkoutService';
 import { DetailButton } from '../Common/DetailButton';
@@ -9,34 +7,15 @@ import { DeleteButton } from '../Common/DeleteButton';
 
 interface WorkoutCardProps {
     workout: IWorkout;    
-    onDelete?: (workout: IWorkout) => void;
-    onDeleteComplete?: () => void;
+    onDelete?: () => void;    
 }
 
-export function WorkoutCard({ workout, onDelete, onDeleteComplete }: WorkoutCardProps) {
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
+export function WorkoutCard({ workout, onDelete }: WorkoutCardProps) {    
 
-    const handleDelete = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        setIsDeleteModalOpen(true);
-    };
-
-    const handleDeleteConfirm = async () => {
-        try {
-            setIsDeleting(true);
-            const service = new WorkoutService();
-            await service.deleteWorkout(workout.id);
-            onDelete?.(workout);
-            onDeleteComplete?.();
-            setIsDeleteModalOpen(false);
-        } catch (error) {
-            console.error('Failed to delete workout:', error);
-            // You might want to show an error toast here
-        } finally {
-            setIsDeleting(false);
-        }
-    };
+    const deleteAction = async () => {
+        const service = new WorkoutService();
+        await service.deleteWorkout(workout.id);
+    }
 
     return (
         <>
@@ -65,18 +44,13 @@ export function WorkoutCard({ workout, onDelete, onDeleteComplete }: WorkoutCard
                 <div className="mt-auto flex justify-between items-center px-0">                                        
                     <DetailButton href={`/workouts/${workout.id}`}/>                    
                     <EditButton href={`/workouts/${workout.id}/edit`}/>
-                    <DeleteButton onClick={handleDelete}/>
+                    <DeleteButton 
+                        entityName={workout.name || ''}
+                        entityType="workout"                        
+                        deleteAction={deleteAction}
+                        onDelete={onDelete}/>
                 </div>
             </Card>
-
-            <ConfirmationModal
-                isOpen={isDeleteModalOpen}
-                title="Delete Workout"
-                message={`Are you sure you want to delete "${workout.name}"? This action cannot be undone.`}
-                onConfirm={handleDeleteConfirm}
-                onCancel={() => setIsDeleteModalOpen(false)}
-                isLoading={isDeleting}
-            />
         </>
     );
 } 

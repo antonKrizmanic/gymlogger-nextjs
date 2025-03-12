@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { prisma } from "@/src/lib/prisma";
 
 export async function GET(
     request: Request,
@@ -33,9 +34,24 @@ export async function DELETE(
 ) {
     try {
         const { id } = params;
-        // TODO: Implement workout deletion
-        return NextResponse.json({ id, message: 'Workout deleted' });
+
+        // Provjera valjanosti GUID-a (možeš koristiti regex za dodatnu sigurnost)
+        const guidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+        if (!id || !guidRegex.test(id)) {
+            return NextResponse.json({ error: "Invalid GUID format" }, { status: 400 });
+        }
+
+        await prisma.workouts.delete({
+            where: {
+                Id: id
+            }
+        });
+        return NextResponse.json({ message: "Exercise deleted successfully" });
     } catch (error) {
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        console.error('Error deleting exercise:', error);
+        return NextResponse.json(
+            { message: 'Failed to delete exercise' },
+            { status: 500 }
+        );
     }
 }

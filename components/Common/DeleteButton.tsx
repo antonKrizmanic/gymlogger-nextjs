@@ -2,7 +2,6 @@
 
 import { ExerciseService } from "@/src/Api/Services/ExerciseService";
 import { IExercise } from "@/src/Models/Domain/Exercise";
-import { ActionButton } from "@/components/Common/ActionButton";
 import { ConfirmationModal } from "@/components/Common/ConfirmationModal";
 import { ErrorSnackbar, SuccessSnackbar } from "@/components/Common/Snackbar";
 import { TrashIcon } from "@/components/Icons";
@@ -10,11 +9,13 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface DeleteButtonProps {
-    exercise: IExercise;
+    entityName: string;
+    entityType: string;
     onDelete?: () => void; // Optional callback when deletion is successful
+    deleteAction: () => Promise<void>;
 }
 
-export function DeleteButton({ exercise, onDelete }: DeleteButtonProps) {
+export function DeleteButton({ entityName, entityType, onDelete, deleteAction }: DeleteButtonProps) {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -26,18 +27,17 @@ export function DeleteButton({ exercise, onDelete }: DeleteButtonProps) {
 
     const handleDeleteConfirm = async () => {
         setIsDeleting(true);
-        try {
-            const service = new ExerciseService();
-            await service.deleteExercise(exercise.id);
-            setSuccess('Exercise deleted successfully');
+        try {            
+            await deleteAction();
+            setSuccess(`${entityType} deleted successfully`);
             
             // Call the onDelete callback if provided
             if (onDelete) {
                 onDelete();
             }
         } catch (err) {
-            setError('Failed to delete exercise');
-            console.error('Error deleting exercise:', err);
+            setError(`Failed to delete ${entityType}`);
+            console.error(`Error deleting ${entityType}:`, err);
         } finally {
             setIsDeleting(false);
             setIsDeleteModalOpen(false);
@@ -66,8 +66,8 @@ export function DeleteButton({ exercise, onDelete }: DeleteButtonProps) {
 
             <ConfirmationModal
                 isOpen={isDeleteModalOpen}
-                title="Delete Exercise"
-                message={`Are you sure you want to delete "${exercise.name}"? This action cannot be undone.`}
+                title={`Delete ${entityType}`}
+                message={`Are you sure you want to delete "${entityName}"? This action cannot be undone.`}
                 onConfirm={handleDeleteConfirm}
                 onCancel={() => setIsDeleteModalOpen(false)}
                 isLoading={isDeleting}

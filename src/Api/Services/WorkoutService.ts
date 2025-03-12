@@ -9,11 +9,8 @@ export interface IWorkoutRequest extends Omit<IPagedRequest, 'workoutDate'> {
 }
 
 export class WorkoutService extends BaseService {
-    public async getWorkouts(request: IWorkoutRequest): Promise<IPagedResponse<IWorkout>> {
-        return this.get<IPagedResponse<IWorkout>>(Endpoints.Workout.Base, {
-            ...request,
-            workoutDate: request.workoutDate?.toISOString()
-        });
+    public async getWorkouts(request: URLSearchParams): Promise<IPagedResponse<IWorkout>> {
+        return this.get<IPagedResponse<IWorkout>>(Endpoints.Workout.Base, request);
     }
 
     public async getWorkout(id: string): Promise<IWorkout> {
