@@ -1,4 +1,3 @@
-import { QueryParams } from '../../Types/Api';
 import { ApiClient } from '../Clients/ApiClient';
 
 export abstract class BaseService {

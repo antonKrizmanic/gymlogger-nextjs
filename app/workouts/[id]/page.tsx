@@ -12,7 +12,8 @@ async function getWorkout(id: string) {
     return service.getWorkout(id);
 }
 
-export default async function WorkoutDetailPage({ params }: { params: { id: string } }) {
+export default async function WorkoutDetailPage(props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     const id = await params.id;
     const workout = await getWorkout(id);
     console.log(workout);

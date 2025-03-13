@@ -43,6 +43,7 @@ export function ExerciseListItem({ exercise, index, workoutId, onExerciseChange,
                     exercise.exerciseId, 
                     workoutId
                 );
+                console.log(lastWorkoutResponse);
                 setLastExercise(lastWorkoutResponse || null);
             } catch (error) {
                 console.error('Error fetching exercise data:', error);

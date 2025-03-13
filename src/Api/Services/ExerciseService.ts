@@ -1,14 +1,7 @@
 import { BaseService } from './BaseService';
 import { Endpoints } from '../Endpoints';
 import { IExercise, IExerciseCreate, IExerciseUpdate } from '../../Models/Domain/Exercise';
-import { IPagedRequest, IPagedResponse } from '../../Types/Common';
-import { ExerciseLogType } from '../../Types/Enums';
-
-export interface IExerciseRequest extends IPagedRequest {
-    muscleGroupId?: string;
-    exerciseLogType?: ExerciseLogType;
-    search?: string;
-}
+import { IPagedResponse } from '../../Types/Common';
 
 export class ExerciseService extends BaseService {
     public async getExercises(request: URLSearchParams): Promise<IPagedResponse<IExercise>> {

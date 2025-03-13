@@ -1,7 +1,5 @@
 'use client';
 
-import { ExerciseService } from "@/src/Api/Services/ExerciseService";
-import { IExercise } from "@/src/Models/Domain/Exercise";
 import { ConfirmationModal } from "@/components/Common/ConfirmationModal";
 import { ErrorSnackbar, SuccessSnackbar } from "@/components/Common/Snackbar";
 import { TrashIcon } from "@/components/Icons";

@@ -9,7 +9,8 @@ async function getExercise(id: string) {
     return service.getExercise(id);
 }
 
-export default async function ExerciseDetailPage({ params }: { params: { id: string } }) {
+export default async function ExerciseDetailPage(props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     const id = await params.id;
     const exercise = await getExercise(id);
 

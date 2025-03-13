@@ -1,12 +1,7 @@
 import { BaseService } from './BaseService';
 import { Endpoints } from '../Endpoints';
 import { IWorkout, IWorkoutCreate, IWorkoutUpdate } from '../../Models/Domain/Workout';
-import { IPagedRequest, IPagedResponse } from '../../Types/Common';
-
-export interface IWorkoutRequest extends Omit<IPagedRequest, 'workoutDate'> {
-    muscleGroupId: string;
-    workoutDate?: Date;
-}
+import { IPagedResponse } from '../../Types/Common';
 
 export class WorkoutService extends BaseService {
     public async getWorkouts(request: URLSearchParams): Promise<IPagedResponse<IWorkout>> {

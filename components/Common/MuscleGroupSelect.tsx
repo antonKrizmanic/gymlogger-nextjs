@@ -31,7 +31,7 @@ export function MuscleGroupSelect({
             setSelectedOption(option);
         }
         fetchMuscleGroups();        
-    },[selectedMuscleGroup]);    
+    },[selectedMuscleGroup, showAllOption, showMessageOption]);    
 
     return (
 

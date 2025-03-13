@@ -71,7 +71,7 @@ export async function GET(req: NextRequest) {
     // Dohvat podataka iz baze
     const totalItems = await prisma.exercises.count({ where });
 
-    const mappedExercises = exercises.map((exercise) => mapExerciseToIExercise(exercise));
+    const mappedExercises = exercises.map((exercise:DbExercise) => mapExerciseToIExercise(exercise));
 
     return NextResponse.json({
       items: mappedExercises,

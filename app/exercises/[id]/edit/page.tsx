@@ -17,7 +17,8 @@ async function getExercise(id: string) {
     }
 }
 
-export default async function EditExercisePage({ params }: { params: { id: string } }) {
+export default async function EditExercisePage(props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     const exercise = await getExercise(params.id);
 
     if (!exercise) {
