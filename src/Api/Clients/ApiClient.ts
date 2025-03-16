@@ -1,5 +1,3 @@
-import { AuthService } from '../Services/AuthService';
-
 type RequestConfig = {
     method?: string;
     headers?: Record<string, string>;
@@ -25,31 +23,15 @@ export class ApiClient {
         const headers: Record<string, string> = {
             'Content-Type': 'application/json',
             ...config.headers
-        };
-
-        // Check if we're in a browser environment
-        if (typeof window !== 'undefined') {
-            const token = localStorage.getItem('accessToken');
-            if (token) {
-                headers['Authorization'] = `Bearer ${token}`;
-            }
-        }
+        };        
 
         const response = await fetch(`${this.baseUrl}${endpoint}`, {
+            credentials: "include",
             ...config,
             headers,
             body: config.body ? JSON.stringify(config.body) : undefined
         });
-
-        if (response.status === 401) {
-            // Only redirect on client-side
-            if (typeof window !== 'undefined') {
-                window.location.href = "/auth/login";
-            }
-            // Return the 401 response and let the caller handle it
-            return response;
-        }
-
+        
         return response;
     }
 

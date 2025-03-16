@@ -144,7 +144,6 @@ export async function POST(request: Request) {
                 totalSets
             };
         });
-
         const exerciseIds = exercises.map((exercise: any) => exercise.exerciseId);
         const exercisesInDb = await prisma.exercise.findMany({
             select: {
@@ -167,6 +166,13 @@ export async function POST(request: Request) {
             return acc;
         });
         const muscleGroup = mostTrainedMuscleGroup.muscleGroupId;
+
+
+        const totalReps = exercises.reduce((acc: number, exercise: any) => acc + (exercise.totalReps || 0), 0);
+        const totalWeight = exercises.reduce((acc: number, exercise: any) => acc + (exercise.totalWeight || 0), 0);
+        const totalSets = exercises.reduce((acc: number, exercise: any) => acc + (exercise.totalSets || 0), 0);
+
+
         // Create workout
         const workout = await prisma.workout.create({
             data: {
@@ -179,13 +185,16 @@ export async function POST(request: Request) {
                 },
                 //MuscleGroupId: muscleGroup,
                 description: data.description,
+                totalReps: totalReps,
+                totalWeight: totalWeight,
+                totalSets: totalSets,
                 date: new Date(data.date),
                 createdAt: new Date(),
                 updatedAt: new Date,
                 exerciseWorkouts: {
                     create: exercises.map((exercise: any) => ({   
                         id:uuidv4(),                     
-                        exercises: {
+                        exercise: {
                             connect: {
                                 id: exercise.exerciseId
                             }

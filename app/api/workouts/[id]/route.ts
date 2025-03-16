@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/src/lib/prisma';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {

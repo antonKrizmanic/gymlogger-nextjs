@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/src/lib/prisma';
 import { IExerciseWorkout } from '@/src/Models/Domain/Workout';
 import { ExerciseLogType } from '@/src/Types/Enums';
 import { Prisma } from '@prisma/client';

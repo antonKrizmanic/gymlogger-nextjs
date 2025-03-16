@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/Navigation/Navbar";
+import { Navbar } from "@/src/components/Navigation/Navbar";
 import { ThemeProvider } from 'next-themes'
 
 const inter = Inter({ subsets: ["latin"] });
@@ -27,12 +27,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="data-theme">
-            <div className="min-h-screen bg-white dark:bg-slate-950">
-              <Navbar />
-              <main className="min-h-[calc(100vh-4rem)] bg-gray-50 dark:bg-slate-900">
-                {children}
-              </main>
-            </div>
+          <div className="min-h-screen bg-white dark:bg-slate-950">
+            {children}
+          </div>
         </ThemeProvider>
       </body>
     </html>

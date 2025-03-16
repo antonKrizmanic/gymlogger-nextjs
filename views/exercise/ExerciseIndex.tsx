@@ -1,15 +1,15 @@
 'use client';
 
-import { ActionButton } from "@/components/Common/ActionButton";
-import { Card } from "@/components/Common/Card";
-import { Container } from "@/components/Common/Container";
-import { Grid } from "@/components/Common/Grid";
-import { LogTypeSelect } from "@/components/Common/LogTypeSelect";
-import { MuscleGroupSelect } from "@/components/Common/MuscleGroupSelect";
-import { Pagination } from "@/components/Common/Pagination";
-import { SearchBar } from "@/components/Common/SearchBar";
-import { ExerciseCard } from "@/components/Exercise/ExerciseCard";
-import { FilterIcon, PlusIcon } from "@/components/Icons";
+import { ActionButton } from "@/src/components/Common/ActionButton";
+import { Card } from "@/src/components/Common/Card";
+import { Container } from "@/src/components/Common/Container";
+import { Grid } from "@/src/components/Common/Grid";
+import { LogTypeSelect } from "@/src/components/Common/LogTypeSelect";
+import { MuscleGroupSelect } from "@/src/components/Common/MuscleGroupSelect";
+import { Pagination } from "@/src/components/Common/Pagination";
+import { SearchBar } from "@/src/components/Common/SearchBar";
+import { ExerciseCard } from "@/src/components/Exercise/ExerciseCard";
+import { FilterIcon, PlusIcon } from "@/src/components/Icons";
 import { IExercise } from "@/src/Models/Domain/Exercise";
 import { ExerciseLogType } from "@/src/Types/Enums";
 import { useSearchParams } from "next/navigation";

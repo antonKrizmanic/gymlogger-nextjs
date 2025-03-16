@@ -1,25 +1,25 @@
 'use client';
 
-import { ActionButton } from "@/components/Common/ActionButton";
-import { Card } from "@/components/Common/Card";
-import { Container } from "@/components/Common/Container";
-import { Grid } from "@/components/Common/Grid";
-import { MuscleGroupSelect } from "@/components/Common/MuscleGroupSelect";
-import { Pagination } from "@/components/Common/Pagination";
-import { SearchBar } from "@/components/Common/SearchBar";
-import { FilterIcon, PlusIcon } from "@/components/Icons";
-import { WorkoutCard } from "@/components/Workout/WorkoutCard";
-import { DateInput } from "@/components/Form/TextInput";
-import { IWorkout } from "@/src/Models/Domain/Workout";
+import { ActionButton } from "@/src/components/Common/ActionButton";
+import { Card } from "@/src/components/Common/Card";
+import { Container } from "@/src/components/Common/Container";
+import { Grid } from "@/src/components/Common/Grid";
+import { MuscleGroupSelect } from "@/src/components/Common/MuscleGroupSelect";
+import { Pagination } from "@/src/components/Common/Pagination";
+import { SearchBar } from "@/src/components/Common/SearchBar";
+import { FilterIcon, PlusIcon } from "@/src/components/Icons";
+import { WorkoutCard } from "@/src/components/Workout/WorkoutCard";
+import { DateInput } from "@/src/components/Form/TextInput";
+import { IWorkoutSimple } from "@/src/Models/Domain/Workout";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { useDebounce } from "@/hooks/useDebounce";
+import { useDebounce } from "@/src/hooks/useDebounce";
 
 const DEFAULT_PAGE_SIZE = 12;
 
 interface WorkoutsIndexProps {
-    workouts: IWorkout[];
+    workouts: IWorkoutSimple[];
     currentPage: number;
     pageSize: number;
     totalPages: number;    
@@ -31,9 +31,9 @@ export function WorkoutsIndex({ workouts, currentPage, pageSize, totalPages }: W
     
     const [isLoading, setIsLoading] = useState(false);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string>(searchParams.get('muscleGroup') || '');
-    const [workoutDate, setWorkoutDate] = useState<string | undefined>(searchParams.get('date') || undefined);
-    const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
+    const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string>(searchParams?.get('muscleGroup') || '');
+    const [workoutDate, setWorkoutDate] = useState<string | undefined>(searchParams?.get('date') || undefined);
+    const [searchTerm, setSearchTerm] = useState(searchParams?.get('search') || '');
     const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
     useEffect(() => {
@@ -60,7 +60,7 @@ export function WorkoutsIndex({ workouts, currentPage, pageSize, totalPages }: W
 
     // Update URL when search term changes
     useEffect(() => {
-        if (debouncedSearchTerm !== searchParams.get('search')) {
+        if (debouncedSearchTerm !== searchParams?.get('search')) {
             const newPage = 0;
             updateUrl(newPage, debouncedSearchTerm, pageSize, selectedMuscleGroup, workoutDate);
         }

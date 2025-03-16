@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma } from '@/src/lib/prisma';
 import { Prisma } from '@prisma/client';
-import { auth } from '@/lib/auth';
+import { auth } from '@/src/lib/auth';
 
 // Helper function to safely serialize BigInt, Decimal, and Date values
 function serializeData(data: any): any {
@@ -69,7 +69,7 @@ export async function GET(req: NextRequest) {
   try {
 
     const session = await auth();
-    console.log(session);
+    console.log("DASHBOARD API ROUTE: ", session);
 
     // Check if there are any workouts
     const workoutsCount = await prisma.workout.count();
