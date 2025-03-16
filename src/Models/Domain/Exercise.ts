@@ -23,12 +23,12 @@ export interface IExerciseUpdate extends IExerciseCreate {
 
 export function mapExerciseToIExercise(exercise: any): IExercise {
     return {
-        id: exercise.Id,
-        name: exercise.Name,
-        muscleGroupId: exercise.MuscleGroupId,
-        muscleGroupName: exercise.MuscleGroups?.Name,
-        description: exercise.Description,
-        exerciseLogType: exercise.ExerciseLogType,
-        isPublic: exercise.BelongsToUserId === null,
+        id: exercise.id,
+        name: exercise.name,
+        muscleGroupId: exercise.muscleGroupId,
+        muscleGroupName: exercise.muscleGroups?.name,
+        description: exercise.description,
+        exerciseLogType: exercise.exerciseLogType,
+        isPublic: exercise.belongsToUserId === null,
     };
 }

@@ -27,6 +27,7 @@ export class ApiClient {
             ...config.headers
         };
 
+        // Check if we're in a browser environment
         if (typeof window !== 'undefined') {
             const token = localStorage.getItem('accessToken');
             if (token) {
@@ -41,20 +42,12 @@ export class ApiClient {
         });
 
         if (response.status === 401) {
-            const authService = new AuthService();
-            const newAccessToken = await authService.refresh();
-
-            if (newAccessToken) {
-                headers['Authorization'] = `Bearer ${newAccessToken}`;
-                return fetch(`${this.baseUrl}${endpoint}`, {
-                    ...config,
-                    headers,
-                    body: config.body ? JSON.stringify(config.body) : undefined
-                });
-            } else {
-                window.location.href = "/login";
-                throw new Error('Authentication failed');
+            // Only redirect on client-side
+            if (typeof window !== 'undefined') {
+                window.location.href = "/auth/login";
             }
+            // Return the 401 response and let the caller handle it
+            return response;
         }
 
         return response;

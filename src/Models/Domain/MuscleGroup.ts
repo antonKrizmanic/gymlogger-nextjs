@@ -5,15 +5,15 @@ export interface IMuscleGroup {
 } 
 
 export type DbMuscleGroup = {
-    Id: string;
-    Name: string;
-    Description: string | null;
+    id: string;
+    name: string;
+    description: string | null;
 };
 
 export function mapMuscleGroupToIMuscleGroup(muscleGroup: DbMuscleGroup) :IMuscleGroup{
     return {
-        id: muscleGroup.Id,
-        name: muscleGroup.Name,
-        description: muscleGroup.Description
+        id: muscleGroup.id,
+        name: muscleGroup.name,
+        description: muscleGroup.description
     }
 }

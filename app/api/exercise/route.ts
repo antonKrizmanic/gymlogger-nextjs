@@ -4,29 +4,29 @@ import { mapExerciseToIExercise } from "@/src/Models/Domain/Exercise";
 
 const prisma = new PrismaClient();
 
-export type DbExercise = Prisma.ExercisesGetPayload<{}>;
+export type DbExercise = Prisma.ExerciseGetPayload<{}>;
 
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
         
-        const updatedExercise = await prisma.exercises.create({            
+        const updatedExercise = await prisma.exercise.create({            
             data: {                
-                Name: body.name,
-                MuscleGroupId: body.muscleGroupId,
-                Description: body.description,
-                ExerciseLogType: body.exerciseLogType,
-                CreatedAt: new Date(),
-                UpdatedAt: new Date()
+                name: body.name,
+                muscleGroupId: body.muscleGroupId,
+                description: body.description,
+                exerciseLogType: body.exerciseLogType,
+                createdAt: new Date(),
+                updatedAt: new Date()
             }
         });
         
         return NextResponse.json({
-            id: updatedExercise.Id,
-            name: updatedExercise.Name,
-            muscleGroupId: updatedExercise.MuscleGroupId,
-            description: updatedExercise.Description,
-            exerciseLogType: updatedExercise.ExerciseLogType,
+            id: updatedExercise.id,
+            name: updatedExercise.name,
+            muscleGroupId: updatedExercise.muscleGroupId,
+            description: updatedExercise.description,
+            exerciseLogType: updatedExercise.exerciseLogType,
         });
     } catch (error) {
         console.error('Error updating exercise:', error);
@@ -52,24 +52,24 @@ export async function GET(req: NextRequest) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {};
     if (search) {
-      where.Name = { contains: search, mode: "insensitive" };
+      where.name = { contains: search, mode: "insensitive" };
     }
     if (muscleGroup) {
-      where.MuscleGroupId = muscleGroup;
+      where.muscleGroupId = muscleGroup;
     }
     if (logType && Number(logType) !== 0) {
-      where.ExerciseLogType = Number(logType);
+      where.exerciseLogType = Number(logType);
     }
 
-    const exercises: DbExercise[] = await prisma.exercises.findMany({
+    const exercises: DbExercise[] = await prisma.exercise.findMany({
       where,
       skip: (page) * pageSize,
       take: pageSize,
-      orderBy: { Name: "asc" },
+      orderBy: { name: "asc" },
     })
 
     // Dohvat podataka iz baze
-    const totalItems = await prisma.exercises.count({ where });
+    const totalItems = await prisma.exercise.count({ where });
 
     const mappedExercises = exercises.map((exercise:DbExercise) => mapExerciseToIExercise(exercise));
 

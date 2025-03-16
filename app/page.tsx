@@ -7,23 +7,27 @@ import { DetailButton } from '@/components/Common/DetailButton';
 import { EditButton } from '@/components/Common/EditButton';
 import { DashboardService } from '@/src/Api/Services/DashboardService';
 
+
 export default async function HomePage() {
+
     const service = new DashboardService();
     const dashboard = await service.getDashboard();
+ 
 
     return (
-        <Container>
+        <Container>            
             <div className="flex flex-col space-y-2">
                 <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Welcome to GymLogger</h1>
                 <p className="text-lg text-gray-600">                    
                     Track your workouts and progress with ease.
-                </p>                
+                </p>                    
                 <ActionButton href="/workouts/create" className="w-fit">
                     <PlusIcon />
                     New Workout
                 </ActionButton>                
             </div>
-
+            {dashboard && (
+            <>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
                 {dashboard.lastWorkout && (
                     <Card>
@@ -66,6 +70,9 @@ export default async function HomePage() {
             <div className="mt-6">
                 <WorkoutChartSection dashboard={dashboard} />
             </div>
+            </>    
+                )}
+            
         </Container>
     );
 }

@@ -30,14 +30,14 @@ export async function GET(request: NextRequest) {
         // Add search condition if provided
         if (search) {
             where.OR = [
-                { Name: { contains: search, mode: 'insensitive' } },
-                { Description: { contains: search, mode: 'insensitive' } }
+                { name: { contains: search, mode: 'insensitive' } },
+                { description: { contains: search, mode: 'insensitive' } }
             ];
         }
 
         // Add muscle group filter if provided
         if (muscleGroupId) {
-            where.MuscleGroupId = muscleGroupId;
+            where.muscleGroupId = muscleGroupId;
         }
 
         // Add date filter if provided
@@ -48,37 +48,37 @@ export async function GET(request: NextRequest) {
             const endOfDay = new Date(workoutDate);
             endOfDay.setHours(23, 59, 59, 999);
             
-            where.Date = {
+            where.date = {
                 gte: startOfDay,
                 lte: endOfDay
             };
         }
 
         // Get total count for pagination
-        const totalItems = await prisma.workouts.count({ where });
+        const totalItems = await prisma.workout.count({ where });
 
         // Get workouts with pagination
-        const workouts = await prisma.workouts.findMany({
+        const workouts = await prisma.workout.findMany({
             where,
             include: {
-                MuscleGroups: {
+                muscleGroup: {
                     select: {
-                        Name: true
+                        name: true
                     }
                 },
-                ExerciseWorkouts: {
+                exerciseWorkouts: {
                     include: {
-                        Exercises: {
+                        exercise: {
                             select: {
-                                Name: true
+                                name: true
                             }
                         },
-                        ExerciseSets: true
+                        exerciseSets: true
                     }
                 }
             },
             orderBy: {
-                Date: sortDirection
+                date: sortDirection
             },
             skip: page * pageSize,
             take: pageSize
@@ -91,21 +91,21 @@ export async function GET(request: NextRequest) {
             let totalSets = 0;
 
             // Calculate totals from exercise sets
-            workout.ExerciseWorkouts.forEach(ew => {
-                ew.ExerciseSets.forEach(set => {
-                    totalWeight += Number(set.Weight) || 0;
-                    totalReps += Number(set.Reps) || 0;
+            workout.exerciseWorkouts.forEach(ew => {
+                ew.exerciseSets.forEach(set => {
+                    totalWeight += Number(set.weight) || 0;
+                    totalReps += Number(set.reps) || 0;
                     totalSets += 1;
                 });
             });
 
             return {
-                id: workout.Id,
-                name: workout.Name,
-                description: workout.Description,
-                date: workout.Date,
-                muscleGroupId: workout.MuscleGroupId,
-                muscleGroupName: workout.MuscleGroups?.Name,
+                id: workout.id,
+                name: workout.name,
+                description: workout.description,
+                date: workout.date,
+                muscleGroupId: workout.muscleGroupId,
+                muscleGroupName: workout.muscleGroup?.name,
                 totalWeight,
                 totalReps,
                 totalSets
@@ -146,13 +146,13 @@ export async function POST(request: Request) {
         });
 
         const exerciseIds = exercises.map((exercise: any) => exercise.exerciseId);
-        const exercisesInDb = await prisma.exercises.findMany({
+        const exercisesInDb = await prisma.exercise.findMany({
             select: {
-                Id: true,
-                MuscleGroupId: true
+                id: true,
+                muscleGroupId: true
             },
             where: {
-                Id: {
+                id: {
                     in: exerciseIds
                 }
             }
@@ -160,53 +160,53 @@ export async function POST(request: Request) {
 
         // Get most often used muscle group
         const mostTrainedMuscleGroup = exercisesInDb.reduce((acc: any, exercise: any) => {
-            if (!acc[exercise.MuscleGroupId]) {
-                acc[exercise.MuscleGroupId] = 0;
+            if (!acc[exercise.muscleGroupId]) {
+                acc[exercise.muscleGroupId] = 0;
             }
-            acc[exercise.MuscleGroupId] += 1;
+            acc[exercise.muscleGroupId] += 1;
             return acc;
         });
-        const muscleGroup = mostTrainedMuscleGroup.MuscleGroupId;
+        const muscleGroup = mostTrainedMuscleGroup.muscleGroupId;
         // Create workout
-        const workout = await prisma.workouts.create({
+        const workout = await prisma.workout.create({
             data: {
-                Id: uuidv4(),
-                Name: data.name,
-                MuscleGroups: {
+                id: uuidv4(),
+                name: data.name,
+                muscleGroup: {
                     connect: {
-                        Id: muscleGroup
+                        id: muscleGroup
                     }
                 },
                 //MuscleGroupId: muscleGroup,
-                Description: data.description,
-                Date: new Date(data.date),
-                CreatedAt: new Date(),
-                UpdatedAt: new Date,
-                ExerciseWorkouts: {
+                description: data.description,
+                date: new Date(data.date),
+                createdAt: new Date(),
+                updatedAt: new Date,
+                exerciseWorkouts: {
                     create: exercises.map((exercise: any) => ({   
-                        Id:uuidv4(),                     
-                        Exercises: {
+                        id:uuidv4(),                     
+                        exercises: {
                             connect: {
-                                Id: exercise.exerciseId
+                                id: exercise.exerciseId
                             }
                         },
-                        Index: exercise.index,
-                        Note: exercise.note,
-                        TotalReps: exercise.totalReps,
-                        TotalWeight: exercise.totalWeight,
-                        TotalSets: exercise.totalSets,
-                        CreatedAt: new Date(),
-                        UpdatedAt: new Date(),
-                        ExerciseSets: {
+                        index: exercise.index,
+                        note: exercise.note,
+                        totalReps: exercise.totalReps,
+                        totalWeight: exercise.totalWeight,
+                        totalSets: exercise.totalSets,
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                        exerciseSets: {
                             create: exercise.sets.map((set: any) => ({                                
-                                Id:uuidv4(),                                
-                                Index: set.index,
-                                Time: set.time,
-                                Weight: set.weight,
-                                Reps: set.reps,
-                                Note: set.note,
-                                CreatedAt: new Date(),
-                                UpdatedAt: new Date(),
+                                id:uuidv4(),                                
+                                index: set.index,
+                                time: set.time,
+                                weight: set.weight,
+                                reps: set.reps,
+                                note: set.note,
+                                createdAt: new Date(),
+                                updatedAt: new Date(),
                             }))
                         }
                     }))

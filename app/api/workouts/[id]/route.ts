@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/src/lib/prisma';
+import { prisma } from '@/lib/prisma';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
@@ -13,46 +13,46 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
             return NextResponse.json({ error: 'Invalid GUID format' }, { status: 400 });
         }
 
-        const workout = await prisma.workouts.findUnique({
+        const workout = await prisma.workout.findUnique({
             select: {
-                Id: true,
-                Name: true,
-                MuscleGroupId: true,
-                Description: true,
-                Date: true,
-                MuscleGroups: {
+                id: true,
+                name: true,
+                muscleGroupId: true,
+                description: true,
+                date: true,
+                muscleGroup: {
                     select: {
-                        Name: true
+                        name: true
                     }
                 },
-                ExerciseWorkouts: {
+                exerciseWorkouts: {
                     select: {
-                        Index: true,
-                        TotalReps: true,
-                        TotalWeight: true,
-                        TotalSets: true,
-                        Note: true,
-                        ExerciseSets: {
+                        index: true,
+                        totalReps: true,
+                        totalWeight: true,
+                        totalSets: true,
+                        note: true,
+                        exerciseSets: {
                             select: {
-                                Id: true,
-                                Weight: true,
-                                Reps: true,
-                                Time: true,
-                                Index: true,
-                                Note: true
+                                id: true,
+                                weight: true,
+                                reps: true,
+                                time: true,
+                                index: true,
+                                note: true
                             }
                         },
-                        Exercises: {
+                        exercise: {
                             select: {
-                                Id: true,
-                                Name: true,
-                                Description: true,
-                                ExerciseLogType: true,
-                                BelongsToUserId: true,                                
-                                MuscleGroupId: true,
-                                MuscleGroups: {
+                                id: true,
+                                name: true,
+                                description: true,
+                                exerciseLogType: true,
+                                belongsToUserId: true,                                
+                                muscleGroupId: true,
+                                muscleGroup: {
                                     select: {
-                                        Name: true
+                                        name: true
                                     }
                                 }
                             }
@@ -61,7 +61,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
                 }
             },
             where: {
-                Id: id
+                id: id
             }
         });
         
@@ -71,34 +71,34 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
                 { status: 404 }
             );
         }
-        console.log('Workout:', workout.ExerciseWorkouts.map(ew => ew.ExerciseSets));
+        console.log('Workout:', workout.exerciseWorkouts.map(ew => ew.exerciseSets));
         // Map from DB schema to our interface
         return NextResponse.json({
-            id: workout.Id,
-            name: workout.Name,
-            muscleGroupId: workout.MuscleGroupId,
-            muscleGroupName: workout.MuscleGroups.Name,
-            totalWeight: workout.ExerciseWorkouts.reduce((acc, ew) => acc + Number(ew.TotalWeight), 0),
-            totalReps: workout.ExerciseWorkouts.reduce((acc, ew) => acc + Number(ew.TotalReps), 0),
-            totalSets: workout.ExerciseWorkouts.reduce((acc, ew) => acc + Number(ew.TotalSets), 0),
-            description: workout.Description,
-            date: workout.Date,
-            exercises: workout.ExerciseWorkouts.map(ew => ({
-                note: ew.Note,
-                index: ew.Index,
-                totalReps: ew.TotalReps,
-                totalWeight: ew.TotalWeight,
-                totalSets: ew.TotalSets,
-                exerciseId: ew.Exercises.Id,
-                exerciseName: ew.Exercises.Name,
-                exerciseLogType: ew.Exercises.ExerciseLogType,                
-                sets: ew.ExerciseSets.map(set => ({                    
-                    id: set.Id,
-                    index: set.Index,
-                    time: set.Time,
-                    weight: set.Weight,
-                    reps: set.Reps,  
-                    note: set.Note
+            id: workout.id,
+            name: workout.name,
+            muscleGroupId: workout.muscleGroupId,
+            muscleGroupName: workout.muscleGroup.name,
+            totalWeight: workout.exerciseWorkouts.reduce((acc, ew) => acc + Number(ew.totalWeight), 0),
+            totalReps: workout.exerciseWorkouts.reduce((acc, ew) => acc + Number(ew.totalReps), 0),
+            totalSets: workout.exerciseWorkouts.reduce((acc, ew) => acc + Number(ew.totalSets), 0),
+            description: workout.description,
+            date: workout.date,
+            exercises: workout.exerciseWorkouts.map(ew => ({
+                note: ew.note,
+                index: ew.index,
+                totalReps: ew.totalReps,
+                totalWeight: ew.totalWeight,
+                totalSets: ew.totalSets,
+                exerciseId: ew.exercise.id,
+                exerciseName: ew.exercise.name,
+                exerciseLogType: ew.exercise.exerciseLogType,                
+                sets: ew.exerciseSets.map(set => ({                    
+                    id: set.id,
+                    index: set.index,
+                    time: set.time,
+                    weight: set.weight,
+                    reps: set.reps,  
+                    note: set.note
                 }))
             }))
         });
@@ -137,35 +137,35 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
         });
 
         // Update workout
-        const updatedWorkout = await prisma.workouts.update({
-            where: { Id: id },
+        const updatedWorkout = await prisma.workout.update({
+            where: { id: id },
             data: {
-                Name: body.name,
-                MuscleGroupId: body.muscleGroupId,
-                Description: body.description,
-                Date: new Date(body.date),
-                ExerciseWorkouts: {
+                name: body.name,
+                muscleGroupId: body.muscleGroupId,
+                description: body.description,
+                date: new Date(body.date),
+                exerciseWorkouts: {
                     deleteMany: {}, // Delete existing exercise workouts
                     create: exercises.map((exercise: any) => ({
-                        Id:uuidv4(),
-                        ExerciseId: exercise.exerciseId,                        
-                        Index: exercise.index,
-                        Note: exercise.note,
-                        TotalReps: exercise.totalReps,
-                        TotalWeight: exercise.totalWeight,
-                        TotalSets: exercise.totalSets,
-                        CreatedAt: new Date(),
-                        UpdatedAt: new Date(),
-                        ExerciseSets: {
+                        id:uuidv4(),
+                        exerciseId: exercise.exerciseId,                        
+                        index: exercise.index,
+                        note: exercise.note,
+                        totalReps: exercise.totalReps,
+                        totalWeight: exercise.totalWeight,
+                        totalSets: exercise.totalSets,
+                        createdAt: new Date(),
+                        updatedAt: new Date(),
+                        exerciseSets: {
                             create: exercise.sets.map((set: any) => ({
-                                Id:uuidv4(),
-                                Index: set.index,
-                                Time: set.time,
-                                Weight: set.weight,
-                                Reps: set.reps,
-                                Note: set.note,
-                                CreatedAt: new Date(),
-                                UpdatedAt: new Date(),
+                                id:uuidv4(),
+                                index: set.index,
+                                time: set.time,
+                                weight: set.weight,
+                                reps: set.reps,
+                                note: set.note,
+                                createdAt: new Date(),
+                                updatedAt: new Date(),
                             }))
                         }
                     }))
@@ -174,11 +174,11 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
         });
 
         return NextResponse.json({
-            id: updatedWorkout.Id,
-            name: updatedWorkout.Name,
-            muscleGroupId: updatedWorkout.MuscleGroupId,
-            description: updatedWorkout.Description,
-            date: updatedWorkout.Date
+            id: updatedWorkout.id,
+            name: updatedWorkout.name,
+            muscleGroupId: updatedWorkout.muscleGroupId,
+            description: updatedWorkout.description,
+            date: updatedWorkout.date
         });
     } catch (error) {
         console.error('Error updating workout:', error);
@@ -200,9 +200,9 @@ export async function DELETE(request: NextRequest, props: { params: Promise<{ id
             return NextResponse.json({ error: 'Invalid GUID format' }, { status: 400 });
         }
 
-        await prisma.workouts.delete({
+        await prisma.workout.delete({
             where: {
-                Id: id
+                id: id
             }
         });
         return NextResponse.json({ message: 'Workout deleted successfully' });

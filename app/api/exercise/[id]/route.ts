@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/src/lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
@@ -12,22 +12,22 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
             return NextResponse.json({ error: "Invalid GUID format" }, { status: 400 });
         }
 
-        const exercise = await prisma.exercises.findUnique({
+        const exercise = await prisma.exercise.findUnique({
             select: {
-                Id: true,
-                Name: true,
-                MuscleGroupId: true,
-                Description: true,
-                ExerciseLogType: true,
-                BelongsToUserId: true,
-                MuscleGroups: {
+                id: true,
+                name: true,
+                muscleGroupId: true,
+                description: true,
+                exerciseLogType: true,
+                belongsToUserId: true,
+                muscleGroup: {
                     select: {
-                        Name: true
+                        name: true
                     }
                 }
             },
             where: {
-                Id: id
+                id: id
             }
         });
         
@@ -40,13 +40,13 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
         console.log('Exercise:', exercise);
         // Map from DB schema to our interface
         return NextResponse.json({
-            id: exercise.Id,
-            name: exercise.Name,
-            muscleGroupId: exercise.MuscleGroupId,
-            muscleGroupName: exercise.MuscleGroups.Name,
-            description: exercise.Description,
-            exerciseLogType: exercise.ExerciseLogType,
-            isPublic: exercise.BelongsToUserId === null // If it doesn't belong to a user, it's public
+            id: exercise.id,
+            name: exercise.name,
+            muscleGroupId: exercise.muscleGroupId,
+            muscleGroupName: exercise.muscleGroup.name,
+            description: exercise.description,
+            exerciseLogType: exercise.exerciseLogType,
+            isPublic: exercise.belongsToUserId === null // If it doesn't belong to a user, it's public
         });
     } catch (error) {
         console.error('Error fetching exercise:', error);
@@ -62,25 +62,25 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
     try {
         const body = await request.json();
         
-        const updatedExercise = await prisma.exercises.update({
+        const updatedExercise = await prisma.exercise.update({
             where: {
-                Id: params.id
+                id: params.id
             },
             data: {
-                Name: body.name,
-                MuscleGroupId: body.muscleGroupId,
-                Description: body.description,
-                ExerciseLogType: body.exerciseLogType,
-                UpdatedAt: new Date()
+                name: body.name,
+                muscleGroupId: body.muscleGroupId,
+                description: body.description,
+                exerciseLogType: body.exerciseLogType,
+                updatedAt: new Date()
             }
         });
         
         return NextResponse.json({
-            id: updatedExercise.Id,
-            name: updatedExercise.Name,
-            muscleGroupId: updatedExercise.MuscleGroupId,
-            description: updatedExercise.Description,
-            exerciseLogType: updatedExercise.ExerciseLogType,
+            id: updatedExercise.id,
+            name: updatedExercise.name,
+            muscleGroupId: updatedExercise.muscleGroupId,
+            description: updatedExercise.description,
+            exerciseLogType: updatedExercise.exerciseLogType,
         });
     } catch (error) {
         console.error('Error updating exercise:', error);
@@ -102,9 +102,9 @@ export async function DELETE(request: NextRequest, props: { params: Promise<{ id
             return NextResponse.json({ error: "Invalid GUID format" }, { status: 400 });
         }
 
-        await prisma.exercises.delete({
+        await prisma.exercise.delete({
             where: {
-                Id: id
+                id: id
             }
         });
         return NextResponse.json({ message: "Exercise deleted successfully" });

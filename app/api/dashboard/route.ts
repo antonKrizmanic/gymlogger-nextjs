@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/src/lib/prisma';
+import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
+import { auth } from '@/lib/auth';
 
 // Helper function to safely serialize BigInt, Decimal, and Date values
 function serializeData(data: any): any {
@@ -66,8 +67,12 @@ interface DashboardDateItem {
 
 export async function GET(req: NextRequest) {
   try {
+
+    const session = await auth();
+    console.log(session);
+
     // Check if there are any workouts
-    const workoutsCount = await prisma.workouts.count();
+    const workoutsCount = await prisma.workout.count();
     
     if (workoutsCount === 0) {
       return NextResponse.json(null);
@@ -90,62 +95,62 @@ export async function GET(req: NextRequest) {
     };
 
     // Last workout
-    const lastWorkout = await prisma.workouts.findFirst({
+    const lastWorkout = await prisma.workout.findFirst({
         select: {
-            Id: true,
-            Date: true,
-            Name: true,
-            Description: true,
-            ExerciseWorkouts: {
+            id: true,
+            date: true,
+            name: true,
+            description: true,
+            exerciseWorkouts: {
                 select: {
-                    ExerciseSets: {
+                    exerciseSets: {
                         select: {
-                            Reps: true,
-                            Weight: true
+                            reps: true,
+                            weight: true
                         }
                     }
                 }
             }
         },
       orderBy: {
-        Date: 'desc'
+        date: 'desc'
       }      
     });
     
     dashboard.lastWorkout = {
-        id: lastWorkout?.Id,
-        date: lastWorkout?.Date,
-        name: lastWorkout?.Name,
-        description: lastWorkout?.Description,
-        totalSets: lastWorkout?.ExerciseWorkouts.reduce((acc, exercise) => acc + exercise.ExerciseSets.length, 0) || 0,
-        totalReps: lastWorkout?.ExerciseWorkouts.reduce((acc, exercise) => acc + exercise.ExerciseSets.reduce((acc, set) => acc + Number(set.Reps), 0), 0) || 0,
-        totalWeight: lastWorkout?.ExerciseWorkouts.reduce((acc, exercise) => acc + exercise.ExerciseSets.reduce((acc, set) => acc + (Number(set.Reps) * Number(set.Weight)), 0), 0) || 0
+        id: lastWorkout?.id,
+        date: lastWorkout?.date,
+        name: lastWorkout?.name,
+        description: lastWorkout?.description,
+        totalSets: lastWorkout?.exerciseWorkouts.reduce((acc, exercise) => acc + exercise.exerciseSets.length, 0) || 0,
+        totalReps: lastWorkout?.exerciseWorkouts.reduce((acc, exercise) => acc + exercise.exerciseSets.reduce((acc, set) => acc + Number(set.reps), 0), 0) || 0,
+        totalWeight: lastWorkout?.exerciseWorkouts.reduce((acc, exercise) => acc + exercise.exerciseSets.reduce((acc, set) => acc + (Number(set.reps) * Number(set.weight)), 0), 0) || 0
     };
 
     // Get favorite muscle group name (max count in workouts)
-    const muscleGroupCounts = await prisma.workouts.groupBy({
-      by: ['MuscleGroupId'],
+    const muscleGroupCounts = await prisma.workout.groupBy({
+      by: ['muscleGroupId'],
       _count: {
-        MuscleGroupId: true
+        muscleGroupId: true
       },
       orderBy: {
         _count: {
-          MuscleGroupId: 'desc'
+          muscleGroupId: 'desc'
         }
       }
     });
 
     if (muscleGroupCounts.length > 0) {
-      const favoriteMuscleGroupId = muscleGroupCounts[0].MuscleGroupId;
-      const muscleGroup = await prisma.muscleGroups.findUnique({
+      const favoriteMuscleGroupId = muscleGroupCounts[0].muscleGroupId;
+      const muscleGroup = await prisma.muscleGroup.findUnique({
         select: {
-            Name: true
+            name: true
         },
         where: {
-          Id: favoriteMuscleGroupId
+          id: favoriteMuscleGroupId
         }
       });
-      dashboard.favoriteMuscleGroupName = muscleGroup?.Name || null;
+      dashboard.favoriteMuscleGroupName = muscleGroup?.name || null;
     }
 
     // Workouts count
@@ -168,76 +173,76 @@ export async function GET(req: NextRequest) {
     const firstDayOfYear = new Date(today.getFullYear(), 0, 1);
 
     // Workouts this week
-    dashboard.workoutsThisWeek = await prisma.workouts.count({
+    dashboard.workoutsThisWeek = await prisma.workout.count({
       where: {
-        Date: {
+        date: {
           gte: mondayDate
         }
       }
     });
 
     // Workouts this month
-    dashboard.workoutsThisMonth = await prisma.workouts.count({
+    dashboard.workoutsThisMonth = await prisma.workout.count({
       where: {
-        Date: {
+        date: {
           gte: firstDayOfMonth
         }
       }
     });
 
     // Workouts this year
-    dashboard.workoutsThisYear = await prisma.workouts.count({
+    dashboard.workoutsThisYear = await prisma.workout.count({
       where: {
-        Date: {
+        date: {
           gte: firstDayOfYear
         }
       }
     });
 
     // Series this week
-    const seriesThisWeek = await prisma.exerciseWorkouts.aggregate({
+    const seriesThisWeek = await prisma.exerciseWorkout.aggregate({
       _sum: {
-        TotalSets: true
+        totalSets: true
       },
       where: {
-        Workouts: {
-          Date: {
+        workout: {
+          date: {
             gte: mondayDate
           }
         }
       }
     });
-    dashboard.seriesThisWeek = seriesThisWeek._sum.TotalSets ? Number(seriesThisWeek._sum.TotalSets) : 0;
+    dashboard.seriesThisWeek = seriesThisWeek._sum.totalSets ? Number(seriesThisWeek._sum.totalSets) : 0;
 
     // Series this month
-    const seriesThisMonth = await prisma.exerciseWorkouts.aggregate({
+    const seriesThisMonth = await prisma.exerciseWorkout.aggregate({
       _sum: {
-        TotalSets: true
+        totalSets: true
       },
       where: {
-        Workouts: {
-          Date: {
+        workout: {
+          date: {
             gte: firstDayOfMonth
           }
         }
       }
     });
-    dashboard.seriesThisMonth = seriesThisMonth._sum.TotalSets ? Number(seriesThisMonth._sum.TotalSets) : 0;
+    dashboard.seriesThisMonth = seriesThisMonth._sum.totalSets ? Number(seriesThisMonth._sum.totalSets) : 0;
 
     // Series this year
-    const seriesThisYear = await prisma.exerciseWorkouts.aggregate({
+    const seriesThisYear = await prisma.exerciseWorkout.aggregate({
       _sum: {
-        TotalSets: true
+        totalSets: true
       },
       where: {
-        Workouts: {
-          Date: {
+        workout: {
+          date: {
             gte: firstDayOfYear
           }
         }
       }
     });
-    dashboard.seriesThisYear = seriesThisYear._sum.TotalSets ? Number(seriesThisYear._sum.TotalSets) : 0;
+    dashboard.seriesThisYear = seriesThisYear._sum.totalSets ? Number(seriesThisYear._sum.totalSets) : 0;
 
     // Weight calculations
     // Weight this week
@@ -315,4 +320,4 @@ console.log(serializedDashboard);
       { status: 500 }
     );
   }
-}
+};

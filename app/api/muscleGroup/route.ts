@@ -8,14 +8,14 @@ const prisma = new PrismaClient();
 
 export async function GET() {
     try {        
-        const muscleGroup:DbMuscleGroup[] = await prisma.muscleGroups.findMany({
+        const muscleGroup:DbMuscleGroup[] = await prisma.muscleGroup.findMany({
             select: {
-                Id: true,
-                Name: true,
-                Description: true,
+                id: true,
+                name: true,
+                description: true,
             },
             orderBy: {
-                Name: 'asc'
+                name: 'asc'
             }
         });
 

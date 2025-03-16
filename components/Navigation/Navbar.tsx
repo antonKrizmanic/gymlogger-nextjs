@@ -11,6 +11,8 @@ import { CloseIcon, HamburgerIcon, LogoutIcon } from '../Icons';
 const HIDDEN_NAV_PATHS = [
     '/login',
     '/register',
+    '/auth/login',
+    '/auth/register',
     // Add more paths here as needed
 ];
 

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/src/lib/prisma';
+import { prisma } from '@/lib/prisma';
 import { IExerciseWorkout } from '@/src/Models/Domain/Workout';
 import { ExerciseLogType } from '@/src/Types/Enums';
 import { Prisma } from '@prisma/client';
@@ -57,13 +57,13 @@ export async function GET(
         // Get the current workout if workoutId is provided and valid
         let workout = null;
         if (workoutId && workoutId !== 'null' && workoutId !== 'undefined') {
-            workout = await prisma.workouts.findUnique({
+            workout = await prisma.workout.findUnique({
                 where: {
-                    Id: workoutId,
+                    id: workoutId,
                 },
                 select: {
-                    Id: true,
-                    Date: true,
+                    id: true,
+                    date: true,
                 },
             });
         }
@@ -71,34 +71,34 @@ export async function GET(
         // Query to find the latest exercise workout
         const exerciseWorkoutQuery = {            
             where: {
-                ExerciseId: exerciseId,
+                exerciseId: exerciseId,
                 //userId: session.user.id,
                 // Exclude the current workout
                 NOT: workoutId && workoutId !== 'null' && workoutId !== 'undefined'
-                    ? { WorkoutId: workoutId }
+                    ? { workoutId: workoutId }
                     : undefined,
                 // If we have a workout with a date, only include exercise workouts with earlier dates
-                ...(workout?.Date && {
-                    Workouts: {
-                        Date: {
-                            lte: workout.Date,
+                ...(workout?.date && {
+                    workouts: {
+                        date: {
+                            lte: workout.date,
                         },
                     },
                 }),
             },
             orderBy: {
-                CreatedAt: Prisma.SortOrder.desc, // Use the proper enum value
+                createdAt: Prisma.SortOrder.desc, // Use the proper enum value
             },
             include: {
-                Exercises: true,
-                ExerciseSets: true,
-                Workouts: true
+                exercise: true,
+                exerciseSets: true,
+                workout: true
             },
             take: 1,
         };
 
         // Execute the query with explicit typing
-        const result = await prisma.exerciseWorkouts.findFirst(exerciseWorkoutQuery) as unknown as PrismaExerciseWorkout | null;
+        const result = await prisma.exerciseWorkout.findFirst(exerciseWorkoutQuery);
             
         if (!result) {
             return NextResponse.json(null, { status: 200 });
@@ -106,23 +106,23 @@ export async function GET(
 
         // Map to IExerciseWorkout interface with safe access
         const mappedExerciseWorkout: IExerciseWorkout = {
-            exerciseId: result.ExerciseId,
-            exerciseName: result.Exercises?.Name,
-            workoutId: result.WorkoutId,
-            exerciseLogType: (result.Exercises?.ExerciseLogType ?? 0) as ExerciseLogType,
-            totalWeight: result.TotalWeight ? Number(result.TotalWeight) : undefined,
-            totalReps: result.TotalReps ? Number(result.TotalReps) : undefined,
-            totalSets: result.ExerciseSets?.length ?? 0,
-            note: result.Note ?? undefined,
-            index: result.Index,
-            sets: result.ExerciseSets ? 
-                result.ExerciseSets.map(set => ({
-                    id: set.Id,
-                    index: set.Index,
-                    weight: set.Weight ? Number(set.Weight) : undefined,
-                    reps: set.Reps ? Number(set.Reps) : undefined,
-                    time: set.Time ? Number(set.Time) : undefined,
-                    note: set.Note ?? undefined,
+            exerciseId: result.exerciseId,
+            exerciseName: result.exercise?.name,
+            workoutId: result.workoutId,
+            exerciseLogType: (result.exercise?.exerciseLogType ?? 0) as ExerciseLogType,
+            totalWeight: result.totalWeight ? Number(result.totalWeight) : undefined,
+            totalReps: result.totalReps ? Number(result.totalReps) : undefined,
+            totalSets: result.exerciseSets?.length ?? 0,
+            note: result.note ?? undefined,
+            index: result.index,
+            sets: result.exerciseSets ? 
+                result.exerciseSets.map(set => ({
+                    id: set.id,
+                    index: set.index,
+                    weight: set.weight ? Number(set.weight) : undefined,
+                    reps: set.reps ? Number(set.reps) : undefined,
+                    time: set.time ? Number(set.time) : undefined,
+                    note: set.note ?? undefined,
                 })) : [],
         };
 

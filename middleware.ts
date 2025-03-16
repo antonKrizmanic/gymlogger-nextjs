@@ -1,17 +1,10 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// List of public routes that don't require authentication
-const publicRoutes = ['/login', '/register'];
-
 export function middleware(request: NextRequest) {
-    // Check if the requested path is a public route
-    if (publicRoutes.includes(request.nextUrl.pathname)) {
-        return NextResponse.next();
-    }
-
-    // Check if user is authenticated by checking for auth cookie
-    return NextResponse.next();
+  console.error('middleware')
+  return new Response('Middleware test', { status: 500 });
+  
 }
 
 export const config = {
