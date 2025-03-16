@@ -25,14 +25,14 @@ function ExercisesContent() {
 
     const [exercises, setExercises] = useState<IExercise[]>([]);
     const [totalItems, setTotalItems] = useState(0);
-    const [currentPage, setCurrentPage] = useState(Number(searchParams.get('page')) || 0);
-    const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
-    const [pageSize, setPageSize] = useState(Number(searchParams.get('size')) || DEFAULT_PAGE_SIZE);
+    const [currentPage, setCurrentPage] = useState(Number(searchParams?.get('page')) || 0);
+    const [searchTerm, setSearchTerm] = useState(searchParams?.get('search') || '');
+    const [pageSize, setPageSize] = useState(Number(searchParams?.get('size')) || DEFAULT_PAGE_SIZE);
     const [isLoading, setIsLoading] = useState(true);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string>(searchParams.get('muscleGroup') || '');
+    const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string>(searchParams?.get('muscleGroup') || '');
     const [selectedLogType, setSelectedLogType] = useState<ExerciseLogType | undefined>(
-        searchParams.get('logType') ? Number(searchParams.get('logType')) as ExerciseLogType : undefined
+        searchParams?.get('logType') ? Number(searchParams.get('logType')) as ExerciseLogType : undefined
     );
 
     const debouncedSearchTerm = useDebounce(searchTerm, 300);

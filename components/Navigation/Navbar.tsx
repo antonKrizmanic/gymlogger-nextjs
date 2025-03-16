@@ -19,7 +19,7 @@ export function Navbar() {
     const router = useRouter();
 
     // Don't show navigation on specified paths
-    if (HIDDEN_NAV_PATHS.includes(pathname)) {
+    if (HIDDEN_NAV_PATHS.includes(pathname as string)) {
         return null;
     }
 

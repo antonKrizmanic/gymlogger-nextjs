@@ -26,16 +26,16 @@ function WorkoutsContent() {
 
     const [workouts, setWorkouts] = useState<IWorkout[]>([]);
     const [totalItems, setTotalItems] = useState(0);
-    const [currentPage, setCurrentPage] = useState(Number(searchParams.get('page')) || 0);
-    const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
-    const [pageSize, setPageSize] = useState(Number(searchParams.get('size')) || DEFAULT_PAGE_SIZE);
+    const [currentPage, setCurrentPage] = useState(Number(searchParams?.get('page')) || 0);
+    const [searchTerm, setSearchTerm] = useState(searchParams?.get('search') || '');
+    const [pageSize, setPageSize] = useState(Number(searchParams?.get('size')) || DEFAULT_PAGE_SIZE);
     const [isLoading, setIsLoading] = useState(true);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [workoutDate, setWorkoutDate] = useState<Date | undefined>(
-        searchParams.get('date') ? new Date(searchParams.get('date')!) : undefined
+        searchParams?.get('date') ? new Date(searchParams.get('date')!) : undefined
     );
     const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string>(
-        searchParams.get('muscleGroup') || ''
+        searchParams?.get('muscleGroup') || ''
     );
 
     const debouncedSearchTerm = useDebounce(searchTerm, 300);
