@@ -1,4 +1,3 @@
-import { ExerciseApiService } from '@/src/Api/Services/ExerciseApiService';
 import { ExerciseLogType } from '@/src/Types/Enums';
 import { IExerciseCreate } from '@/src/Models/Domain/Exercise';
 import { Container } from '@/src/components/Common/Container';

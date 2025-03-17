@@ -4,42 +4,6 @@ import { IExerciseWorkout } from '@/src/Models/Domain/Workout';
 import { ExerciseLogType } from '@/src/Types/Enums';
 import { Prisma } from '@prisma/client';
 
-// Define a type that matches what Prisma actually returns
-type PrismaExerciseWorkout = {
-  Id: string;
-  WorkoutId: string;
-  ExerciseId: string;
-  TotalWeight: number | null;
-  TotalReps: number | null;
-  TotalSets: number | null;
-  CreatedAt: Date;
-  UpdatedAt: Date;
-  Note: string | null;
-  Index: number;
-  BelongsToUserId: string | null;
-  Exercises: {
-    Id: string;
-    Name: string;
-    ExerciseLogType: number;
-    // Add other fields as needed
-  } | null;
-  ExerciseSets: Array<{
-    Id: string;
-    ExerciseWorkoutId: string;
-    Index: number;
-    Weight: number | null;
-    Reps: number | null;
-    Time: number | null;
-    Note: string | null;
-    CreatedAt: Date;
-    UpdatedAt: Date;
-  }> | null;
-  Workouts: {
-    Id: string;
-    Date: Date;
-    // Add other fields as needed
-  } | null;
-};
 
 export async function GET(
     request: Request,

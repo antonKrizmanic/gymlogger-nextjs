@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { cn } from '@/src/lib/utils';
 import { ThemeSwitcher } from '../Theme/ThemeSwitcher';
 import { CloseIcon, HamburgerIcon, LogoutIcon } from '../Icons';

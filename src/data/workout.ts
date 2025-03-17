@@ -1,7 +1,6 @@
-import { Decimal } from "@prisma/client/runtime/library";
 import { IPagedRequest, IPagedResponse } from "../Types/Common";
 import { prisma } from "@/src/lib/prisma";
-import { IWorkout, IWorkoutSimple, mapWorkoutToIWorkout } from "../Models/Domain/Workout";
+import { IWorkoutSimple, mapWorkoutToIWorkout } from "../Models/Domain/Workout";
 import { SortDirection } from "../Types/Enums";
 
 export interface IWorkoutRequest extends IPagedRequest {
@@ -23,11 +22,7 @@ export const getWorkout = async(id: string) => {
                 }
             }
         }
-    });
-    for (const exerciseWorkout of workout.exerciseWorkouts) {
-        console.log({exerciseWorkout});
-    }
-    
+    });    
 
     return mapWorkoutToIWorkout(workout);
 }

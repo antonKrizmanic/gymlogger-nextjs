@@ -1,4 +1,3 @@
-import { WorkoutApiService } from '@/src/Api/Services/WorkoutApiService';
 import { getPagedWorkouts, IWorkoutRequest } from '@/src/data/workout';
 import { SortDirection } from '@/src/Types/Enums';
 import { WorkoutsIndex } from '@/views/workout/WorkoutsIndex';

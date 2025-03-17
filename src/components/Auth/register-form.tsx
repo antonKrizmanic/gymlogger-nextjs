@@ -1,8 +1,8 @@
 "use client";
 
 import * as z from "zod";
-import { startTransition, useTransition, useState } from "react";
-import {set, useForm} from "react-hook-form";
+import { useTransition, useState } from "react";
+import { useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import { RegisterSchema } from "@/src/schemas/index";
 import {
@@ -37,7 +37,7 @@ export const RegisterForm = () => {
     const onSubmit = (values: z.infer<typeof RegisterSchema>) => {
         setError(undefined);
         setSuccess(undefined);
-        startTransition(() => {
+        setIsSubmitting(() => {
             register(values)
             .then((data) => {                
                 setError(data.error);

@@ -1,4 +1,3 @@
-import { WorkoutApiService } from '@/src/Api/Services/WorkoutApiService';
 import { Container } from '@/src/components/Common/Container';
 import { ClientWorkoutForm } from '@/src/components/Workout/ClientWorkoutForm';
 import { getWorkout } from '@/src/data/workout';

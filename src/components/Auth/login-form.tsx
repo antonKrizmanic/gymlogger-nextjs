@@ -1,8 +1,8 @@
 "use client";
 
 import * as z from "zod";
-import { startTransition, useTransition, useState } from "react";
-import {set, useForm} from "react-hook-form";
+import { useTransition, useState } from "react";
+import { useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import { LoginSchema } from "@/src/schemas/index";
 import {
@@ -36,7 +36,7 @@ export const LoginForm = () => {
     const onSubmit = (values: z.infer<typeof LoginSchema>) => {
         setError(undefined);
         setSuccess(undefined);
-        startTransition(() => {
+        setIsSubmitting(() => {
             login(values)
             .then((data:any) => {                
                 setError(data.error);
