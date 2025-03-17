@@ -14,7 +14,20 @@ export const getWorkout = async(id: string) => {
         where: {
             id,
         },
+        include: {
+            muscleGroup: true,
+            exerciseWorkouts: {
+                include: {
+                    exercise: true,
+                    exerciseSets: true
+                }
+            }
+        }
     });
+    for (const exerciseWorkout of workout.exerciseWorkouts) {
+        console.log({exerciseWorkout});
+    }
+    
 
     return mapWorkoutToIWorkout(workout);
 }

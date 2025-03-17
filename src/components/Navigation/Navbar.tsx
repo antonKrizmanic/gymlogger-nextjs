@@ -9,21 +9,9 @@ import { CloseIcon, HamburgerIcon, LogoutIcon } from '../Icons';
 import { signOut } from "next-auth/react"
 
 
-// Paths where navigation should not be shown
-const HIDDEN_NAV_PATHS = [
-    '/login',
-    '/register',
-    '/auth/login',
-    '/auth/register',
-    '/auth/error',
-    // Add more paths here as needed
-];
-
 export function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const pathname = usePathname();
-    const router = useRouter();
-
     
 
     const navItems = [
@@ -43,7 +31,7 @@ export function Navbar() {
                 <div className="flex justify-between h-16">
                     <div className="flex">
                         {/* Logo */}
-                        <Link href="/" className="flex-shrink-0 flex items-center">
+                        <Link href="/dashboard" className="flex-shrink-0 flex items-center">
                             <span className="text-xl font-bold text-gray-900 dark:text-white">GymLogger</span>
                         </Link>
 

@@ -79,7 +79,7 @@ export async function GET(
                     : undefined,
                 // If we have a workout with a date, only include exercise workouts with earlier dates
                 ...(workout?.date && {
-                    workouts: {
+                    workout: {
                         date: {
                             lte: workout.date,
                         },

@@ -20,12 +20,12 @@ export function ExerciseSets({ exercise }: ExerciseSetsProps) {
                         Set
                     </th>
                     {exercise.exerciseLogType === ExerciseLogType.WeightAndReps && (
-                        <>
-                            <th className="py-2 px-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
-                                Weight
-                            </th>
+                        <>                            
                             <th className="py-2 px-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
                                 Reps
+                            </th>
+                            <th className="py-2 px-4 text-left text-sm font-medium text-gray-500 dark:text-gray-400">
+                                Weight
                             </th>
                         </>
                     )}

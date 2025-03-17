@@ -1,12 +1,8 @@
 import { WorkoutApiService } from '@/src/Api/Services/WorkoutApiService';
 import { Container } from '@/src/components/Common/Container';
 import { ClientWorkoutForm } from '@/src/components/Workout/ClientWorkoutForm';
+import { getWorkout } from '@/src/data/workout';
 import { IWorkoutCreate } from '@/src/Models/Domain/Workout';
-
-async function getWorkout(id: string) {
-    const service = new WorkoutApiService();
-    return service.getWorkout(id);
-}
 
 export default async function EditWorkoutPage(props: { params: Promise<{ id: string }> }) {
     const params = await props.params;

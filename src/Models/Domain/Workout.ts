@@ -63,33 +63,32 @@ export interface IExerciseWorkoutCreate {
 
 
 export const mapWorkoutToIWorkout = (workout: any): IWorkout => {
-    console.log(workout);
     return {
         id: workout.id,
         name: workout.name,
         description: workout.description,
         date: workout.date,
         muscleGroupId: workout.muscleGroupId,
-        muscleGroupName: workout.muscleGroups?.name,
-        totalWeight: workout.totalWeight,
-        totalReps: workout.totalReps,
-        totalSets: workout.totalSets,
+        muscleGroupName: workout.muscleGroup?.name,
+        totalWeight: Number(workout.totalWeight),
+        totalReps: Number(workout.totalReps),
+        totalSets: Number(workout.totalSets),
         exercises: workout.exerciseWorkouts?.map((exercise: any) => ({
             exerciseId: exercise.exerciseId,
             exerciseName: exercise.exercise?.name,
             workoutId: exercise.workoutId,
-            exerciseLogType: exercise.exerciseLogType,
-            totalWeight: exercise.totalWeight,
-            totalReps: exercise.totalReps,
-            totalSets: exercise.totalSets,
+            exerciseLogType: exercise.exercise?.exerciseLogType as unknown as ExerciseLogType,
+            totalWeight: Number(exercise.totalWeight),
+            totalReps: Number(exercise.totalReps),
+            totalSets: Number(exercise.totalSets),
             note: exercise.note,
             index: exercise.index,
             sets: exercise.exerciseSets.map((set: any) => ({
                 id: set.id,
                 index: set.index,
-                weight: set.weight,
-                reps: set.reps,
-                time: set.time,
+                weight: Number(set.weight),
+                reps: Number(set.reps),
+                time: Number(set.time),
                 note: set.note
             }))
         }))

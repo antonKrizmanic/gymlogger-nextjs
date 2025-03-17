@@ -13,12 +13,12 @@ export function ExerciseSet({ set, exerciseType }: ExerciseSetProps) {
                 {set.index + 1}
             </td>
             {exerciseType === ExerciseLogType.WeightAndReps && (
-                <>
-                    <td className="py-2 px-4 text-sm text-gray-900 dark:text-white">
-                        {set.weight} kg
-                    </td>
+                <>                    
                     <td className="py-2 px-4 text-sm text-gray-900 dark:text-white">
                         {set.reps}
+                    </td>
+                    <td className="py-2 px-4 text-sm text-gray-900 dark:text-white">
+                        {set.weight} kg
                     </td>
                 </>
             )}

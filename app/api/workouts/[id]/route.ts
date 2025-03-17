@@ -135,6 +135,10 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
                 totalSets
             };
         });
+        const totalReps = exercises.reduce((acc: number, exercise: any) => acc + (exercise.totalReps || 0), 0);
+        const totalWeight = exercises.reduce((acc: number, exercise: any) => acc + (exercise.totalWeight || 0), 0);
+        const totalSets = exercises.reduce((acc: number, exercise: any) => acc + (exercise.totalSets || 0), 0);
+
 
         // Update workout
         const updatedWorkout = await prisma.workout.update({
@@ -144,6 +148,9 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
                 muscleGroupId: body.muscleGroupId,
                 description: body.description,
                 date: new Date(body.date),
+                totalReps: totalReps,
+                totalWeight: totalWeight,
+                totalSets: totalSets,
                 exerciseWorkouts: {
                     deleteMany: {}, // Delete existing exercise workouts
                     create: exercises.map((exercise: any) => ({

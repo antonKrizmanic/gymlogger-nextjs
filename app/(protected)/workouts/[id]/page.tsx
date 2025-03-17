@@ -14,7 +14,6 @@ export default async function WorkoutDetailPage(props: { params: Promise<{ id: s
     const params = await props.params;
     const id = await params.id;
     const workout = await getWorkout(id);
-    console.log(workout);
 
     if (!workout) {
         return (
@@ -85,9 +84,9 @@ export default async function WorkoutDetailPage(props: { params: Promise<{ id: s
                     </div>
                 </Card>
 
-                {/* <div className="mt-4">
+                <div className="mt-4">
                     <WorkoutExerciseList exercises={workout.exercises} />
-                </div> */}
+                </div>
             </div>
         </Container>
     );
