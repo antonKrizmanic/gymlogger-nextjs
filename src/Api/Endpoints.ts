@@ -17,11 +17,12 @@ export const Endpoints = {
     },
     Exercise: {
         Base: `/api/exercise`,
+        GetAll: `/api/exercise/getAll`,
         ById: (id: string) => `/api/exercise/${id}`,
     },
     ExerciseWorkout: {
         Base: `/api/exerciseWorkout`,
-        GetLatest: (exerciseId: string, workoutId: string | null) => workoutId ? `/api/exerciseWorkout/GetLatest/${exerciseId}/${workoutId}` : `/api/exerciseWorkout/GetLatest/${exerciseId}`,
+        GetLatest: (exerciseId: string, workoutId: string | null) => workoutId ? `/api/exerciseWorkout/GetLatest/${exerciseId}?workoutId=${workoutId}` : `/api/exerciseWorkout/GetLatest/${exerciseId}`,
     },
     MuscleGroup: {
         Base: `/api/muscleGroup`,

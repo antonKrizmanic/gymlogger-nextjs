@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/src/lib/prisma';
 import { Prisma } from '@prisma/client';
 import { auth } from '@/src/lib/auth';
@@ -65,11 +65,11 @@ interface DashboardDateItem {
   reps: number | null;
 }
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
 
     const session = await auth();
-    console.log("DASHBOARD API ROUTE: ", session);
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     // Check if there are any workouts
     const workoutsCount = await prisma.workout.count();
@@ -311,7 +311,6 @@ export async function GET(req: NextRequest) {
 
     // Serialize the dashboard data to handle BigInt, Decimal, and Date values
     const serializedDashboard = serializeData(dashboard);
-console.log(serializedDashboard);
     return NextResponse.json(serializedDashboard);
   } catch (error) {
     console.error('Error fetching dashboard data:', error);

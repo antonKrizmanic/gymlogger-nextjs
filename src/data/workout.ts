@@ -2,13 +2,19 @@ import { IPagedRequest, IPagedResponse } from "../Types/Common";
 import { prisma } from "@/src/lib/prisma";
 import { IWorkoutSimple, mapWorkoutToIWorkout } from "../Models/Domain/Workout";
 import { SortDirection } from "../Types/Enums";
+import { Prisma } from '@prisma/client';
+import { auth } from "../lib/auth";
+
+export type WorkoutWhereInput = Prisma.WorkoutWhereInput;
 
 export interface IWorkoutRequest extends IPagedRequest {
     muscleGroupId: string;
     workoutDate?: Date;
 }
 
-export const getWorkout = async(id: string) => {
+export const getWorkout = async (id: string) => {
+    const session = await auth();
+    if (!session) return null;
     const workout = await prisma.workout.findUnique({
         where: {
             id,
@@ -22,25 +28,26 @@ export const getWorkout = async(id: string) => {
                 }
             }
         }
-    });    
+    });
 
     return mapWorkoutToIWorkout(workout);
 }
 
-export const getPagedWorkouts = async(pagedRequest:IWorkoutRequest) => {
-
-    const where: any = {};
+export const getPagedWorkouts = async (pagedRequest: IWorkoutRequest) => {
+    const session = await auth();
+    if (!session) return null;
+    const where: WorkoutWhereInput = {};
     if (pagedRequest.muscleGroupId) {
-      where.muscleGroupId = pagedRequest.muscleGroupId;
+        where.muscleGroupId = pagedRequest.muscleGroupId;
     }
 
     if (pagedRequest.workoutDate) {
         const startOfDay = new Date(pagedRequest.workoutDate);
         startOfDay.setHours(0, 0, 0, 0);
-        
+
         const endOfDay = new Date(pagedRequest.workoutDate);
         endOfDay.setHours(23, 59, 59, 999);
-        
+
         where.date = {
             gte: startOfDay,
             lte: endOfDay
@@ -52,11 +59,11 @@ export const getPagedWorkouts = async(pagedRequest:IWorkoutRequest) => {
             { name: { contains: pagedRequest.search, mode: 'insensitive' } },
             { description: { contains: pagedRequest.search, mode: 'insensitive' } }
         ];
-      }
+    }
 
-    
+
     // Dohvat podataka iz baze
-    const totalItems = await prisma.workout.count({ where});
+    const totalItems = await prisma.workout.count({ where });
 
     const workouts = await prisma.workout.findMany({
         where,
@@ -78,15 +85,15 @@ export const getPagedWorkouts = async(pagedRequest:IWorkoutRequest) => {
             }
         },
         orderBy: {
-            date: pagedRequest.sortDirection == SortDirection.Ascending ? 'asc' : 'desc'
+            date: 'desc'
         },
         skip: pagedRequest.page * pagedRequest.pageSize,
         take: pagedRequest.pageSize
     });
 
     // Map and calculate totals
-    const mappedWorkouts = workouts.map(workout => {        
-        const w:IWorkoutSimple = {
+    const mappedWorkouts = workouts.map(workout => {
+        const w: IWorkoutSimple = {
             id: workout.id,
             name: workout.name,
             description: workout.description || '',
@@ -98,7 +105,7 @@ export const getPagedWorkouts = async(pagedRequest:IWorkoutRequest) => {
             totalSets: Number(workout.totalSets),
         }
         return w;
-    });    
+    });
 
     const response: IPagedResponse<IWorkoutSimple> = {
         pagingData: {

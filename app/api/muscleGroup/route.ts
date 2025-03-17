@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { DbMuscleGroup, mapMuscleGroupToIMuscleGroup } from "@/src/Models/Domain/MuscleGroup";
+import { auth } from "@/src/lib/auth";
 
 const prisma = new PrismaClient();
 
-
-
 export async function GET() {
+    const session = await auth();
+      if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     try {        
         const muscleGroup:DbMuscleGroup[] = await prisma.muscleGroup.findMany({
             select: {

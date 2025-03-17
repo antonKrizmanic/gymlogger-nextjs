@@ -3,30 +3,6 @@ import { auth } from "../lib/auth"
 import { prisma } from "../lib/prisma";
 import { IDashboard, IDashboardDateItem } from "../Models/Domain/Dashboard";
 
-// Define dashboard interface
-// interface Dashboard {
-//     lastWorkout: any | null;
-//     favoriteMuscleGroupName: string | null;
-//     workoutsCount: number;
-//     workoutsThisWeek: number;
-//     workoutsThisMonth: number;
-//     workoutsThisYear: number;
-//     seriesThisWeek: number | 0;
-//     seriesThisMonth: number | 0;
-//     seriesThisYear: number | 0;
-//     weightThisWeek: number | null;
-//     weightThisMonth: number | null;
-//     weightThisYear: number | null;
-//     workoutsByDate: DashboardDateItem[];
-//   }
-
-//   interface DashboardDateItem {
-//     date: string;
-//     weight: number | null;
-//     series: number;
-//     reps: number | null;
-//   }
-
 export const getDashboard = async () => {
     const session = await auth();
     if (!session) return null;

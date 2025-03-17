@@ -4,6 +4,10 @@ import { IExercise, IExerciseCreate, IExerciseUpdate } from '../../Models/Domain
 import { IPagedResponse } from '../../Types/Common';
 
 export class ExerciseApiService extends BaseApiService {
+    public async getAllExercises(): Promise<IExercise[]> {
+        return this.get<IExercise[]>(Endpoints.Exercise.GetAll);
+    }
+
     public async getExercises(request: URLSearchParams): Promise<IPagedResponse<IExercise>> {
         return this.get<IPagedResponse<IExercise>>(Endpoints.Exercise.Base, request);
     }

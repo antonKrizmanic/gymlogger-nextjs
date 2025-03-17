@@ -23,13 +23,9 @@ export function ExerciseSelect({ selectedExerciseId, onExerciseSelect, required 
             try {
                 setIsLoading(true);
                 const service = new ExerciseApiService();
-                const response = await service.getExercises({
-                    page: 0,
-                    pageSize: 1000,
-                    sortColumn: 'name',
-                    sortDirection: SortDirection.Ascending
-                });
-                setExercises(response.items || []);
+                const response = await service.getAllExercises();
+                
+                setExercises(response || []);
             } catch (error) {
                 console.error('Failed to fetch exercises:', error);
             } finally {

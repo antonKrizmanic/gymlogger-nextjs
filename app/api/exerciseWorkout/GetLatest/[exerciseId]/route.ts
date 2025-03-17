@@ -1,17 +1,23 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/src/lib/prisma';
 import { IExerciseWorkout } from '@/src/Models/Domain/Workout';
 import { ExerciseLogType } from '@/src/Types/Enums';
 import { Prisma } from '@prisma/client';
+import { auth } from '@/src/lib/auth';
 
 
 export async function GET(
-    request: Request,
-    props: { params: Promise<{ exerciseId: string; workoutId: string }> }
-) {
+    request: NextRequest,
+    props: { params: { exerciseId: string } }
+) {  
     const params = await props.params;
+  
+    const session = await auth();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     try {
-        const { exerciseId, workoutId } = params;
+        const { exerciseId } = params;
+        const workoutId = request.nextUrl.searchParams.get('workoutId');
         
         // Validate exerciseId
         if (!exerciseId) {

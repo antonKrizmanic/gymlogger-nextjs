@@ -1,43 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Prisma, PrismaClient } from "@prisma/client";
-import { mapExerciseToIExercise } from "@/src/Models/Domain/Exercise";
+import { prisma } from "@/src/lib/prisma";
+import { getPagedExercises, IExerciseRequest } from "@/src/data/exercise";
+import { SortDirection } from "@/src/Types/Enums";
+import { auth } from "@/src/lib/auth";
 
-const prisma = new PrismaClient();
-
-export type DbExercise = Prisma.ExerciseGetPayload<{}>;
 
 export async function POST(request: NextRequest) {
-    try {
-        const body = await request.json();
-        
-        const updatedExercise = await prisma.exercise.create({            
-            data: {                
-                name: body.name,
-                muscleGroupId: body.muscleGroupId,
-                description: body.description,
-                exerciseLogType: body.exerciseLogType,
-                createdAt: new Date(),
-                updatedAt: new Date()
-            }
-        });
-        
-        return NextResponse.json({
-            id: updatedExercise.id,
-            name: updatedExercise.name,
-            muscleGroupId: updatedExercise.muscleGroupId,
-            description: updatedExercise.description,
-            exerciseLogType: updatedExercise.exerciseLogType,
-        });
-    } catch (error) {
-        console.error('Error updating exercise:', error);
-        return NextResponse.json(
-            { message: 'Failed to update exercise' },
-            { status: 500 }
-        );
-    }
+  const session = await auth();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const body = await request.json();
+
+    const updatedExercise = await prisma.exercise.create({
+      data: {
+        name: body.name,
+        muscleGroupId: body.muscleGroupId,
+        description: body.description,
+        exerciseLogType: body.exerciseLogType,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    });
+
+    return NextResponse.json({
+      id: updatedExercise.id,
+      name: updatedExercise.name,
+      muscleGroupId: updatedExercise.muscleGroupId,
+      description: updatedExercise.description,
+      exerciseLogType: updatedExercise.exerciseLogType,
+    });
+  } catch (error) {
+    console.error('Error updating exercise:', error);
+    return NextResponse.json(
+      { message: 'Failed to update exercise' },
+      { status: 500 }
+    );
+  }
 }
 
 export async function GET(req: NextRequest) {
+
+  const session = await auth();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   try {
     const { searchParams } = new URL(req.url);
 
@@ -47,42 +52,28 @@ export async function GET(req: NextRequest) {
     const search = searchParams.get("search") || "";
     const muscleGroup = searchParams.get("muscleGroupId") || "";
     const logType = searchParams.get("logType") || "";
-    
-    // Kreiranje where uvjeta na temelju filtera
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const where: any = {};
-    if (search) {
-      where.name = { contains: search, mode: "insensitive" };
+
+    const result = await getPagedExercises({
+      page,
+      pageSize,
+      search,
+      muscleGroupId: muscleGroup,
+      exerciseLogType: logType,
+      sortColumn: "name",
+      sortDirection: SortDirection.Ascending,
+    } as unknown as IExerciseRequest);
+
+    if(result)
+    {
+      return NextResponse.json({
+        items: result.items,
+        pagingData: result.pagingData,
+      });
     }
-    if (muscleGroup) {
-      where.muscleGroupId = muscleGroup;
+    else
+    {
+      return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
-    if (logType && Number(logType) !== 0) {
-      where.exerciseLogType = Number(logType);
-    }
-
-    const exercises: DbExercise[] = await prisma.exercise.findMany({
-      where,
-      skip: (page) * pageSize,
-      take: pageSize,
-      orderBy: { name: "asc" },
-    })
-
-    // Dohvat podataka iz baze
-    const totalItems = await prisma.exercise.count({ where });
-
-    const mappedExercises = exercises.map((exercise:DbExercise) => mapExerciseToIExercise(exercise));
-
-    return NextResponse.json({
-      items: mappedExercises,
-      pagingData: {
-        totalItems,
-        page,
-        pageSize,
-        search,        
-        totalPages: Math.ceil(totalItems / pageSize),        
-      },
-    });
   } catch (error) {
     console.error("Failed to fetch exercises:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

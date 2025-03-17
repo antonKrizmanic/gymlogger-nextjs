@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from "@prisma/client";
 import { v4 as uuidv4 } from 'uuid';
+import { auth } from '@/src/lib/auth';
 
 const prisma = new PrismaClient();
 
+
 export async function GET(request: NextRequest) {
     try {
-        // const session = await getServerSession();
-        // if (!session?.user?.email) {
-        //     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        // }
+        const session = await auth();
+        if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
         const { searchParams } = request.nextUrl;
         const page = Number(searchParams.get('page')) || 0;
@@ -44,10 +44,10 @@ export async function GET(request: NextRequest) {
         if (workoutDate) {
             const startOfDay = new Date(workoutDate);
             startOfDay.setHours(0, 0, 0, 0);
-            
+
             const endOfDay = new Date(workoutDate);
             endOfDay.setHours(23, 59, 59, 999);
-            
+
             where.date = {
                 gte: startOfDay,
                 lte: endOfDay
@@ -130,6 +130,9 @@ export async function GET(request: NextRequest) {
 // Keep existing POST function
 export async function POST(request: Request) {
     try {
+        const session = await auth();
+        if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
         const data = await request.json();
 
         // Calculate total reps, weight, and sets
@@ -192,8 +195,8 @@ export async function POST(request: Request) {
                 createdAt: new Date(),
                 updatedAt: new Date,
                 exerciseWorkouts: {
-                    create: exercises.map((exercise: any) => ({   
-                        id:uuidv4(),                     
+                    create: exercises.map((exercise: any) => ({
+                        id: uuidv4(),
                         exercise: {
                             connect: {
                                 id: exercise.exerciseId
@@ -207,8 +210,8 @@ export async function POST(request: Request) {
                         createdAt: new Date(),
                         updatedAt: new Date(),
                         exerciseSets: {
-                            create: exercise.sets.map((set: any) => ({                                
-                                id:uuidv4(),                                
+                            create: exercise.sets.map((set: any) => ({
+                                id: uuidv4(),
                                 index: set.index,
                                 time: set.time,
                                 weight: set.weight,

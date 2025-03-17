@@ -6,7 +6,6 @@ import { LoginSchema } from "@/src/schemas";
 import { DEFAULT_LOGIN_REDIRECT } from "@/src/routes";
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
-    console.log(values, 'test');
     const validatedFields = LoginSchema.safeParse(values);
 
     if (!validatedFields.success) {

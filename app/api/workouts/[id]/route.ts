@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/src/lib/prisma';
 import { v4 as uuidv4 } from 'uuid';
+import { auth } from '@/src/lib/auth';
 
 export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
+
+    const session = await auth();
+      if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      
     try {
         const { id } = params;
 
@@ -71,7 +76,6 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
                 { status: 404 }
             );
         }
-        console.log('Workout:', workout.exerciseWorkouts.map(ew => ew.exerciseSets));
         // Map from DB schema to our interface
         return NextResponse.json({
             id: workout.id,
@@ -113,6 +117,10 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
 
 export async function PUT(request: NextRequest, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
+
+    const session = await auth();
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     try {
         const { id } = params;
         const body = await request.json();

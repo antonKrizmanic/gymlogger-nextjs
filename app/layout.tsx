@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from 'next-themes'
+import { ThemeProvider } from "@/src/components/theme-provider"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,13 +23,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning >
       <body className={inter.className}>
-        <ThemeProvider attribute="data-theme">
-          <div className="min-h-screen bg-white dark:bg-slate-950">
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
             {children}
-          </div>
-        </ThemeProvider>
+          </ThemeProvider>
       </body>
     </html>
   );
