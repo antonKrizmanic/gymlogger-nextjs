@@ -5,10 +5,9 @@ import { ExerciseLogType } from '@/src/Types/Enums';
 import { Prisma } from '@prisma/client';
 import { auth } from '@/src/lib/auth';
 
-
 export async function GET(
     request: NextRequest,
-    props: { params: { exerciseId: string } }
+    props: { params: Promise<{ exerciseId: string }> }
 ) {  
     const params = await props.params;
   
@@ -42,12 +41,10 @@ export async function GET(
         const exerciseWorkoutQuery = {            
             where: {
                 exerciseId: exerciseId,
-                //userId: session.user.id,
-                // Exclude the current workout
+                belongsToUserId: session.user?.id,                
                 NOT: workoutId && workoutId !== 'null' && workoutId !== 'undefined'
                     ? { workoutId: workoutId }
-                    : undefined,
-                // If we have a workout with a date, only include exercise workouts with earlier dates
+                    : undefined,                
                 ...(workout?.date && {
                     workout: {
                         date: {

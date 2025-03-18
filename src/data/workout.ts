@@ -1,7 +1,6 @@
 import { IPagedRequest, IPagedResponse } from "../Types/Common";
 import { prisma } from "@/src/lib/prisma";
 import { IWorkoutSimple, mapWorkoutToIWorkout } from "../Models/Domain/Workout";
-import { SortDirection } from "../Types/Enums";
 import { Prisma } from '@prisma/client';
 import { auth } from "../lib/auth";
 

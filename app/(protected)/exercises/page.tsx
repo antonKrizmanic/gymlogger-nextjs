@@ -27,11 +27,14 @@ export default async function ExercisesPage(
     exerciseLogType: parseInt(params.get('logType') ?? '0') as unknown as ExerciseLogType ?? ExerciseLogType.Unknown,    
   }
 
-  const { items: exercises, pagingData } = await getPagedExercises(pagedRequest);
+  const response = await getPagedExercises(pagedRequest);
 
-  if (exercises === undefined) {
+  if (response === null) {
     return <div>Loading...</div>;
   }
+
+  const { items: exercises, pagingData } = response;  
+
   return (
     <ExerciseIndex
       exercises={exercises}

@@ -27,7 +27,13 @@ export default async function WorkoutsPage(
     workoutDate: params.get('workoutDate') ? new Date(params.get('workoutDate') || '') : undefined
   }
   
-  const { items: workouts, pagingData } = await getPagedWorkouts(pagedRequest);
+  const response = await getPagedWorkouts(pagedRequest);
+
+  if (response === null) {
+    return <div>Loading...</div>;
+  }
+
+  const { items: workouts, pagingData } = response;
   
 
   if(workouts === undefined) {

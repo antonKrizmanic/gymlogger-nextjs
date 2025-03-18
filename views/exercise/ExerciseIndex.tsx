@@ -31,9 +31,9 @@ export function ExerciseIndex({ exercises, currentPage, pageSize, totalPages }: 
     
     const [isLoading, setIsLoading] = useState(false);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string>(searchParams.get('muscleGroup') || '');
+    const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string>(searchParams?.get('muscleGroup') || '');
     const [selectedLogType, setSelectedLogType] = useState<ExerciseLogType | undefined>(
-        searchParams.get('logType') ? Number(searchParams.get('logType')) as ExerciseLogType : undefined
+        searchParams?.get('logType') ? Number(searchParams.get('logType')) as ExerciseLogType : undefined
     );
 
     const [searchTerm, setSearchTerm] = useState('');

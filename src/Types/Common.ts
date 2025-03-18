@@ -16,7 +16,7 @@ export interface IPagingDataResponseDto {
 
 export interface IPagedResponse<T> {
     pagingData: IPagingDataResponseDto;
-    items?: T[];
+    items: T[];
 }
 
 export type IPagedRequest = {

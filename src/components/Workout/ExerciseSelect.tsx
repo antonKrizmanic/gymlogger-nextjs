@@ -3,7 +3,6 @@ import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions, Transition } 
 import { IExercise } from '@/src/Models/Domain/Exercise';
 import { ExerciseApiService } from '@/src/Api/Services/ExerciseApiService';
 import { cn } from '@/src/lib/utils';
-import { SortDirection } from '@/src/Types/Enums';
 import { useDebounce } from '@/src/hooks/useDebounce';
 
 interface ExerciseSelectProps {
