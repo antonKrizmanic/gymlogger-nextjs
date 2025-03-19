@@ -1,4 +1,4 @@
-import { IWorkout } from './Workout';
+import { IWorkoutSimple } from './Workout';
 
 export interface IDashboardDateItem {
     date: string;
@@ -8,7 +8,7 @@ export interface IDashboardDateItem {
 }
 
 export interface IDashboard {
-    lastWorkout?: IWorkout;
+    lastWorkout?: IWorkoutSimple;
     favoriteMuscleGroupName?: string;
     workoutsCount: number;
     workoutsThisWeek: number;

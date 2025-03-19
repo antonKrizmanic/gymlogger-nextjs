@@ -1,9 +1,14 @@
 import { ExerciseLogType, SortDirection } from './Enums';
 
+export type QueryParams = {
+    [key: string]: string | number | Date | ExerciseLogType | boolean | null | undefined;
+};
+
 export interface IPagingDataResponseDto {
     totalItems: number;
     page: number;
     pageSize: number;
+    totalPages: number;
     search?: string;
     sortColumn?: string;
     sortDirection: SortDirection;
@@ -11,7 +16,7 @@ export interface IPagingDataResponseDto {
 
 export interface IPagedResponse<T> {
     pagingData: IPagingDataResponseDto;
-    items?: T[];
+    items: T[];
 }
 
 export type IPagedRequest = {
@@ -22,9 +27,3 @@ export type IPagedRequest = {
     sortColumn: string;
     sortDirection: SortDirection;
 }
-
-export interface IApiErrorResponse {
-    message: string;
-    code?: string | number;
-    details?: unknown;
-} 
