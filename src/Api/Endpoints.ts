@@ -1,4 +1,4 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+export const API_BASE_URL = process.env.GYM_API_BASE_URL;
 export const Endpoints = {
     Auth: {
         Register: `/register`,
@@ -13,23 +13,24 @@ export const Endpoints = {
         TwoFactor: '/manage/2fa'
     },
     Dashboard: {
-        Base: `/dashboard`,
+        Base: `/api/dashboard`,
     },
     Exercise: {
-        Base: `/exercise`,
-        ById: (id: string) => `/exercise/${id}`,
+        Base: `/api/exercise`,
+        GetAll: `/api/exercise/getAll`,
+        ById: (id: string) => `/api/exercise/${id}`,
     },
     ExerciseWorkout: {
-        Base: `/exerciseWorkout`,
-        GetLatest: (exerciseId: string, workoutId: string | null) => workoutId ? `/exerciseWorkout/GetLatest/${exerciseId}/${workoutId}` : `/exerciseWorkout/GetLatest/${exerciseId}`,
+        Base: `/api/exerciseWorkout`,
+        GetLatest: (exerciseId: string, workoutId: string | null) => workoutId ? `/api/exerciseWorkout/GetLatest/${exerciseId}?workoutId=${workoutId}` : `/api/exerciseWorkout/GetLatest/${exerciseId}`,
     },
     MuscleGroup: {
-        Base: `/muscleGroup`,
-        ById: (id: string) => `/muscleGroup/${id}`,
+        Base: `/api/muscleGroup`,
+        ById: (id: string) => `/api/muscleGroup/${id}`,
     },
     Workout: {
-        Base: `/workout`,
-        ById: (id: string) => `/workout/${id}`,
-        GetForEdit: (id: string) => `/workout/GetForEdit/${id}`,
+        Base: `/api/workouts`,
+        ById: (id: string) => `/api/workouts/${id}`,
+        GetForEdit: (id: string) => `/api/workouts/GetForEdit/${id}`,
     },
 } as const; 

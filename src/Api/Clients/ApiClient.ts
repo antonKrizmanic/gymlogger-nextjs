@@ -1,65 +1,73 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { AuthService } from '../Services/AuthService';
+type RequestConfig = {
+    method?: string;
+    headers?: Record<string, string>;
+    body?: any;
+};
 
 export class ApiClient {
-    private static instance: AxiosInstance;
+    private static instance: ApiClient;
+    private baseUrl: string;
 
-    private static createInstance(): AxiosInstance {
-        const instance = axios.create({
-            baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
-            timeout: 10000,
-            headers: {
-                'Content-Type': 'application/json',                
-            },            
-        });
-
-        instance.interceptors.request.use((config) => {
-            if (typeof window !== 'undefined') {
-                const token = localStorage.getItem('accessToken');
-                if (token) {
-                    config.headers['Authorization'] = `Bearer ${token}`;
-                }
-            }
-            return config;
-        });
-
-        return instance;
+    private constructor() {
+        this.baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '';
     }
 
-    public static getInstance(): AxiosInstance {
+    public static getInstance(): ApiClient {
         if (!ApiClient.instance) {
-            ApiClient.instance = ApiClient.createInstance();
-            ApiClient.setupInterceptors();
+            ApiClient.instance = new ApiClient();
         }
         return ApiClient.instance;
     }
 
-    private static setupInterceptors(): void {
-        ApiClient.instance.interceptors.response.use(
-            (response: AxiosResponse) => {
-                return response;
-            },
-            async (error) => {
-                const originalRequest = error.config;
+    private async fetchWithAuth(endpoint: string, config: RequestConfig = {}): Promise<Response> {
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+            ...config.headers
+        };        
 
-                if (error.response?.status === 401 && !originalRequest._retry) {
-                    originalRequest._retry = true;
+        const response = await fetch(`${this.baseUrl}${endpoint}`, {
+            credentials: "include",
+            ...config,
+            headers,
+            body: config.body ? JSON.stringify(config.body) : undefined
+        });
+        
+        return response;
+    }
 
-                    const authService = new AuthService();
-                    const newAccessToken = await authService.refresh();
-                    
-                    if (newAccessToken) {
-                        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-                        return ApiClient.instance(originalRequest); 
-                    } else {
-                        window.location.href = "/login"; 
-                        return Promise.reject(error);
-                    }
-                }
-                return Promise.reject(error);
-            }
-        );
+    async get<T>(endpoint: string, config: RequestConfig = {}): Promise<T> {
+        const response = await this.fetchWithAuth(endpoint, {
+            ...config,
+            method: 'GET'
+        });
+        return response.json();
+    }
+
+    async post<T>(endpoint: string, data: any, config: RequestConfig = {}): Promise<T> {
+        const response = await this.fetchWithAuth(endpoint, {
+            ...config,
+            method: 'POST',
+            body: data
+        });
+        return response.json();
+    }
+
+    async put<T>(endpoint: string, data: any, config: RequestConfig = {}): Promise<T> {
+        const response = await this.fetchWithAuth(endpoint, {
+            ...config,
+            method: 'PUT',
+            body: data
+        });
+        return response.json();
+    }
+
+    async delete<T>(endpoint: string, config: RequestConfig = {}): Promise<T> {
+        const response = await this.fetchWithAuth(endpoint, {
+            ...config,
+            method: 'DELETE'
+        });
+        return response.json();
     }
 }
 
-export const apiClient = ApiClient.getInstance(); 
+export const apiClient = ApiClient.getInstance();
