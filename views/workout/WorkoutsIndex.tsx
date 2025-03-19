@@ -1,6 +1,6 @@
 'use client';
 
-import { ActionButton } from "@/src/components/Common/ActionButton";
+import { Button } from "@/src/components/ui/button";
 import { Card } from "@/src/components/Common/Card";
 import { Container } from "@/src/components/Common/Container";
 import { Grid } from "@/src/components/Common/Grid";
@@ -15,6 +15,7 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useDebounce } from "@/src/hooks/useDebounce";
+import Link from "next/link";
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -106,15 +107,17 @@ export function WorkoutsIndex({ workouts, currentPage, pageSize, totalPages }: W
             {/* Top controls */}
             <div className="mb-8 space-y-4">
                 <div className="flex justify-between items-center">
-                    <div className="flex gap-2">
-                        <ActionButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
+                    <div className="flex gap-2">                        
+                        <Button asChild>
+                            <Link href='/workouts/create'>
+                                <PlusIcon />
+                                New
+                            </Link>
+                        </Button>
+                        <Button onClick={() => setIsFilterOpen(!isFilterOpen)}>
                             <FilterIcon />
                             Filter
-                        </ActionButton>
-                        <ActionButton href={'/workouts/create'}>
-                            <PlusIcon />
-                            New
-                        </ActionButton>
+                        </Button>
                     </div>
                 </div>
 

@@ -26,7 +26,7 @@ export function mapExerciseToIExercise(exercise: any): IExercise {
         id: exercise.id,
         name: exercise.name,
         muscleGroupId: exercise.muscleGroupId,
-        muscleGroupName: exercise.muscleGroups?.name,
+        muscleGroupName: exercise.muscleGroup?.name,
         description: exercise.description,
         exerciseLogType: exercise.exerciseLogType,
         isPublic: exercise.belongsToUserId === null,

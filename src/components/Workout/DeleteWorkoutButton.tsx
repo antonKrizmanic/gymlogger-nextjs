@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { WorkoutApiService } from '@/src/Api/Services/WorkoutApiService';
 import { IWorkout } from '@/src/Models/Domain/Workout';
-import { ActionButton } from '@/src/components/Common/ActionButton';
 import { ConfirmationModal } from '@/src/components/Common/ConfirmationModal';
 import { TrashIcon } from '@/src/components/Icons';
+import { Button } from '../ui/button';
 
 interface DeleteWorkoutButtonProps {
     workout: IWorkout;
@@ -37,9 +37,9 @@ export default function DeleteWorkoutButton({ workout }: DeleteWorkoutButtonProp
 
     return (
         <>
-            <ActionButton onClick={handleDelete}>
+            <Button onClick={handleDelete}>
                 <TrashIcon /> Delete
-            </ActionButton>
+            </Button>
             <ConfirmationModal
                 isOpen={isDeleteModalOpen}
                 title="Delete Workout"

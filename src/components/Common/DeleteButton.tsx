@@ -1,10 +1,9 @@
 'use client';
-
+import { Button } from "@/src/components/ui/button"
 import { ConfirmationModal } from "@/src/components/Common/ConfirmationModal";
 import { ErrorSnackbar, SuccessSnackbar } from "@/src/components/Common/Snackbar";
 import { TrashIcon } from "@/src/components/Icons";
 import { useState } from "react";
-import { cn } from "@/src/lib/utils";
 
 interface DeleteButtonProps {
     entityName: string;
@@ -44,23 +43,14 @@ export function DeleteButton({ entityName, entityType, onDelete, deleteAction }:
 
     return (
         <>
-            <div className={cn(
-            'border border-gray-300 dark:border-gray-700 p-1 w-full flex justify-center items-center',
-            'hover:bg-gray-100 dark:hover:bg-slate-700',
-            'cursor-pointer',
-            'transition-colors'
-        )}>
-            <button
-                onClick={handleDelete}
-                className={cn(
-                    'action-button p-1.5 rounded-md',
-                    'text-gray-500 dark:text-gray-400',                    
-                    'cursor-pointer'
-                )}
+            
+            <Button
+                onClick={handleDelete}                 
+                className="rounded-1 w-full"
             >
                 <TrashIcon />
-            </button>
-        </div>
+            </Button>
+        
 
             <ConfirmationModal
                 isOpen={isDeleteModalOpen}

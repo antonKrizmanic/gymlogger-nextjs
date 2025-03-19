@@ -4,12 +4,19 @@ import { IExercise } from '@/src/Models/Domain/Exercise';
 import { DetailButton } from '../Common/DetailButton';
 import { EditButton } from '../Common/EditButton';
 import { DeleteButton } from '../Common/DeleteButton';
-import { Card } from '../Common/Card';
+import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+    CardContent,
+    CardFooter,
+} from '../ui/card';
 import { ExerciseApiService } from '@/src/Api/Services/ExerciseApiService';
 
 interface ExerciseCardProps {
-    exercise: IExercise;    
-    onDelete: () => void;    
+    exercise: IExercise;
+    onDelete: () => void;
 }
 
 export function ExerciseCard({ exercise, onDelete }: ExerciseCardProps) {
@@ -20,33 +27,29 @@ export function ExerciseCard({ exercise, onDelete }: ExerciseCardProps) {
     }
 
     return (
-        <>
-            <Card>
-                <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white truncate">
-                        {exercise.name}
-                    </h3>
-                </div>
+        <Card>
+            <CardHeader>
+                <CardTitle>{exercise.name}</CardTitle>
+                <CardDescription>{exercise.muscleGroupName}</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <span className="text-sm text-gray-500 dark:text-gray-400">
+                    {exercise.description}
+                </span>
+            </CardContent>
+
+            <CardFooter className="flex justify-between gap-2">
+                <div className="w-1/3"><DetailButton href={`/exercises/${exercise.id}`} /></div>
+                <div className="w-1/3"><EditButton href={`/exercises/${exercise.id}/edit`} /></div>
+                <div className="w-1/3"><DeleteButton
+                    entityName={exercise.name}
+                    entityType="exercise"
+                    deleteAction={deleteAction}
+                    onDelete={onDelete} /></div>
                 
-                <div className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-                    {exercise.description || 'No description available'}
-                </div>
                 
-                <div className="mt-auto pt-2 flex justify-between items-center">
-                    <span className="text-sm text-gray-500 dark:text-gray-400 truncate">
-                        {exercise.muscleGroupName}
-                    </span>                    
-                </div>
-                <div className="mt-auto flex justify-between items-center px-0">                                        
-                    <DetailButton href={`/exercises/${exercise.id}`}/>                    
-                    <EditButton href={`/exercises/${exercise.id}/edit`}/>
-                    <DeleteButton
-                        entityName={exercise.name}  
-                        entityType="exercise"
-                        deleteAction={deleteAction}
-                        onDelete={onDelete}/>
-                </div>
-            </Card>            
-        </>
+                
+            </CardFooter>
+        </Card>
     );
 }

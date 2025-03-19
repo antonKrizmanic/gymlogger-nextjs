@@ -2,12 +2,12 @@
 
 import { ExerciseApiService } from "@/src/Api/Services/ExerciseApiService";
 import { IExercise } from "@/src/Models/Domain/Exercise";
-import { ActionButton } from "@/src/components/Common/ActionButton";
 import { ConfirmationModal } from "@/src/components/Common/ConfirmationModal";
 import { ErrorSnackbar, SuccessSnackbar } from "@/src/components/Common/Snackbar";
 import { TrashIcon } from "@/src/components/Icons";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Button } from "../ui/button";
 
 interface DeleteExerciseButtonProps {
     exercise: IExercise;
@@ -50,9 +50,9 @@ export default function DeleteExerciseButton({ exercise, onDelete }: DeleteExerc
 
     return (
         <>
-            <ActionButton onClick={handleDelete}>
+            <Button onClick={handleDelete}>
                 <TrashIcon /> Delete
-            </ActionButton>
+            </Button>
 
             <ConfirmationModal
                 isOpen={isDeleteModalOpen}

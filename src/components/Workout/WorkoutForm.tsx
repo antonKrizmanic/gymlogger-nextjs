@@ -2,9 +2,11 @@
 import { IWorkoutCreate } from "@/src/Models/Domain/Workout";
 import { useState } from "react";
 import { ExerciseList } from "./ExerciseList";
-import { ActionButton } from "../Common/ActionButton";
 import { DateInput, TextInput } from "../Form/TextInput";
 import { SaveIcon } from "../Icons";
+import { Button } from "../ui/button";
+import Link from "next/link";
+import { Loader2 } from "lucide-react";
 
 interface WorkoutFormProps {
     workoutId: string | null;
@@ -47,8 +49,20 @@ export function WorkoutForm({ workoutId, title, workout, isLoading, onSubmit, ca
 
                 {/* Submit and Cancel buttons */}
                 <div className="flex md:flex-row flex-col justify-end gap-4">
-                    <ActionButton className="justify-center" href={cancelHref}>Cancel</ActionButton>
-                    <ActionButton className="justify-center" type="submit" isLoading={isLoading} loadingText="Saving..." > <SaveIcon /> Save</ActionButton>
+                    <Button>
+                        <Link className="justify-center" href={cancelHref}>Cancel</Link>
+                    </Button>
+                    {isLoading &&
+                        <Button className="justify-center" type="submit" disabled>                        
+                            <Loader2 className="animate-spin" size={16} />
+                             Saving... 
+                        </Button>
+                    }
+                    {!isLoading &&
+                        <Button className="justify-center" type="submit" >
+                            <SaveIcon /> Save
+                        </Button>
+                    }                    
                 </div>
             </form>
         </>

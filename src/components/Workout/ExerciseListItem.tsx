@@ -13,6 +13,7 @@ import { ExerciseApiService } from "@/src/Api/Services/ExerciseApiService";
 import { PlusIcon } from "../Icons";
 import { ActionButton } from "../Common/ActionButton";
 import { CloseIcon } from "../Icons/CloseIcon";
+import { Button } from "../ui/button";
 
 interface ExerciseListItemProps {
     exercise: IExerciseWorkoutCreate;
@@ -203,10 +204,10 @@ export function ExerciseListItem({ exercise, index, workoutId, onExerciseChange,
                             />
                         ))}
                     </div>
-                    <ActionButton onClick={handleAddSet}>
+                    <Button onClick={handleAddSet}>
                         <PlusIcon />
                         Add Set
-                    </ActionButton>
+                    </Button>
                 </div>
             )}
         </div>

@@ -1,11 +1,12 @@
 import { Container } from '@/src/components/Common/Container';
-import { ActionButton } from '@/src/components/Common/ActionButton';
 import { LeftArrowIcon, PencilIcon } from '@/src/components/Icons';
 
 import { Card } from '@/src/components/Common/Card';
 import { WorkoutExerciseList } from '@/src/components/Workout/WorkoutExerciseList';
 import DeleteWorkoutButton from '@/src/components/Workout/DeleteWorkoutButton';
 import { getWorkout } from '@/src/data/workout';
+import Link from 'next/link';
+import { Button } from '@/src/components/ui/button';
 
 
 
@@ -32,14 +33,18 @@ export default async function WorkoutDetailPage(props: { params: Promise<{ id: s
                 {/* Action buttons */}
                 <div className="flex items-center gap-2">
                     {/* Back button */}
-                    <ActionButton href="/workouts">
-                        <LeftArrowIcon />
-                        Back
-                    </ActionButton>                        
-                    <ActionButton href={`/workouts/${workout.id}/edit`}>
-                        <PencilIcon /> Edit
-                    </ActionButton>
-                    
+                    <Button asChild>
+                        <Link href="/workouts">
+                            <LeftArrowIcon />
+                            Back
+                        </Link>
+                    </Button>
+                    <Button asChild>
+                        <Link href={`/workouts/${workout.id}/edit`}>
+                            <PencilIcon /> Edit
+                        </Link>
+                    </Button>
+
                     <DeleteWorkoutButton workout={workout} />
                 </div>
                 <Card>
