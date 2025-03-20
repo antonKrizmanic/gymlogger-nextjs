@@ -1,81 +1,150 @@
-'use client';
-import { IExerciseCreate } from "@/src/Models/Domain/Exercise";
-import { useState } from "react";
-import { MuscleGroupSelect } from "../Common/MuscleGroupSelect";
-import { LogTypeSelect } from "../Common/LogTypeSelect";
-import { ActionButton } from "../Common/ActionButton";
-import { TextInput } from "../Form/TextInput";
-import { TextareaInput } from "../Form/TextareaInput";
-import { SaveIcon } from "../Icons";
-import { Button } from "../ui/button";
-import Link from "next/link";
-import { Loader2 } from "lucide-react";
+"use client"
+
+import type { IExerciseCreate } from "@/src/Models/Domain/Exercise"
+import { ExerciseLogType } from "@/src/Types/Enums"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import * as z from "zod"
+import { MuscleGroupSelect } from "../Common/MuscleGroupSelect"
+import { LogTypeSelect } from "../Common/LogTypeSelect"
+import { SaveIcon } from "../Icons"
+import { Button } from "../ui/button"
+import Link from "next/link"
+import { Loader2 } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/components/ui/form"
+import { Input } from "@/src/components/ui/input"
+import { Textarea } from "@/src/components/ui/textarea"
+import { ExerciseSchema } from "@/schemas"
 
 interface ExerciseFormProps {
-    title: string;
-    exercise: IExerciseCreate;
-    isLoading: boolean;
-    onSubmit: (exercise: IExerciseCreate) => void;
-    cancelHref: string;
+  title: string
+  exercise: IExerciseCreate
+  isLoading: boolean
+  onSubmit: (exercise: IExerciseCreate) => void
+  cancelHref: string
 }
 
 export function ExerciseForm({ title, exercise, isLoading, onSubmit, cancelHref }: ExerciseFormProps) {
-    const [formData, setFormData] = useState<IExerciseCreate>(exercise);
+  // Initialize the form with react-hook-form and zod validation
+  const form = useForm<z.infer<typeof ExerciseSchema>>({
+    resolver: zodResolver(ExerciseSchema),
+    defaultValues: {
+      name: exercise.name,
+      muscleGroupId: exercise.muscleGroupId,
+      exerciseLogType: exercise.exerciseLogType === ExerciseLogType.Unknown 
+        ? undefined 
+        : exercise.exerciseLogType,
+      description: exercise.description || "",
+    },
+  })
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        onSubmit(formData);
-    }
+  // Handle form submission
+  const handleSubmit = (values: z.infer<typeof ExerciseSchema>) => {
+    onSubmit({
+      ...exercise,
+      ...values,
+    })
+  }
 
-    return (
-        <>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">{title}</h1>
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+            {/* Name field */}
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name *</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Name field */}
-                <TextInput label="Name *" id="name" value={formData.name} onChange={(value) => setFormData({ ...formData, name: value })} />
-
-                {/* Muscle Group field */}
-                <div>
+            {/* Muscle Group field */}
+            <FormField
+              control={form.control}
+              name="muscleGroupId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
                     <MuscleGroupSelect
-                        selectedMuscleGroup={formData.muscleGroupId}
-                        onMuscleGroupChange={(e) => setFormData({ ...formData, muscleGroupId: e })}
-                        showAllOption={false}
-                        showMessageOption={true}
+                      selectedMuscleGroup={field.value}
+                      onMuscleGroupChange={field.onChange}
+                      showAllOption={false}
+                      showMessageOption={true}
                     />
-                </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                {/* Exercise Log Type field */}
-                <div>
+            {/* Exercise Log Type field */}
+            <FormField
+              control={form.control}
+              name="exerciseLogType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
                     <LogTypeSelect
-                        selectedLogType={formData.exerciseLogType}
-                        onLogTypeChange={(logType) => setFormData({ ...formData, exerciseLogType: logType })}
-                        required
-                        showAllOption={false}
+                      selectedLogType={field.value}
+                      onLogTypeChange={field.onChange}
+                      required
+                      showAllOption={false}
                     />
-                </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                {/* Description field */}
-                <TextareaInput label="Description" id="description" value={formData.description} onChange={(value) => setFormData({ ...formData, description: value })} />
+            {/* Description field */}
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-                {/* Form buttons */}
-                <div className="flex md:flex-row flex-col justify-end gap-4">
-                    <Button>
-                        <Link className="justify-center" href={cancelHref}>Cancel</Link>
-                    </Button>
-                    {isLoading &&
-                        <Button className="justify-center" type="submit" disabled>
-                            <Loader2 className="animate-spin" size={16} />
-                            Saving...
-                        </Button>
-                    }
-                    {!isLoading &&
-                        <Button className="justify-center" type="submit" >
-                            <SaveIcon /> Save
-                        </Button>
-                    }
-                </div>
-            </form>
-        </>
-    );
+            {/* Form buttons */}
+            <div className="flex md:flex-row flex-col justify-end gap-4">
+              <Button variant="outline" type="button">
+                <Link href={cancelHref}>Cancel</Link>
+              </Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <SaveIcon className="mr-2" /> Save
+                  </>
+                )}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
+  )
 }
+

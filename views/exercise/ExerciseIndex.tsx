@@ -80,8 +80,8 @@ export function ExerciseIndex({ exercises, currentPage, pageSize, totalPages }: 
         updateUrl(newPage, searchTerm, pageSize, selectedMuscleGroup, newValue);
     };
 
-    const handlePageSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const newSize = Number(event.target.value);
+    const handlePageSizeChange = (newValue: string) => {
+        const newSize = Number(newValue);
         const newPage = 0;
         updateUrl(newPage, searchTerm, newSize, selectedMuscleGroup, selectedLogType);
     };

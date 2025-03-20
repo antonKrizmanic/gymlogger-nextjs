@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from "@/src/components/ui/button";
-import { Card } from "@/src/components/Common/Card";
+
 import { Container } from "@/src/components/Common/Container";
 import { Grid } from "@/src/components/Common/Grid";
 import { MuscleGroupSelect } from "@/src/components/Common/MuscleGroupSelect";
@@ -9,13 +9,14 @@ import { Pagination } from "@/src/components/Common/Pagination";
 import { SearchBar } from "@/src/components/Common/SearchBar";
 import { FilterIcon, PlusIcon } from "@/src/components/Icons";
 import { WorkoutCard } from "@/src/components/Workout/WorkoutCard";
-import { DateInput } from "@/src/components/Form/TextInput";
 import { IWorkoutSimple } from "@/src/Models/Domain/Workout";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useDebounce } from "@/src/hooks/useDebounce";
 import Link from "next/link";
+import { Card, CardContent } from "@/src/components/ui/card";
+import { DatePicker } from "@/src/components/Form/date-picket";
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -23,38 +24,46 @@ interface WorkoutsIndexProps {
     workouts: IWorkoutSimple[];
     currentPage: number;
     pageSize: number;
-    totalPages: number;    
+    totalPages: number;
+}
+
+function isValidDate(date: any) {
+    return date instanceof Date && !isNaN(date.getTime());
 }
 
 export function WorkoutsIndex({ workouts, currentPage, pageSize, totalPages }: WorkoutsIndexProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
-    
+
     const [isLoading, setIsLoading] = useState(false);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string>(searchParams?.get('muscleGroup') || '');
-    const [workoutDate, setWorkoutDate] = useState<string | undefined>(searchParams?.get('date') || undefined);
+    const [workoutDate, setWorkoutDate] = useState<Date | undefined | null>(new Date(searchParams?.get('workoutDate') || ''));
     const [searchTerm, setSearchTerm] = useState(searchParams?.get('search') || '');
     const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
     useEffect(() => {
         setIsLoading(false);
-    },[workouts]);    
+    }, [workouts]);
 
     const updateUrl = useCallback((
         page: number,
         search: string,
         size: number,
         muscleGroup?: string,
-        date?: string
-    ) => {  
-        setIsLoading(true);      
+        date?: Date | null
+    ) => {
+        setIsLoading(true);
         const params = new URLSearchParams();
         if (page > 0) params.set('page', page.toString());
         if (search) params.set('search', search);
         if (size !== DEFAULT_PAGE_SIZE) params.set('size', size.toString());
         if (muscleGroup) params.set('muscleGroupId', muscleGroup);
-        if (date) params.set('workoutDate', date);
+        if (date && isValidDate(date)) {
+            const fixedDate = new Date(date);
+            fixedDate.setDate(fixedDate.getDate() + 1);
+            params.set('workoutDate', fixedDate.toISOString().split('T')[0]);
+        }
         const query = params.toString();
         router.push(`/workouts${query ? `?${query}` : ''}`);
     }, [router]);
@@ -67,7 +76,7 @@ export function WorkoutsIndex({ workouts, currentPage, pageSize, totalPages }: W
         }
     }, [debouncedSearchTerm, searchParams, pageSize, selectedMuscleGroup, workoutDate, updateUrl]);
 
-    const handleSearch = (value: string) => {        
+    const handleSearch = (value: string) => {
         setSearchTerm(value);
     };
 
@@ -77,14 +86,14 @@ export function WorkoutsIndex({ workouts, currentPage, pageSize, totalPages }: W
         updateUrl(newPage, searchTerm, pageSize, muscleGroupId, workoutDate);
     };
 
-    const handleDateChange = (date: string | undefined) => {
+    const handleDateChange = (date?: Date | null) => {
         setWorkoutDate(date);
         const newPage = 0;
         updateUrl(newPage, searchTerm, pageSize, selectedMuscleGroup, date);
     };
 
-    const handlePageSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const newSize = Number(event.target.value);
+    const handlePageSizeChange = (newValue: string) => {
+        const newSize = Number(newValue);
         const newPage = 0;
         updateUrl(newPage, searchTerm, newSize, selectedMuscleGroup, workoutDate);
     };
@@ -97,7 +106,7 @@ export function WorkoutsIndex({ workouts, currentPage, pageSize, totalPages }: W
     const handleWorkoutDelete = useCallback(() => {
         // Refresh the current page
         updateUrl(currentPage, searchTerm, pageSize, selectedMuscleGroup, workoutDate);
-    }, [currentPage, searchTerm, pageSize, selectedMuscleGroup, workoutDate, updateUrl]);    
+    }, [currentPage, searchTerm, pageSize, selectedMuscleGroup, workoutDate, updateUrl]);
 
     return (
         <Container>
@@ -107,7 +116,7 @@ export function WorkoutsIndex({ workouts, currentPage, pageSize, totalPages }: W
             {/* Top controls */}
             <div className="mb-8 space-y-4">
                 <div className="flex justify-between items-center">
-                    <div className="flex gap-2">                        
+                    <div className="flex gap-2">
                         <Button asChild>
                             <Link href='/workouts/create'>
                                 <PlusIcon />
@@ -124,18 +133,23 @@ export function WorkoutsIndex({ workouts, currentPage, pageSize, totalPages }: W
                 {/* Filter card */}
                 {isFilterOpen && (
                     <Card>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <MuscleGroupSelect
-                                selectedMuscleGroup={selectedMuscleGroup}
-                                onMuscleGroupChange={handleMuscleGroupChange}
-                            />
-                            <DateInput
-                                label="Workout Date"
-                                id="workoutDate"
-                                value={workoutDate || ''}
-                                onChange={handleDateChange}
-                            />
-                        </div>
+                        <CardContent className="flex flex-row justify-between items-center p-4 gap-4">
+                            <div className="w-1/2">
+                                <MuscleGroupSelect
+                                    selectedMuscleGroup={selectedMuscleGroup}
+                                    onMuscleGroupChange={handleMuscleGroupChange}
+                                />
+                            </div>
+                            <div className="w-1/2">
+                                <DatePicker
+                                    label="Workout Date"
+                                    value={workoutDate || undefined}
+                                    onChange={handleDateChange}
+                                    maxDate={new Date()}
+                                    clearable
+                                />
+                            </div>
+                        </CardContent>
                     </Card>
                 )}
 
@@ -166,7 +180,7 @@ export function WorkoutsIndex({ workouts, currentPage, pageSize, totalPages }: W
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
                 pageSize={pageSize}
-                onPageSizeChange={handlePageSizeChange}                
+                onPageSizeChange={handlePageSizeChange}
             />
         </Container>
     );

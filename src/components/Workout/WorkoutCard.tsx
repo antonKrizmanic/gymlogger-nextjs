@@ -28,7 +28,7 @@ export function WorkoutCard({ workout, onDelete }: WorkoutCardProps) {
         <Card>
             <CardHeader>
                 <CardTitle>{workout.name}</CardTitle>
-                <CardDescription>{new Date(workout.date).toLocaleDateString()}</CardDescription>
+                <CardDescription>{new Date(workout.date).toISOString().split('T')[0]}</CardDescription>
             </CardHeader>
             <CardContent>
                 {workout.description || ''}

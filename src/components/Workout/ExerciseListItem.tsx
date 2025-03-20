@@ -11,7 +11,6 @@ import { TextInput } from "../Form/TextInput";
 import { IExercise } from "@/src/Models/Domain/Exercise";
 import { ExerciseApiService } from "@/src/Api/Services/ExerciseApiService";
 import { PlusIcon } from "../Icons";
-import { ActionButton } from "../Common/ActionButton";
 import { CloseIcon } from "../Icons/CloseIcon";
 import { Button } from "../ui/button";
 
@@ -204,7 +203,7 @@ export function ExerciseListItem({ exercise, index, workoutId, onExerciseChange,
                             />
                         ))}
                     </div>
-                    <Button onClick={handleAddSet}>
+                    <Button type="button" onClick={handleAddSet}>
                         <PlusIcon />
                         Add Set
                     </Button>

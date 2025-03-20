@@ -7,6 +7,7 @@ import { SaveIcon } from "../Icons";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 interface WorkoutFormProps {
     workoutId: string | null;
@@ -27,44 +28,48 @@ export function WorkoutForm({ workoutId, title, workout, isLoading, onSubmit, ca
     };
 
     return (
-        <>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">{title}</h1>
+        <Card>
+            <CardHeader>
+                <CardTitle>{title}</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Name field */}
+                    <TextInput label="Name" id="name" value={formData.name} onChange={(value) => setFormData({ ...formData, name: value })} />
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Name field */}
-                <TextInput label="Name" id="name" value={formData.name} onChange={(value) => setFormData({ ...formData, name: value })} />
+                    {/* Date field */}
+                    <DateInput label="Date" id="date" value={formData.date ? new Date(formData.date).toISOString().split('T')[0] : ''} onChange={(value) => setFormData({ ...formData, date: new Date(value) })} />
 
-                {/* Date field */}
-                <DateInput label="Date" id="date" value={formData.date ? new Date(formData.date).toISOString().split('T')[0] : ''} onChange={(value) => setFormData({ ...formData, date: new Date(value) })} />
+                    {/* Description field */}
+                    <TextInput label="Description" id="description" value={formData.description || ''} onChange={(value) => setFormData({ ...formData, description: value })} />
 
-                {/* Description field */}
-                <TextInput label="Description" id="description" value={formData.description || ''} onChange={(value) => setFormData({ ...formData, description: value })} />
+                    {/* Exercise list */}
+                    <ExerciseList
+                        workoutId={workoutId}
+                        exercises={formData.exercises || []}
+                        onExercisesChange={(exercises) => setFormData({ ...formData, exercises })}
+                    />
 
-                {/* Exercise list */}
-                <ExerciseList
-                    workoutId={workoutId}
-                    exercises={formData.exercises || []}
-                    onExercisesChange={(exercises) => setFormData({ ...formData, exercises })}
-                />
-
-                {/* Submit and Cancel buttons */}
-                <div className="flex md:flex-row flex-col justify-end gap-4">
-                    <Button>
-                        <Link className="justify-center" href={cancelHref}>Cancel</Link>
-                    </Button>
-                    {isLoading &&
-                        <Button className="justify-center" type="submit" disabled>                        
-                            <Loader2 className="animate-spin" size={16} />
-                             Saving... 
+                    {/* Submit and Cancel buttons */}
+                    <div className="flex md:flex-row flex-col justify-end gap-4">
+                        <Button variant="outline">
+                            <Link className="justify-center" href={cancelHref}>Cancel</Link>
                         </Button>
-                    }
-                    {!isLoading &&
-                        <Button className="justify-center" type="submit" >
-                            <SaveIcon /> Save
-                        </Button>
-                    }                    
-                </div>
-            </form>
-        </>
+                        {isLoading &&
+                            <Button className="justify-center" type="submit" disabled>
+                                <Loader2 className="animate-spin" size={16} />
+                                Saving...
+                            </Button>
+                        }
+                        {!isLoading &&
+                            <Button className="justify-center" type="submit" >
+                                <SaveIcon /> Save
+                            </Button>
+                        }
+                    </div>
+                </form>
+            </CardContent>
+
+        </Card>
     );
 }
