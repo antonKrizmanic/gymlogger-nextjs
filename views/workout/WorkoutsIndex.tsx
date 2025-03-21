@@ -15,7 +15,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useDebounce } from "@/src/hooks/useDebounce";
 import Link from "next/link";
 import { Card, CardContent } from "@/src/components/ui/card";
-import { DatePicker } from "@/src/components/Form/date-picket";
+import { DatePicker } from "@/src/components/Form/date-picker";
 import { Filter, Plus } from "lucide-react";
 
 const DEFAULT_PAGE_SIZE = 12;

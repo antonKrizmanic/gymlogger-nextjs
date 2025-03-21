@@ -86,11 +86,7 @@ export function DatePicker({
             onSelect={handleSelect}
             initialFocus
             fromDate={minDate}
-            toDate={maxDate}
-            disabled={(date) => {
-              // Additional custom disabled logic can be added here if needed
-              return false
-            }}
+            toDate={maxDate}            
           />
           {clearable && value && (
             <div className="p-3 border-t border-border">

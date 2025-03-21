@@ -2,7 +2,7 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
-import { Loader2, Save } from "lucide-react"
+import { Loader2 } from "lucide-react"
 
 import type { IWorkoutCreate } from "@/src/Models/Domain/Workout"
 import { workoutSchema, type WorkoutSchema } from "@/src/schemas/index"
@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/ca
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/components/ui/form"
 import { Input } from "@/src/components/ui/input"
 import { Textarea } from "@/src/components/ui/textarea"
-import { DatePicker } from "@/src/components/Form/date-picket"
+import { DatePicker } from "@/src/components/Form/date-picker"
 
 interface WorkoutFormProps {
   workoutId: string | null

@@ -84,12 +84,6 @@ export function ExerciseListItem({
   const handleAddSet = () => {
     // For mobile, open the dialog with a new set
     if (window.innerWidth < 768) {
-      const newSetIndex = exercise.sets?.length || 0
-      const newSet: IExerciseSetCreate = {
-        index: newSetIndex,
-        note: "",
-      }
-
       // Create a temporary set for the dialog
       setCurrentSetIndex(null) // null indicates a new set
 
