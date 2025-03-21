@@ -4,10 +4,10 @@ import { ExerciseApiService } from "@/src/Api/Services/ExerciseApiService";
 import { IExercise } from "@/src/Models/Domain/Exercise";
 import { ConfirmationModal } from "@/src/components/Common/ConfirmationModal";
 import { ErrorSnackbar, SuccessSnackbar } from "@/src/components/Common/Snackbar";
-import { TrashIcon } from "@/src/components/Icons";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
+import { Trash } from "lucide-react";
 
 interface DeleteExerciseButtonProps {
     exercise: IExercise;
@@ -51,7 +51,7 @@ export default function DeleteExerciseButton({ exercise, onDelete }: DeleteExerc
     return (
         <>
             <Button onClick={handleDelete}>
-                <TrashIcon /> Delete
+                <Trash /> Delete
             </Button>
 
             <ConfirmationModal

@@ -7,7 +7,6 @@ import { Grid } from "@/src/components/Common/Grid";
 import { MuscleGroupSelect } from "@/src/components/Common/MuscleGroupSelect";
 import { Pagination } from "@/src/components/Common/Pagination";
 import { SearchBar } from "@/src/components/Common/SearchBar";
-import { FilterIcon, PlusIcon } from "@/src/components/Icons";
 import { WorkoutCard } from "@/src/components/Workout/WorkoutCard";
 import { IWorkoutSimple } from "@/src/Models/Domain/Workout";
 import { useSearchParams } from "next/navigation";
@@ -17,6 +16,7 @@ import { useDebounce } from "@/src/hooks/useDebounce";
 import Link from "next/link";
 import { Card, CardContent } from "@/src/components/ui/card";
 import { DatePicker } from "@/src/components/Form/date-picket";
+import { Filter, Plus } from "lucide-react";
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -119,12 +119,12 @@ export function WorkoutsIndex({ workouts, currentPage, pageSize, totalPages }: W
                     <div className="flex gap-2">
                         <Button asChild>
                             <Link href='/workouts/create'>
-                                <PlusIcon />
+                                <Plus />
                                 New
                             </Link>
                         </Button>
                         <Button onClick={() => setIsFilterOpen(!isFilterOpen)}>
-                            <FilterIcon />
+                            <Filter />
                             Filter
                         </Button>
                     </div>

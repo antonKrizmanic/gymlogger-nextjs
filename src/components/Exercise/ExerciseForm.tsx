@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { MuscleGroupSelect } from "../Common/MuscleGroupSelect"
 import { LogTypeSelect } from "../Common/LogTypeSelect"
-import { SaveIcon } from "../Icons"
 import { Button } from "../ui/button"
 import Link from "next/link"
 import { Loader2 } from "lucide-react"
@@ -15,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/components/ui/form"
 import { Input } from "@/src/components/ui/input"
 import { Textarea } from "@/src/components/ui/textarea"
-import { ExerciseSchema } from "@/schemas"
+import { ExerciseSchema } from "@/src/schemas/index"
 
 interface ExerciseFormProps {
   title: string
@@ -54,7 +53,7 @@ export function ExerciseForm({ title, exercise, isLoading, onSubmit, cancelHref 
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
             {/* Name field */}
             <FormField
               control={form.control}
@@ -124,19 +123,19 @@ export function ExerciseForm({ title, exercise, isLoading, onSubmit, cancelHref 
             />
 
             {/* Form buttons */}
-            <div className="flex md:flex-row flex-col justify-end gap-4">
+            <div className="flex md:flex-row- flex-col-reverse justify-end gap-4">
               <Button variant="outline" type="button">
                 <Link href={cancelHref}>Cancel</Link>
               </Button>
               <Button type="submit" disabled={isLoading}>
                 {isLoading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="animate-spin" />
                     Saving...
                   </>
                 ) : (
                   <>
-                    <SaveIcon className="mr-2" /> Save
+                    Save
                   </>
                 )}
               </Button>

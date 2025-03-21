@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/src/lib/utils';
 import { ThemeSwitcher } from '../Theme/ThemeSwitcher';
-import { CloseIcon, HamburgerIcon, LogoutIcon } from '../Icons';
+import { Menu, X, LogOut } from "lucide-react"
+
 import { signOut } from "next-auth/react"
 
 
@@ -69,7 +70,7 @@ export function Navbar() {
                             )}
                             title="Sign out"
                         >
-                            <LogoutIcon />                            
+                            <LogOut />                            
                         </button>
 
                         {/* Mobile menu button */}
@@ -81,8 +82,8 @@ export function Navbar() {
                                 aria-expanded="false"
                             >
                                 <span className="sr-only">Open main menu</span>                                
-                                <HamburgerIcon className={cn('h-6 w-6', isMobileMenuOpen ? 'hidden' : 'block')}/>                                
-                                <CloseIcon className={cn('h-6 w-6', isMobileMenuOpen ? 'block' : 'hidden')}/>                                
+                                <Menu className={cn('h-6 w-6', isMobileMenuOpen ? 'hidden' : 'block')}/>                                
+                                <X className={cn('h-6 w-6', isMobileMenuOpen ? 'block' : 'hidden')}/>                                
                             </button>
                         </div>
                     </div>

@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import { WorkoutApiService } from '@/src/Api/Services/WorkoutApiService';
 import { IWorkout } from '@/src/Models/Domain/Workout';
 import { ConfirmationModal } from '@/src/components/Common/ConfirmationModal';
-import { TrashIcon } from '@/src/components/Icons';
 import { Button } from '../ui/button';
+import { Trash } from 'lucide-react';
 
 interface DeleteWorkoutButtonProps {
     workout: IWorkout;
@@ -38,7 +38,7 @@ export default function DeleteWorkoutButton({ workout }: DeleteWorkoutButtonProp
     return (
         <>
             <Button onClick={handleDelete}>
-                <TrashIcon /> Delete
+                <Trash /> Delete
             </Button>
             <ConfirmationModal
                 isOpen={isDeleteModalOpen}

@@ -2,8 +2,8 @@
 import { Button } from "@/src/components/ui/button"
 import { ConfirmationModal } from "@/src/components/Common/ConfirmationModal";
 import { ErrorSnackbar, SuccessSnackbar } from "@/src/components/Common/Snackbar";
-import { TrashIcon } from "@/src/components/Icons";
 import { useState } from "react";
+import { Trash } from "lucide-react";
 
 interface DeleteButtonProps {
     entityName: string;
@@ -48,7 +48,7 @@ export function DeleteButton({ entityName, entityType, onDelete, deleteAction }:
                 onClick={handleDelete}                 
                 className="rounded-1 w-full"
             >
-                <TrashIcon />
+                <Trash />
             </Button>
         
 

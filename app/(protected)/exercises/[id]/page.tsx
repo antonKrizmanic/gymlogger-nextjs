@@ -1,9 +1,9 @@
 import { Container } from "@/src/components/Common/Container";
-import { LeftArrowIcon, PencilIcon } from "@/src/components/Icons";
 import DeleteExerciseButton from "@/src/components/Exercise/DeleteExerciseButton";
 import { getExercise } from "@/src/data/exercise";
 import Link from "next/link";
 import { Button } from "@/src/components/ui/button";
+import { MoveLeft, Pencil } from "lucide-react";
 
 
 export default async function ExerciseDetailPage(props: { params: Promise<{ id: string }> }) {
@@ -31,13 +31,13 @@ export default async function ExerciseDetailPage(props: { params: Promise<{ id: 
                     {/* Back button */}
                     <Button asChild>
                         <Link href="/exercises">
-                            <LeftArrowIcon />
+                            <MoveLeft />
                             Back
                         </Link> 
                     </Button>                      
                     <Button asChild> 
                     <Link href={`/exercises/${exercise.id}/edit`}>
-                        <PencilIcon /> Edit
+                        <Pencil /> Edit
                     </Link>
                     </Button>
                     <DeleteExerciseButton exercise={exercise} />

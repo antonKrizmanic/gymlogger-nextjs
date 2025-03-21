@@ -1,5 +1,5 @@
 import { IExerciseWorkout } from '@/src/Models/Domain/Workout';
-import { Card } from '@/src/components/Common/Card';
+import { Card, CardContent } from '@/src/components/ui/card';
 import { ExerciseSets } from './ExerciseSets';
 
 interface WorkoutExerciseListProps {
@@ -11,7 +11,7 @@ export function WorkoutExerciseList({ exercises }: WorkoutExerciseListProps) {
         <div className="space-y-4">
             {exercises.map((exercise) => (
                 <Card key={exercise.exerciseId}>
-                    <div className="space-y-4">
+                    <CardContent>
                         <div>
                             <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{exercise.exerciseName}</h3>
                             {exercise.note && (
@@ -23,7 +23,7 @@ export function WorkoutExerciseList({ exercises }: WorkoutExerciseListProps) {
                         <div className="overflow-x-auto">
                             <ExerciseSets exercise={exercise} />
                         </div>
-                    </div>
+                    </CardContent>
                 </Card>
             ))}
         </div>

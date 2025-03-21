@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/src/components/ui/card';
-import { PlusIcon } from '@/src/components/Icons';
+
 import { Container } from '@/src/components/Common/Container';
 import { WorkoutChartSection } from '@/src/components/Dashboard/WorkoutChartSection';
 import { DetailButton } from '@/src/components/Common/DetailButton';
@@ -7,6 +7,7 @@ import { EditButton } from '@/src/components/Common/EditButton';
 import { getDashboard } from '@/src/data/dashboard';
 import { Button } from '@/src/components/ui/button';
 import Link from 'next/link';
+import { Plus } from 'lucide-react';
 
 
 export default async function HomePage() {
@@ -21,7 +22,7 @@ export default async function HomePage() {
                 </p>
                 <Button asChild className="w-fit">
                     <Link href='/workouts/create'>
-                        <PlusIcon />
+                        <Plus />
                         New Workout
                     </Link>
                 </Button>

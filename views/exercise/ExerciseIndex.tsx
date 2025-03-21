@@ -9,7 +9,7 @@ import { MuscleGroupSelect } from "@/src/components/Common/MuscleGroupSelect";
 import { Pagination } from "@/src/components/Common/Pagination";
 import { SearchBar } from "@/src/components/Common/SearchBar";
 import { ExerciseCard } from "@/src/components/Exercise/ExerciseCard";
-import { FilterIcon, PlusIcon } from "@/src/components/Icons";
+import { Filter, Plus } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { IExercise } from "@/src/Models/Domain/Exercise";
 import { ExerciseLogType } from "@/src/Types/Enums";
@@ -106,12 +106,12 @@ export function ExerciseIndex({ exercises, currentPage, pageSize, totalPages }: 
                     <div className="flex gap-2">
                         <Button asChild>
                             <Link href="/exercises/create">
-                                <PlusIcon />
+                                <Plus />
                                 New
                             </Link>
                         </Button>
                         <Button onClick={() => setIsFilterOpen(!isFilterOpen)}>
-                            <FilterIcon />
+                            <Filter />
                             Filter
                         </Button>
                     </div>
