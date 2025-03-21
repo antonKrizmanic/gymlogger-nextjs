@@ -1,7 +1,7 @@
 'use client';
 
-import { ActionButton } from "@/src/components/Common/ActionButton";
-import { Card } from "@/src/components/Common/Card";
+
+import { Card, CardContent } from "@/src/components/ui/card";
 import { Container } from "@/src/components/Common/Container";
 import { Grid } from "@/src/components/Common/Grid";
 import { LogTypeSelect } from "@/src/components/Common/LogTypeSelect";
@@ -9,9 +9,11 @@ import { MuscleGroupSelect } from "@/src/components/Common/MuscleGroupSelect";
 import { Pagination } from "@/src/components/Common/Pagination";
 import { SearchBar } from "@/src/components/Common/SearchBar";
 import { ExerciseCard } from "@/src/components/Exercise/ExerciseCard";
-import { FilterIcon, PlusIcon } from "@/src/components/Icons";
+import { Filter, Plus } from "lucide-react";
+import { Button } from "@/src/components/ui/button";
 import { IExercise } from "@/src/Models/Domain/Exercise";
 import { ExerciseLogType } from "@/src/Types/Enums";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -22,13 +24,13 @@ interface ExerciseIndexProps {
     exercises: IExercise[];
     currentPage: number;
     pageSize: number;
-    totalPages: number;    
+    totalPages: number;
 }
 
 export function ExerciseIndex({ exercises, currentPage, pageSize, totalPages }: ExerciseIndexProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
-    
+
     const [isLoading, setIsLoading] = useState(false);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string>(searchParams?.get('muscleGroup') || '');
@@ -40,7 +42,7 @@ export function ExerciseIndex({ exercises, currentPage, pageSize, totalPages }: 
 
     useEffect(() => {
         setIsLoading(false);
-    },[exercises]);    
+    }, [exercises]);
 
     const updateUrl = useCallback((
         page: number,
@@ -48,8 +50,8 @@ export function ExerciseIndex({ exercises, currentPage, pageSize, totalPages }: 
         size: number,
         muscleGroup?: string,
         logType?: ExerciseLogType
-    ) => {  
-        setIsLoading(true);      
+    ) => {
+        setIsLoading(true);
         const params = new URLSearchParams();
         if (page > 0) params.set('page', page.toString());
         if (search) params.set('search', search);
@@ -60,7 +62,7 @@ export function ExerciseIndex({ exercises, currentPage, pageSize, totalPages }: 
         router.push(`/exercises${query ? `?${query}` : ''}`);
     }, [router]);
 
-    const handleSearch = (value: string) => {        
+    const handleSearch = (value: string) => {
         setSearchTerm(value);
         const newPage = 0;
         updateUrl(newPage, value, pageSize, selectedMuscleGroup, selectedLogType);
@@ -72,14 +74,14 @@ export function ExerciseIndex({ exercises, currentPage, pageSize, totalPages }: 
         updateUrl(newPage, searchTerm, pageSize, muscleGroupId, selectedLogType);
     };
 
-    const handleLogTypeChange = (newValue: ExerciseLogType) => {        
+    const handleLogTypeChange = (newValue: ExerciseLogType) => {
         setSelectedLogType(newValue);
         const newPage = 0;
         updateUrl(newPage, searchTerm, pageSize, selectedMuscleGroup, newValue);
     };
 
-    const handlePageSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const newSize = Number(event.target.value);
+    const handlePageSizeChange = (newValue: string) => {
+        const newSize = Number(newValue);
         const newPage = 0;
         updateUrl(newPage, searchTerm, newSize, selectedMuscleGroup, selectedLogType);
     };
@@ -91,7 +93,7 @@ export function ExerciseIndex({ exercises, currentPage, pageSize, totalPages }: 
     const handleExerciseDelete = useCallback(() => {
         // Refresh the current page
         updateUrl(currentPage, searchTerm, pageSize, selectedMuscleGroup, selectedLogType);
-    }, [currentPage, searchTerm, pageSize, selectedMuscleGroup, selectedLogType, updateUrl]);    
+    }, [currentPage, searchTerm, pageSize, selectedMuscleGroup, selectedLogType, updateUrl]);
 
     return (
         <Container>
@@ -102,30 +104,36 @@ export function ExerciseIndex({ exercises, currentPage, pageSize, totalPages }: 
             <div className="mb-8 space-y-4">
                 <div className="flex justify-between items-center">
                     <div className="flex gap-2">
-                        <ActionButton onClick={() => setIsFilterOpen(!isFilterOpen)}>
-                            <FilterIcon />
+                        <Button asChild>
+                            <Link href="/exercises/create">
+                                <Plus />
+                                New
+                            </Link>
+                        </Button>
+                        <Button onClick={() => setIsFilterOpen(!isFilterOpen)}>
+                            <Filter />
                             Filter
-                        </ActionButton>
-                        <ActionButton href={'/exercises/create'}>
-                            <PlusIcon />
-                            New
-                        </ActionButton>
+                        </Button>
                     </div>
                 </div>
 
                 {/* Filter card */}
                 {isFilterOpen && (
                     <Card>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <MuscleGroupSelect
-                                selectedMuscleGroup={selectedMuscleGroup}
-                                onMuscleGroupChange={handleMuscleGroupChange}
-                            />
-                            <LogTypeSelect
-                                selectedLogType={selectedLogType ?? ExerciseLogType.Unknown}
-                                onLogTypeChange={handleLogTypeChange}
-                            />
-                        </div>
+                        <CardContent className="flex flex-row justify-between items-center p-4 gap-4">
+                            <div className="w-1/2">
+                                <MuscleGroupSelect
+                                    selectedMuscleGroup={selectedMuscleGroup}
+                                    onMuscleGroupChange={handleMuscleGroupChange}
+                                />
+                            </div>
+                            <div className="w-1/2">
+                                <LogTypeSelect
+                                    selectedLogType={selectedLogType ?? ExerciseLogType.Unknown}
+                                    onLogTypeChange={handleLogTypeChange}
+                                />
+                            </div>
+                        </CardContent>
                     </Card>
                 )}
 
@@ -144,7 +152,7 @@ export function ExerciseIndex({ exercises, currentPage, pageSize, totalPages }: 
                     <ExerciseCard
                         key={exercise.id}
                         exercise={exercise}
-                        onDelete={handleExerciseDelete}                        
+                        onDelete={handleExerciseDelete}
                     />
                 )}
                 isLoading={isLoading}

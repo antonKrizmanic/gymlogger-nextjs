@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/src/lib/utils';
+import { Button } from '../ui/button';
 
 interface ConfirmationModalProps {
     isOpen: boolean;
@@ -43,38 +44,29 @@ export function ConfirmationModal({
                     {message}
                 </p>
                 <div className="flex justify-end gap-2">
-                    <button
+                    <Button
                         onClick={onCancel}
-                        disabled={isLoading}
-                        className={cn(
-                            'px-4 py-2 rounded-lg',
-                            'bg-gray-100 dark:bg-slate-700',
-                            'text-gray-700 dark:text-gray-300',
-                            'hover:bg-gray-200 dark:hover:bg-slate-600',
-                            'transition-colors',
-                            'disabled:opacity-50 disabled:cursor-not-allowed'
-                        )}
+                        variant="outline"
+                        disabled={isLoading}                        
                     >
                         {cancelText}
-                    </button>
-                    <button
-                        onClick={onConfirm}
-                        disabled={isLoading}
+                    </Button>
+                    <Button
+                        onClick={onConfirm}                        
                         className={cn(
                             'px-4 py-2 rounded-lg',
                             'bg-red-500',
                             'text-white',
                             'hover:bg-red-600',
                             'transition-colors',
-                            'disabled:opacity-50 disabled:cursor-not-allowed',
-                            'flex items-center gap-2'
+                            'disabled:opacity-50 disabled:cursor-not-allowed',                            
                         )}
                     >
                         {isLoading && (
                             <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/20 border-t-white" />
                         )}
                         {confirmText}
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>

@@ -2,7 +2,7 @@
 
 import { IDashboard } from '@/src/Models/Domain/Dashboard';
 import { WorkoutChart } from './WorkoutChart';
-import { Card } from '../Common/Card';
+import { Card } from '../ui/card';
 
 interface WorkoutChartSectionProps {
   dashboard: IDashboard;
