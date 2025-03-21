@@ -141,13 +141,14 @@ export function ExerciseListItem({ exercise, index, workoutId, onExerciseChange,
                 </div>
 
                 {/* Remove button */}
-                <button
+                <Button
                     type="button"
                     onClick={() => onRemoveExercise(index)}
+                    variant="ghost"
                     className="p-2 text-gray-400 hover:text-red-500"
                 >
                     <CloseIcon />
-                </button>
+                </Button>
             </div>
             <div className="flex items-start gap-2 text-gray-600 dark:text-gray-400">
                 <p>{selectedExercise?.description}</p>

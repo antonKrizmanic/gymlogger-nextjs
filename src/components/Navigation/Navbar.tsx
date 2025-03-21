@@ -69,8 +69,7 @@ export function Navbar() {
                             )}
                             title="Sign out"
                         >
-                            <LogoutIcon />
-                            
+                            <LogoutIcon />                            
                         </button>
 
                         {/* Mobile menu button */}

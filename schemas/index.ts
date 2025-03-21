@@ -20,3 +20,37 @@ export const ExerciseSchema = z.object({
   }),
   description: z.string().optional(),
 })
+
+// Exercise Set Schema
+export const exerciseSetSchema = z.object({
+  index: z.number(),
+  reps: z.number().optional(),
+  weight: z.number().optional(),
+  time: z.number().optional(),
+  note: z.string().optional(),
+})
+
+export type ExerciseSetSchema = z.infer<typeof exerciseSetSchema>
+
+// Exercise Workout Schema
+export const exerciseWorkoutSchema = z.object({
+  exerciseId: z.string().min(1, "Exercise is required"),
+  index: z.number(),
+  note: z.string().optional(),
+  sets: z.array(exerciseSetSchema).min(1, "At least one set is required"),
+})
+
+export type ExerciseWorkoutSchema = z.infer<typeof exerciseWorkoutSchema>
+
+// Workout Schema
+export const workoutSchema = z.object({
+  name: z.string().min(1, "Workout name is required"),
+  date: z.date({
+    required_error: "Date is required",
+    invalid_type_error: "Invalid date format",
+  }),
+  description: z.string().optional(),
+  exercises: z.array(exerciseWorkoutSchema).min(1, "At least one exercise is required"),
+})
+
+export type WorkoutSchema = z.infer<typeof workoutSchema>

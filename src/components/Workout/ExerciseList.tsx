@@ -2,6 +2,7 @@ import { cn } from '@/src/lib/utils';
 import { IExerciseWorkoutCreate } from '@/src/Models/Domain/Workout';
 import { ExerciseListItem } from './ExerciseListItem';
 import { PlusIcon } from '../Icons';
+import { Button } from '../ui/button';
 
 interface ExerciseListProps {
     exercises: IExerciseWorkoutCreate[];
@@ -64,21 +65,13 @@ export function ExerciseList({ exercises, onExercisesChange, workoutId }: Exerci
             ))}
 
             {/* Add Exercise button */}
-            <button
+            <Button
                 type="button"
-                onClick={handleAddExercise}
-                className={cn(
-                    'w-full px-4 py-2 rounded-lg',
-                    'bg-white dark:bg-slate-800',
-                    'border border-gray-300 dark:border-gray-700',
-                    'text-gray-700 dark:text-gray-300',
-                    'hover:bg-gray-50 dark:hover:bg-slate-700',
-                    'flex items-center justify-center gap-2'
-                )}
+                onClick={handleAddExercise}                
             >
                 <PlusIcon />
                 Add Exercise
-            </button>
+            </Button>
         </div>
     );
 } 
