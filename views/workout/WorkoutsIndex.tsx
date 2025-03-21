@@ -57,7 +57,7 @@ export function WorkoutsIndex({ workouts, currentPage, pageSize, totalPages }: W
         const params = new URLSearchParams();
         if (page > 0) params.set('page', page.toString());
         if (search) params.set('search', search);
-        if (size !== DEFAULT_PAGE_SIZE) params.set('size', size.toString());
+        if (size !== DEFAULT_PAGE_SIZE) params.set('pageSize', size.toString());
         if (muscleGroup) params.set('muscleGroupId', muscleGroup);
         if (date && isValidDate(date)) {
             const fixedDate = new Date(date);
