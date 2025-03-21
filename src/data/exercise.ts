@@ -42,6 +42,9 @@ export const getPagedExercises = async (pagedRequest: IExerciseRequest) => {
 
   const exercises = await prisma.exercise.findMany({
     where,
+    include: {
+      muscleGroup: true,
+    },
     skip: (pagedRequest.page) * pagedRequest.pageSize,
     take: pagedRequest.pageSize,
     orderBy: { name: "asc" },

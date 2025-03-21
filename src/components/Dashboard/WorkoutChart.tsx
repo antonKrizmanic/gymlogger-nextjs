@@ -1,7 +1,7 @@
 'use client';
 
 import { IDashboardDateItem } from '@/src/Models/Domain/Dashboard';
-import { Card } from '@/src/components/Common/Card';
+
 import { useState } from 'react';
 import {
   LineChart,
@@ -18,6 +18,7 @@ import {
 } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 import { useTheme } from 'next-themes';
+import { Card, CardContent } from '../ui/card';
 
 interface WorkoutChartProps {
   data: IDashboardDateItem[];
@@ -45,11 +46,11 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
   const processedData = data.reduce((acc: ChartDataItem[], curr) => {
     // Find if we already have this date in our accumulator
     const existingDateIndex = acc.findIndex(item => item.date === curr.date);
-    
+
     if (existingDateIndex >= 0) {
       // If date exists, increment workout count
       acc[existingDateIndex].workouts = (acc[existingDateIndex].workouts || 0) + 1;
-      
+
       // Add other metrics if they exist
       if (curr.weight) acc[existingDateIndex].weight = (acc[existingDateIndex].weight || 0) + curr.weight;
       if (curr.series) acc[existingDateIndex].series = (acc[existingDateIndex].series || 0) + curr.series;
@@ -64,7 +65,7 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
         reps: curr.reps || 0
       });
     }
-    
+
     return acc;
   }, []);
 
@@ -99,7 +100,7 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
           <p className="font-medium text-gray-900 dark:text-white">{label}</p>
           <p className="text-sm text-gray-700 dark:text-gray-300">
             <span className="font-medium" style={{ color: payload[0].color }}>
-              {payload[0].name}: 
+              {payload[0].name}:
             </span>{' '}
             {payload[0].value}
           </p>
@@ -111,70 +112,72 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
 
   return (
     <Card className="p-4">
-      <div className="flex flex-col space-y-4">
-        <div className="flex justify-between items-center">
-          <h3 className="text-lg font-medium text-gray-600 dark:text-white">Workout Progress</h3>
-          <div className="flex space-x-2">
-            <select
-              value={metric}
-              onChange={(e) => setMetric(e.target.value as ChartMetric)}
-              className="px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-slate-800 text-sm text-gray-900 dark:text-white"
-            >
-              <option value="weight">Weight</option>
-              <option value="series">Series</option>
-              <option value="reps">Reps</option>
-            </select>
-            <select
-              value={chartType}
-              onChange={(e) => setChartType(e.target.value as ChartType)}
-              className="px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-slate-800 text-sm text-gray-900 dark:text-white"
-            >
-              <option value="line">Line</option>
-              <option value="bar">Bar</option>
-            </select>
+      <CardContent>
+        <div className="flex flex-col space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-medium text-gray-600 dark:text-white">Workout Progress</h3>
+            <div className="flex space-x-2">
+              <select
+                value={metric}
+                onChange={(e) => setMetric(e.target.value as ChartMetric)}
+                className="px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-slate-800 text-sm text-gray-900 dark:text-white"
+              >
+                <option value="weight">Weight</option>
+                <option value="series">Series</option>
+                <option value="reps">Reps</option>
+              </select>
+              <select
+                value={chartType}
+                onChange={(e) => setChartType(e.target.value as ChartType)}
+                className="px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-slate-800 text-sm text-gray-900 dark:text-white"
+              >
+                <option value="line">Line</option>
+                <option value="bar">Bar</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="h-64">
+            <ResponsiveContainer width="100%" height="100%">
+              {chartType === 'line' ? (
+                <LineChart
+                  data={formattedData}
+                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Legend />
+                  <Line
+                    type="monotone"
+                    dataKey={metric}
+                    stroke={getColor()}
+                    activeDot={{ r: 8 }}
+                    name={getLabel()}
+                  />
+                </LineChart>
+              ) : (
+                <BarChart
+                  data={formattedData}
+                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Legend />
+                  <Bar
+                    dataKey={metric}
+                    fill={getColor()}
+                    name={getLabel()}
+                  />
+                </BarChart>
+              )}
+            </ResponsiveContainer>
           </div>
         </div>
-
-        <div className="h-64">
-          <ResponsiveContainer width="100%" height="100%">
-            {chartType === 'line' ? (
-              <LineChart
-                data={formattedData}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey={metric}
-                  stroke={getColor()}
-                  activeDot={{ r: 8 }}
-                  name={getLabel()}
-                />
-              </LineChart>
-            ) : (
-              <BarChart
-                data={formattedData}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend />
-                <Bar
-                  dataKey={metric}
-                  fill={getColor()}
-                  name={getLabel()}
-                />
-              </BarChart>
-            )}
-          </ResponsiveContainer>
-        </div>
-      </div>
+      </CardContent>
     </Card>
   );
 } 

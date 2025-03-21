@@ -1,11 +1,12 @@
 import { Container } from '@/src/components/Common/Container';
-import { ActionButton } from '@/src/components/Common/ActionButton';
-import { LeftArrowIcon, PencilIcon } from '@/src/components/Icons';
 
-import { Card } from '@/src/components/Common/Card';
+import { Card, CardContent } from '@/src/components/ui/card';
 import { WorkoutExerciseList } from '@/src/components/Workout/WorkoutExerciseList';
 import DeleteWorkoutButton from '@/src/components/Workout/DeleteWorkoutButton';
 import { getWorkout } from '@/src/data/workout';
+import Link from 'next/link';
+import { Button } from '@/src/components/ui/button';
+import { MoveLeft, Pencil } from 'lucide-react';
 
 
 
@@ -32,18 +33,22 @@ export default async function WorkoutDetailPage(props: { params: Promise<{ id: s
                 {/* Action buttons */}
                 <div className="flex items-center gap-2">
                     {/* Back button */}
-                    <ActionButton href="/workouts">
-                        <LeftArrowIcon />
-                        Back
-                    </ActionButton>                        
-                    <ActionButton href={`/workouts/${workout.id}/edit`}>
-                        <PencilIcon /> Edit
-                    </ActionButton>
-                    
+                    <Button asChild>
+                        <Link href="/workouts">
+                            <MoveLeft />
+                            Back
+                        </Link>
+                    </Button>
+                    <Button asChild>
+                        <Link href={`/workouts/${workout.id}/edit`}>
+                            <Pencil /> Edit
+                        </Link>
+                    </Button>
+
                     <DeleteWorkoutButton workout={workout} />
                 </div>
                 <Card>
-                    <div className="space-y-6">
+                    <CardContent className="space-y-4">
                         <div className="grid grid-cols-3 gap-4">
                             <div>
                                 <h3 className="font-semibold text-sm text-gray-700 dark:text-gray-400">Date</h3>
@@ -80,7 +85,7 @@ export default async function WorkoutDetailPage(props: { params: Promise<{ id: s
                                 </div>
                             )}
                         </div>
-                    </div>
+                    </CardContent>
                 </Card>
 
                 <div className="mt-4">
