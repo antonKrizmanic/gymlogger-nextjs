@@ -3,7 +3,7 @@ import { IPagedRequest, IPagedResponse } from "../Types/Common";
 import { prisma } from "@/src/lib/prisma";
 import { ExerciseLogType } from "../Types/Enums";
 import { auth } from "../lib/auth";
-import { getLoggedInUser } from "./user";
+import { getLoggedInUser } from "./loggedInUser";
 
 export interface IExerciseRequest extends IPagedRequest {
   muscleGroupId?: string;
