@@ -30,7 +30,7 @@ export default async function HomePage() {
 
             {dashboard && (
                 <>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+                    <div className="grid grid-cols md:grid-cols-4 gap-4 pt-4">
                         {dashboard.lastWorkout && (
                             <Card>
                                 <CardHeader>

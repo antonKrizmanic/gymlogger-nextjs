@@ -28,7 +28,7 @@ export function WorkoutCard({ workout, onDelete }: WorkoutCardProps) {
         <Card>
             <CardHeader>
                 <CardTitle>{workout.name}</CardTitle>
-                <CardDescription>{new Date(workout.date).toISOString().split('T')[0]}</CardDescription>
+                <CardDescription>{new Date(workout.date).toLocaleDateString()}</CardDescription>
             </CardHeader>
             <CardContent>
                 {workout.description || ''}
@@ -54,7 +54,7 @@ export function WorkoutCard({ workout, onDelete }: WorkoutCardProps) {
                 <div className="w-1/3">
                 <DeleteButton
                     entityName={workout.name || ''}
-                    entityType="workout"
+                    entityType="Workout"
                     deleteAction={deleteAction}
                     onDelete={onDelete} />
                 </div>                
