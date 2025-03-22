@@ -120,14 +120,14 @@ export function ExerciseIndex({ exercises, currentPage, pageSize, totalPages }: 
                 {/* Filter card */}
                 {isFilterOpen && (
                     <Card>
-                        <CardContent className="flex flex-row justify-between items-center p-4 gap-4">
-                            <div className="w-1/2">
+                        <CardContent className="flex flex-col md:flex-row justify-between items-center gap-4">
+                            <div className="w-full md:w-1/2">
                                 <MuscleGroupSelect
                                     selectedMuscleGroup={selectedMuscleGroup}
                                     onMuscleGroupChange={handleMuscleGroupChange}
                                 />
                             </div>
-                            <div className="w-1/2">
+                            <div className="w-full md:w-1/2">
                                 <LogTypeSelect
                                     selectedLogType={selectedLogType ?? ExerciseLogType.Unknown}
                                     onLogTypeChange={handleLogTypeChange}

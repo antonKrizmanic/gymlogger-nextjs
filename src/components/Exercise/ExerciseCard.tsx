@@ -43,7 +43,7 @@ export function ExerciseCard({ exercise, onDelete }: ExerciseCardProps) {
                 <div className="w-1/3"><EditButton href={`/exercises/${exercise.id}/edit`} /></div>
                 <div className="w-1/3"><DeleteButton
                     entityName={exercise.name}
-                    entityType="exercise"
+                    entityType="Exercise"
                     deleteAction={deleteAction}
                     onDelete={onDelete} /></div>
                 
