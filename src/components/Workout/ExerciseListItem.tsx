@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import type React from "react"
 
-import { X, PlusCircle, Info, Pencil } from "lucide-react"
+import { X, PlusCircle, Info, Pencil, Copy } from "lucide-react"
 
 import type { IExerciseSetCreate, IExerciseWorkout, IExerciseWorkoutCreate } from "@/src/Models/Domain/Workout"
 import type { IExercise } from "@/src/Models/Domain/Exercise"
@@ -53,7 +53,7 @@ export function ExerciseListItem({
         const exerciseService = new ExerciseApiService()
         const exerciseResponse = await exerciseService.getExercise(exercise.exerciseId)
         setSelectedExercise(exerciseResponse || null)
-
+        console.log('Selected Exercise: ', selectedExercise);
         // Fetch the last exercise workout
         const exerciseWorkoutService = new ExerciseApiWorkoutService()
         const lastWorkoutResponse = await exerciseWorkoutService.getLatestExerciseWorkout(
@@ -72,6 +72,7 @@ export function ExerciseListItem({
   }, [exercise.exerciseId, workoutId])
 
   const handleExerciseSelect = async (exerciseId: string) => {
+    console.log("Selected exercise ID:", exerciseId)
     // Let the parent component know about the change
     onAddExercise(index, exerciseId)
   }
@@ -254,20 +255,20 @@ export function ExerciseListItem({
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-[50px]">Set</TableHead>
+                        <TableHead className="w-[50px] text-gray-500 dark:text-white">Set</TableHead>
 
                         {exerciseLogType === ExerciseLogType.WeightAndReps && (
                           <>
-                            <TableHead>Reps</TableHead>
-                            <TableHead>Kg</TableHead>
+                            <TableHead className="text-gray-500 dark:text-white">Reps</TableHead>
+                            <TableHead className="text-gray-500 dark:text-white">Kg</TableHead>
                           </>
                         )}
 
-                        {exerciseLogType === ExerciseLogType.RepsOnly && <TableHead>Reps</TableHead>}
+                        {exerciseLogType === ExerciseLogType.RepsOnly && <TableHead className="text-gray-500 dark:text-white">Reps</TableHead>}
 
-                        {exerciseLogType === ExerciseLogType.TimeOnly && <TableHead>Time</TableHead>}
+                        {exerciseLogType === ExerciseLogType.TimeOnly && <TableHead className="text-gray-500 dark:text-white">Time</TableHead>}
 
-                        <TableHead className="w-[70px]">Actions</TableHead>
+                        <TableHead className="w-[70px] text-gray-500 dark:text-white">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -290,6 +291,15 @@ export function ExerciseListItem({
 
                           <TableCell>
                             <div className="flex items-center space-x-1">
+                              <Button
+                                type="button"
+                                onClick={() => handleCopySet(setIndex)}
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                              >
+                                <Copy className="h-4 w-4" />                                
+                              </Button>
                               <Button
                                 onClick={() => handleEditSet(setIndex)}
                                 type="button"
