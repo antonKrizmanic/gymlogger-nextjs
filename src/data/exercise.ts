@@ -3,6 +3,7 @@ import { IPagedRequest, IPagedResponse } from "../Types/Common";
 import { prisma } from "@/src/lib/prisma";
 import { ExerciseLogType } from "../Types/Enums";
 import { auth } from "../lib/auth";
+import { getLoggedInUser } from "./loggedInUser";
 
 export interface IExerciseRequest extends IPagedRequest {
   muscleGroupId?: string;
@@ -24,8 +25,8 @@ export const getExercise = async (id: string) => {
 };
 
 export const getPagedExercises = async (pagedRequest: IExerciseRequest) => {
-  const session = await auth();
-  if (!session) return null;
+  const loggedInUser = await getLoggedInUser();
+  if (!loggedInUser) return null;
   
   const where: any = {};
   if (pagedRequest.search) {
@@ -39,6 +40,11 @@ export const getPagedExercises = async (pagedRequest: IExerciseRequest) => {
   if (pagedRequest.exerciseLogType) {
     where.exerciseLogType = pagedRequest.exerciseLogType;
   }
+
+  where.OR = [
+    { belongsToUserId: loggedInUser.id },
+    { belongsToUserId: null }
+]
 
   const exercises = await prisma.exercise.findMany({
     where,

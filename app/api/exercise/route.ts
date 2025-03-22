@@ -2,12 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/src/lib/prisma";
 import { getPagedExercises, IExerciseRequest } from "@/src/data/exercise";
 import { SortDirection } from "@/src/Types/Enums";
-import { auth } from "@/src/lib/auth";
+import { getLoggedInUser } from "@/src/data/loggedInUser";
 
 
 export async function POST(request: NextRequest) {
-  const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const loggedInUser = await getLoggedInUser();
+  if (!loggedInUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const body = await request.json();
 
@@ -18,7 +18,8 @@ export async function POST(request: NextRequest) {
         description: body.description,
         exerciseLogType: body.exerciseLogType,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
+        belongsToUserId: loggedInUser.id,
       }
     });
 
@@ -40,8 +41,8 @@ export async function POST(request: NextRequest) {
 
 export async function GET(req: NextRequest) {
 
-  const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const loggedInUser = await getLoggedInUser();
+  if (!loggedInUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
     const { searchParams } = new URL(req.url);

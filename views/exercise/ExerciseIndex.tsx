@@ -55,7 +55,7 @@ export function ExerciseIndex({ exercises, currentPage, pageSize, totalPages }: 
         const params = new URLSearchParams();
         if (page > 0) params.set('page', page.toString());
         if (search) params.set('search', search);
-        if (size !== DEFAULT_PAGE_SIZE) params.set('size', size.toString());
+        if (size !== DEFAULT_PAGE_SIZE) params.set('pageSize', size.toString());
         if (muscleGroup) params.set('muscleGroupId', muscleGroup);
         if (logType !== undefined) params.set('logType', logType.toString());
         const query = params.toString();

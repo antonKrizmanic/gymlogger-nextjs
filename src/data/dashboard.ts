@@ -1,14 +1,18 @@
 import { Prisma } from "@prisma/client";
-import { auth } from "../lib/auth"
 import { prisma } from "../lib/prisma";
 import { IDashboard, IDashboardDateItem } from "../Models/Domain/Dashboard";
+import { getLoggedInUser } from "./loggedInUser";
 
 export const getDashboard = async () => {
-    const session = await auth();
-    if (!session) return null;
+    const loggedInUser = await getLoggedInUser();
+    if (!loggedInUser) return null;
 
     // Check if there are any workouts
-    const workoutsCount = await prisma.workout.count();
+    const workoutsCount = await prisma.workout.count({
+        where: {
+            belongsToUserId: loggedInUser.id
+        }
+    });
 
     if (workoutsCount === 0) {
         return null;
@@ -54,6 +58,9 @@ export const getDashboard = async () => {
                 }
             }
         },
+        where: {
+            belongsToUserId: loggedInUser.id
+        },
         orderBy: {
             date: 'desc'
         }
@@ -78,6 +85,9 @@ export const getDashboard = async () => {
         by: ['muscleGroupId'],
         _count: {
             muscleGroupId: true
+        },
+        where: {
+            belongsToUserId: loggedInUser.id
         },
         orderBy: {
             _count: {
@@ -121,6 +131,7 @@ export const getDashboard = async () => {
     // Workouts this week
     dashboard.workoutsThisWeek = await prisma.workout.count({
         where: {
+            belongsToUserId: loggedInUser.id,
             date: {
                 gte: mondayDate
             }
@@ -130,6 +141,7 @@ export const getDashboard = async () => {
     // Workouts this month
     dashboard.workoutsThisMonth = await prisma.workout.count({
         where: {
+            belongsToUserId: loggedInUser.id,
             date: {
                 gte: firstDayOfMonth
             }
@@ -139,6 +151,7 @@ export const getDashboard = async () => {
     // Workouts this year
     dashboard.workoutsThisYear = await prisma.workout.count({
         where: {
+            belongsToUserId: loggedInUser.id,
             date: {
                 gte: firstDayOfYear
             }
@@ -152,6 +165,7 @@ export const getDashboard = async () => {
         },
         where: {
             workout: {
+                belongsToUserId: loggedInUser.id,
                 date: {
                     gte: mondayDate
                 }
@@ -167,6 +181,7 @@ export const getDashboard = async () => {
         },
         where: {
             workout: {
+                belongsToUserId: loggedInUser.id,
                 date: {
                     gte: firstDayOfMonth
                 }
@@ -182,6 +197,7 @@ export const getDashboard = async () => {
         },
         where: {
             workout: {
+                belongsToUserId: loggedInUser.id,
                 date: {
                     gte: firstDayOfYear
                 }
@@ -198,6 +214,7 @@ export const getDashboard = async () => {
       JOIN "ExerciseWorkout" ON "ExerciseSet"."exerciseWorkoutId" = "ExerciseWorkout"."id"
       JOIN "Workout" ON "ExerciseWorkout"."workoutId" = "Workout"."id"
       WHERE "Workout"."date" >= ${mondayDate}
+      AND "Workout"."belongsToUserId" = ${loggedInUser.id}
     `;
     dashboard.weightThisWeek = weightThisWeek[0]?.total ? Number(weightThisWeek[0].total) : 0;
 
@@ -208,6 +225,7 @@ export const getDashboard = async () => {
       JOIN "ExerciseWorkout" ON "ExerciseSet"."exerciseWorkoutId" = "ExerciseWorkout"."id"
       JOIN "Workout" ON "ExerciseWorkout"."workoutId" = "Workout"."id"
       WHERE "Workout"."date" >= ${firstDayOfMonth}
+      AND "Workout"."belongsToUserId" = ${loggedInUser.id}
     `;
     dashboard.weightThisMonth = weightThisMonth[0]?.total ? Number(weightThisMonth[0].total) : 0;
 
@@ -218,6 +236,7 @@ export const getDashboard = async () => {
       JOIN "ExerciseWorkout" ON "ExerciseSet"."exerciseWorkoutId" = "ExerciseWorkout"."id"
       JOIN "Workout" ON "ExerciseWorkout"."workoutId" = "Workout"."id"
       WHERE "Workout"."date" >= ${firstDayOfYear}
+        AND "Workout"."belongsToUserId" = ${loggedInUser.id}
     `;
     dashboard.weightThisYear = weightThisYear[0]?.total ? Number(weightThisYear[0].total) : 0;
 
@@ -243,6 +262,7 @@ export const getDashboard = async () => {
         JOIN "ExerciseWorkout" ON "ExerciseSet"."exerciseWorkoutId" = "ExerciseWorkout"."id"
         JOIN "Workout" ON "ExerciseWorkout"."workoutId" = "Workout"."id"
         WHERE "Workout"."date" >= ${currentDate} AND "Workout"."date" < ${nextDate}
+        AND "Workout"."belongsToUserId" = ${loggedInUser.id}
       `;
 
         workoutsByDate.push({
