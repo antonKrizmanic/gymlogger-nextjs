@@ -3,11 +3,11 @@
 import { ExerciseApiService } from "@/src/Api/Services/ExerciseApiService";
 import { IExercise } from "@/src/Models/Domain/Exercise";
 import { ConfirmationModal } from "@/src/components/Common/ConfirmationModal";
-import { ErrorSnackbar, SuccessSnackbar } from "@/src/components/Common/Snackbar";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Trash } from "lucide-react";
+import { toast } from "sonner";
 
 interface DeleteExerciseButtonProps {
     exercise: IExercise;
@@ -17,9 +17,7 @@ interface DeleteExerciseButtonProps {
 export default function DeleteExerciseButton({ exercise, onDelete }: DeleteExerciseButtonProps) {
     const router = useRouter();
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);    
 
     const handleDelete = () => {
         setIsDeleteModalOpen(true);
@@ -29,8 +27,8 @@ export default function DeleteExerciseButton({ exercise, onDelete }: DeleteExerc
         setIsDeleting(true);
         try {
             const service = new ExerciseApiService();
-            await service.deleteExercise(exercise.id);
-            setSuccess('Exercise deleted successfully');
+            await service.deleteExercise(exercise.id);            
+            toast.success('Exercise deleted successfully');
             
             // Call the onDelete callback if provided
             if (onDelete) {
@@ -39,8 +37,8 @@ export default function DeleteExerciseButton({ exercise, onDelete }: DeleteExerc
                 // Only redirect if no callback was provided
                 router.push('/exercises');
             }
-        } catch (err) {
-            setError('Failed to delete exercise');
+        } catch (err) {            
+            toast.error(`Failed to delete exercise: ${err}`);
             console.error('Error deleting exercise:', err);
         } finally {
             setIsDeleting(false);
@@ -53,7 +51,6 @@ export default function DeleteExerciseButton({ exercise, onDelete }: DeleteExerc
             <Button onClick={handleDelete}>
                 <Trash /> Delete
             </Button>
-
             <ConfirmationModal
                 isOpen={isDeleteModalOpen}
                 title="Delete Exercise"
@@ -61,18 +58,7 @@ export default function DeleteExerciseButton({ exercise, onDelete }: DeleteExerc
                 onConfirm={handleDeleteConfirm}
                 onCancel={() => setIsDeleteModalOpen(false)}
                 isLoading={isDeleting}
-            />
-
-            <SuccessSnackbar
-                text={success || ''}
-                isVisible={!!success}
-                onClose={() => setSuccess(null)}
-            />
-            <ErrorSnackbar
-                text={error || ''}
-                isVisible={!!error}
-                onClose={() => setError(null)}
-            />
+            />            
         </>
     );
 }
