@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/src/lib/prisma';
 import { Prisma } from '@prisma/client';
-import { auth } from '@/src/lib/auth';
+import { getLoggedInUser } from '@/src/data/loggedInUser';
 
 // Helper function to safely serialize BigInt, Decimal, and Date values
 function serializeData(data: any): any {
@@ -68,8 +68,8 @@ interface DashboardDateItem {
 export async function GET() {
   try {
 
-    const session = await auth();
-    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const loggedInUser = await getLoggedInUser();
+    if (!loggedInUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     // Check if there are any workouts
     const workoutsCount = await prisma.workout.count();

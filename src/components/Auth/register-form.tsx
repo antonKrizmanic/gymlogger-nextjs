@@ -91,6 +91,24 @@ export const RegisterForm = () => {
                                 <FormMessage/>
                             </FormItem>
                         )}/>
+
+                        <FormField 
+                        control={form.control}
+                        name="confirmPassword"
+                        render={({field}) =>(
+                            <FormItem>
+                                <FormLabel>Confirm Password</FormLabel>
+                                <FormControl>
+                                <Input
+                                    type="password"
+                                    disabled={isSubmitting}
+                                    {...field}
+                                    placeholder="Confirm Password"
+                                />                                
+                                </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )}/>
                     </div>  
                 <FormError message={error}/>
                 <FormSuccess message={success}/>

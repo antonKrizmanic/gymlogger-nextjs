@@ -1,13 +1,20 @@
-import { auth } from "@/src/lib/auth";
+import { getLoggedInUser } from "@/src/data/loggedInUser";
 import { prisma } from "@/src/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-    const session = await auth();
-    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const loggedInUser = await getLoggedInUser();
+    if (!loggedInUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     try {
 
         const exercises = await prisma.exercise.findMany({
+            where: {
+                OR: [
+                    { belongsToUserId: loggedInUser.id },
+                    { belongsToUserId: null }
+                ]
+            },
             orderBy: { name: "asc" },
         });
 

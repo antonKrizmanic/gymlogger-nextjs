@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/src/lib/prisma";
-import { auth } from "@/src/lib/auth";
+import { getLoggedInUser } from "@/src/data/loggedInUser";
 
 export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
 
-    const session = await auth();
-      if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const loggedInUser = await getLoggedInUser();
+    if (!loggedInUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     try {
         const { id } = params;
@@ -63,6 +63,10 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
 
 export async function PUT(request: NextRequest, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
+
+    const loggedInUser = await getLoggedInUser();
+    if (!loggedInUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
     try {
         const body = await request.json();
         
@@ -98,8 +102,8 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
 export async function DELETE(request: NextRequest, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
 
-    const session = await auth();
-    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const loggedInUser = await getLoggedInUser();
+    if (!loggedInUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     try {
         const { id } = params;
