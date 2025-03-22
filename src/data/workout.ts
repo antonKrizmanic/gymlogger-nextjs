@@ -3,6 +3,7 @@ import { prisma } from "@/src/lib/prisma";
 import { IWorkoutSimple, mapWorkoutToIWorkout } from "../Models/Domain/Workout";
 import { Prisma } from '@prisma/client';
 import { auth } from "../lib/auth";
+import { getLoggedInUser } from "./loggedInUser";
 
 export type WorkoutWhereInput = Prisma.WorkoutWhereInput;
 
@@ -12,11 +13,12 @@ export interface IWorkoutRequest extends IPagedRequest {
 }
 
 export const getWorkout = async (id: string) => {
-    const session = await auth();
-    if (!session) return null;
+    const loggedInUser = await getLoggedInUser();
+    if (!loggedInUser) return null;
     const workout = await prisma.workout.findUnique({
         where: {
             id,
+            belongsToUserId: loggedInUser.id
         },
         include: {
             muscleGroup: true,
@@ -33,8 +35,9 @@ export const getWorkout = async (id: string) => {
 }
 
 export const getPagedWorkouts = async (pagedRequest: IWorkoutRequest) => {
-    const session = await auth();
-    if (!session) return null;
+    const loggedInUser = await getLoggedInUser();
+    if (!loggedInUser) return null;
+    
     const where: WorkoutWhereInput = {};
     if (pagedRequest.muscleGroupId) {
         where.muscleGroupId = pagedRequest.muscleGroupId;
@@ -59,6 +62,8 @@ export const getPagedWorkouts = async (pagedRequest: IWorkoutRequest) => {
             { description: { contains: pagedRequest.search, mode: 'insensitive' } }
         ];
     }
+
+    where.belongsToUserId = loggedInUser.id;
 
 
     // Dohvat podataka iz baze

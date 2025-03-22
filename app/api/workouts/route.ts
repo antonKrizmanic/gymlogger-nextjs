@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from "@prisma/client";
 import { v4 as uuidv4 } from 'uuid';
-import { auth } from '@/src/lib/auth';
+import { getLoggedInUser } from '@/src/data/loggedInUser';
+import { getUserByEmail } from '@/src/data/user';
 
 const prisma = new PrismaClient();
 
 
 export async function GET(request: NextRequest) {
     try {
-        const session = await auth();
-        if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        const loggedInUser = await getLoggedInUser();
+        if (!loggedInUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
         const { searchParams } = request.nextUrl;
         const page = Number(searchParams.get('page')) || 0;
@@ -19,12 +20,9 @@ export async function GET(request: NextRequest) {
         const workoutDateParam = searchParams.get('workoutDate');
         const workoutDate = workoutDateParam ? new Date(workoutDateParam) : undefined;
         const sortDirection = searchParams.get('sortDirection') === 'asc' ? 'asc' : 'desc';
-
-        // Build the where clause
+        
         const where: any = {
-            // User: {
-            //     email: session.user.email
-            // }
+            belongsToUserId: loggedInUser.id,
         };
 
         // Add search condition if provided
@@ -130,8 +128,8 @@ export async function GET(request: NextRequest) {
 // Keep existing POST function
 export async function POST(request: Request) {
     try {
-        const session = await auth();
-        if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        const loggedInUser = await getLoggedInUser();
+        if (!loggedInUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
         const data = await request.json();
 
@@ -193,7 +191,8 @@ export async function POST(request: Request) {
                 totalSets: totalSets,
                 date: new Date(data.date),
                 createdAt: new Date(),
-                updatedAt: new Date,
+                updatedAt: new Date(),
+                belongsToUserId: loggedInUser.id,
                 exerciseWorkouts: {
                     create: exercises.map((exercise: any) => ({
                         id: uuidv4(),
@@ -209,6 +208,7 @@ export async function POST(request: Request) {
                         totalSets: exercise.totalSets,
                         createdAt: new Date(),
                         updatedAt: new Date(),
+                        belongsToUserId: loggedInUser.id,
                         exerciseSets: {
                             create: exercise.sets.map((set: any) => ({
                                 id: uuidv4(),

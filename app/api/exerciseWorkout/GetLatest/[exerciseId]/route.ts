@@ -3,7 +3,7 @@ import { prisma } from '@/src/lib/prisma';
 import { IExerciseWorkout } from '@/src/Models/Domain/Workout';
 import { ExerciseLogType } from '@/src/Types/Enums';
 import { Prisma } from '@prisma/client';
-import { auth } from '@/src/lib/auth';
+import { getLoggedInUser } from '@/src/data/loggedInUser';
 
 export async function GET(
     request: NextRequest,
@@ -11,8 +11,8 @@ export async function GET(
 ) {  
     const params = await props.params;
   
-    const session = await auth();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const loggedInUser = await getLoggedInUser();
+    if (!loggedInUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     try {
         const { exerciseId } = params;
@@ -41,7 +41,7 @@ export async function GET(
         const exerciseWorkoutQuery = {            
             where: {
                 exerciseId: exerciseId,
-                belongsToUserId: session.user?.id,                
+                belongsToUserId: loggedInUser.id,                
                 NOT: workoutId && workoutId !== 'null' && workoutId !== 'undefined'
                     ? { workoutId: workoutId }
                     : undefined,                

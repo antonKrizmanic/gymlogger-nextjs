@@ -1,20 +1,16 @@
-import { NextResponse } from "next/server";
-import authConfig from "./lib/auth.config"
+import { NextRequest, NextResponse } from "next/server";
+import authConfig from "@/src/lib/auth.config"
 import NextAuth from "next-auth"
 import {
   DEFAULT_LOGIN_REDIRECT,
   apiAuthPrefix,
   publicRoutes,
   authRoutes
-} from "./routes"
+} from "@/src/routes"
 
-// Use only one of the two middleware options below
-// 1. Use middleware directly
-// export const { auth: middleware } = NextAuth(authConfig)
-
-// 2. Wrapped middleware option
 const { auth } = NextAuth(authConfig)
 export default auth(async function middleware(req) {
+  console.log('Middleware triggered!!!!!!!!!!!!!!!!!!!!');
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);

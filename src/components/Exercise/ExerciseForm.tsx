@@ -123,7 +123,7 @@ export function ExerciseForm({ title, exercise, isLoading, onSubmit, cancelHref 
             />
 
             {/* Form buttons */}
-            <div className="flex md:flex-row- flex-col-reverse justify-end gap-4">
+            <div className="flex md:flex-row flex-col-reverse justify-end gap-4">
               <Button variant="outline" type="button">
                 <Link href={cancelHref}>Cancel</Link>
               </Button>
