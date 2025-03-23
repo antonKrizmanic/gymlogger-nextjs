@@ -5,12 +5,7 @@ type RequestConfig = {
 };
 
 export class ApiClient {
-    private static instance: ApiClient;
-    private baseUrl: string;
-
-    private constructor() {
-        this.baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-    }
+    private static instance: ApiClient;    
 
     public static getInstance(): ApiClient {
         if (!ApiClient.instance) {
@@ -25,7 +20,7 @@ export class ApiClient {
             ...config.headers
         };        
 
-        const response = await fetch(`${this.baseUrl}${endpoint}`, {
+        const response = await fetch(`${endpoint}`, {
             credentials: "include",
             ...config,
             headers,
