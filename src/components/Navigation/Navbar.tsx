@@ -33,7 +33,7 @@ export function Navbar() {
                     <div className="flex">
                         {/* Logo */}
                         <Link href="/dashboard" className="flex-shrink-0 flex items-center">
-                            <span className="text-xl font-bold text-gray-900 dark:text-white">GymLogger</span>
+                            <span className="text-xl font-bold text-gray-900 dark:text-white">GymNotebook</span>
                         </Link>
 
                         {/* Desktop Navigation */}
