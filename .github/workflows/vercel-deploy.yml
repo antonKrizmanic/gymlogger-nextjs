@@ -43,8 +43,19 @@ jobs:
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
       
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+
       - name: Run Changelog Manager
         uses: Enterwell/ChangelogManager-GitHub-Action@v3
         with: 
           should-bump-version: true
         id: merge-changelog
+      
+      # Committing new changes
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9.1.1
+        with:
+          message: "[skip ci] [version-bump] Automated commit for version ${{ steps.version-bump.outputs.bumped-semantic-version }}"
