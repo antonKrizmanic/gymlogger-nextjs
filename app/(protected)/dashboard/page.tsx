@@ -16,7 +16,7 @@ export default async function HomePage() {
     return (
         <Container>
             <div className="flex flex-col space-y-2">
-                <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Welcome to GymLogger</h1>
+                <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Welcome to GymNotebook</h1>
                 <p className="text-lg text-gray-600">
                     Track your workouts and progress with ease.
                 </p>
