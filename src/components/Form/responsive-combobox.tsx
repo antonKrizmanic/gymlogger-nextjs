@@ -129,33 +129,37 @@ function ItemList({
 
         return item.label.toLowerCase().includes(search.toLowerCase()) ? 1 : 0
       }}
-	  className="[&_[cmdk-item]]:text-gray-800 dark:[&_[cmdk-item]]:text-gray-200"
-	  >
-		<CommandInput
-		  placeholder={filterPlaceholder}
-		  value={search}
-		  onValueChange={setSearch}
-		  className="text-gray-800 dark:text-gray-200 placeholder:text-gray-500"
-		/>
-		<CommandList>
-		  <CommandEmpty className="text-gray-800 dark:text-gray-200">{emptyMessage}</CommandEmpty>
-		  <CommandGroup>
-			{items.map((item) => (
-			  <CommandItem
-				key={item.value}
-				value={item.value}
-				onSelect={(value) => {
-				  onSelectItem(items.find((i) => i.value === value) || null)
-				  setSearch("") // Reset search after selection
-				}}
-				className="text-gray-800 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white data-[selected=true]:text-gray-900 dark:data-[selected=true]:text-white"
-			  >
-				{item.label}
-			  </CommandItem>
-			))}
-		  </CommandGroup>
-		</CommandList>
+      className="[&_[cmdk-item]]:text-gray-800 dark:[&_[cmdk-item]]:text-gray-200"
+      value={selectedValue}
+    >
+      <CommandInput
+        placeholder={filterPlaceholder}
+        value={search}
+        onValueChange={setSearch}
+        className="text-gray-800 dark:text-gray-200 placeholder:text-gray-500"
+      />
+      <CommandList>
+        <CommandEmpty className="text-gray-800 dark:text-gray-200">{emptyMessage}</CommandEmpty>
+        <CommandGroup>
+          {items.map((item) => (
+            <CommandItem
+              key={item.value}
+              value={item.value}
+              onSelect={(value) => {
+                onSelectItem(items.find((i) => i.value === value) || null)
+                setSearch("") // Reset search after selection
+              }}
+              className={`text-gray-800 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white ${
+                selectedValue === item.value ? "bg-accent text-accent-foreground" : ""
+              }`}
+            >
+              {item.label}
+            </CommandItem>
+          ))}
+        </CommandGroup>
+      </CommandList>
     </Command>
   )
 }
+
 

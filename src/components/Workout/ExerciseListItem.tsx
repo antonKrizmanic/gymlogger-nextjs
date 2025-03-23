@@ -53,7 +53,7 @@ export function ExerciseListItem({
         const exerciseService = new ExerciseApiService()
         const exerciseResponse = await exerciseService.getExercise(exercise.exerciseId)
         setSelectedExercise(exerciseResponse || null)
-        console.log('Selected Exercise: ', selectedExercise);
+        
         // Fetch the last exercise workout
         const exerciseWorkoutService = new ExerciseApiWorkoutService()
         const lastWorkoutResponse = await exerciseWorkoutService.getLatestExerciseWorkout(
