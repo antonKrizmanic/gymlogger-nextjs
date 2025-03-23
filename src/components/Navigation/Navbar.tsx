@@ -1,5 +1,6 @@
 'use client';
 
+import { SessionProvider } from "next-auth/react"
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -8,13 +9,13 @@ import { ThemeSwitcher } from '../Theme/ThemeSwitcher';
 import { Menu, X, LogOut } from "lucide-react"
 
 import { signOut } from "next-auth/react"
-
+import UserAvatar from './UserAvatar';
 
 export function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const pathname = usePathname();
-    
 
+   
     const navItems = [
         { name: 'Workouts', href: '/workouts' },
         { name: 'Exercises', href: '/exercises' },
@@ -70,8 +71,11 @@ export function Navbar() {
                             )}
                             title="Sign out"
                         >
-                            <LogOut />                            
+                            <LogOut />
                         </button>
+                        <SessionProvider>
+                            <UserAvatar />
+                        </SessionProvider>
 
                         {/* Mobile menu button */}
                         <div className="sm:hidden flex items-center ml-4">
@@ -81,9 +85,9 @@ export function Navbar() {
                                 className="inline-flex items-center justify-center p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500"
                                 aria-expanded="false"
                             >
-                                <span className="sr-only">Open main menu</span>                                
-                                <Menu className={cn('h-6 w-6', isMobileMenuOpen ? 'hidden' : 'block')}/>                                
-                                <X className={cn('h-6 w-6', isMobileMenuOpen ? 'block' : 'hidden')}/>                                
+                                <span className="sr-only">Open main menu</span>
+                                <Menu className={cn('h-6 w-6', isMobileMenuOpen ? 'hidden' : 'block')} />
+                                <X className={cn('h-6 w-6', isMobileMenuOpen ? 'block' : 'hidden')} />
                             </button>
                         </div>
                     </div>
