@@ -16,37 +16,22 @@ export default auth(async function middleware(req) {
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
-  let response = NextResponse.next();
-
-  // Handle CORS
-  response.headers.set("Access-Control-Allow-Origin", "https://gymnotebook.win");
-  response.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
-  // Handle preflight OPTIONS requests
-  if (req.method === "OPTIONS") {
-    return new NextResponse(null, {
-      status: 204,
-      headers: response.headers,
-    });
-  }
-
   if (isApiAuthRoute) {
-    return response;
+    return NextResponse.next();
   }
 
   if (isAuthRoute) {
     if (isLoggedIn) {
       return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl.origin));
     }
-    return response;
+    return NextResponse.next();
   }
 
-  if (!isLoggedIn && !isPublicRoute) {
+  if(!isLoggedIn && !isPublicRoute) {
     return NextResponse.redirect(new URL("/auth/login", nextUrl.origin));
   }
 
-  return response;
+  return NextResponse.next();
 })
 
 // Optionally, don't invoke Middleware on some paths
