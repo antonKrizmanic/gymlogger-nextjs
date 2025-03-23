@@ -53,7 +53,7 @@ jobs:
           vercel-args: '--prod'
       
       - name: Run Changelog Manager
-      - uses: Enterwell/ChangelogManager-GitHub-Action@v3
+        uses: Enterwell/ChangelogManager-GitHub-Action@v3
         with: 
           should-bump-version: true
         id: merge-changelog
