@@ -83,10 +83,9 @@ export function DatePicker({
           <Calendar
             mode="single"
             selected={value || undefined}
-            onSelect={handleSelect}
-            initialFocus
-            fromDate={minDate}
-            toDate={maxDate}            
+            onSelect={handleSelect}            
+            startMonth={minDate}
+            endMonth={maxDate}
           />
           {clearable && value && (
             <div className="p-3 border-t border-border">
