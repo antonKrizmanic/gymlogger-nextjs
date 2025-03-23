@@ -9,31 +9,39 @@ import {
 
 import { Header } from "@/src/components/Auth/header";
 import { BackButton } from "@/src/components/Auth/back-button";
+import { Social } from "./social";
 
 interface CardWrapperProps {
     children: React.ReactNode;
     headerLabel: string;
     backButtonLabel: string;
-    backButtonHref: string;    
+    backButtonHref: string;
+    showSocial?: boolean;
 }
 
 export const CardWrapper = ({
     children,
     headerLabel,
     backButtonLabel,
-    backButtonHref    
+    backButtonHref,
+    showSocial
 }: CardWrapperProps) => {
     return (
         <Card className="w-96">
             <CardHeader>
-                <Header label={headerLabel}/>
-                </CardHeader>
+                <Header label={headerLabel} />
+            </CardHeader>
             <CardContent>
                 {children}
-            </CardContent>  
+            </CardContent>
+            {showSocial && (
+                <CardFooter>
+                    <Social />
+                </CardFooter>
+            )}
             <CardFooter>
-                <BackButton href={backButtonHref} label={backButtonLabel}/>
-            </CardFooter>          
+                <BackButton href={backButtonHref} label={backButtonLabel} />
+            </CardFooter>
         </Card>
     )
 };
