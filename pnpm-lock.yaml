@@ -57,8 +57,8 @@ dependencies:
     specifier: 1.1.2
     version: 1.1.2(@types/react@19.0.12)(react@19.0.0)
   axios:
-    specifier: 1.8.3
-    version: 1.8.3
+    specifier: 1.8.4
+    version: 1.8.4
   bcryptjs:
     specifier: 3.0.2
     version: 3.0.2
@@ -1980,7 +1980,7 @@ packages:
     resolution: {integrity: sha512-9JgOaunvQdsQ/qW2OPmE5+hCeUB52lQSolecrFrthct55QekhmXEwT203s20RL+UHtCQc15y3VXpby9E7Kkh/g==}
     deprecated: This is a stub types definition. axios provides its own type definitions, so you do not need this installed.
     dependencies:
-      axios: 1.8.3
+      axios: 1.8.4
     transitivePeerDependencies:
       - debug
     dev: true
@@ -2437,8 +2437,8 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /axios@1.8.3:
-    resolution: {integrity: sha512-iP4DebzoNlP/YN2dpwCgb8zoCmhtkajzS48JvwmkSkXvPI3DHc7m+XYL5tGnSlJtR6nImXZmdCuN5aP8dh1d8A==}
+  /axios@1.8.4:
+    resolution: {integrity: sha512-eBSYY4Y68NNlHbHBMdeDmKNtDgXWhQsJcGqzO3iLUM0GraQFSS9cVgPX5I9b3lbdFKyYoAEGAZF1DwhTaljNAw==}
     dependencies:
       follow-redirects: 1.15.9
       form-data: 4.0.2
@@ -2569,6 +2569,7 @@ packages:
 
   /color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
+    requiresBuild: true
 
   /color-string@1.9.1:
     resolution: {integrity: sha512-shrVawQFojnZv6xM40anx4CkoDP+fZsw/ZerEMsW/pyzsRbElpsL/DBVW7q3ExxwusdNXI3lXpuhEZkzs8p5Eg==}
