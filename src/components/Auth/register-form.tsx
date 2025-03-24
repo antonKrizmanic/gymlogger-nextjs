@@ -29,8 +29,10 @@ export const RegisterForm = () => {
     const form = useForm<z.infer<typeof RegisterSchema>>({
         resolver: zodResolver(RegisterSchema),
         defaultValues: {
+            name: "",
             email: "",
-            password: ""
+            password: "",
+            confirmPassword: "",
         },
     });
 
@@ -57,6 +59,24 @@ export const RegisterForm = () => {
                 <form onSubmit={form.handleSubmit(onSubmit)}
                     className="space-y-6">
                      <div className="space-y-4">
+                     <FormField 
+                        control={form.control}
+                        name="name"
+                        render={({field}) =>(
+                            <FormItem>
+                                <FormLabel>Full name</FormLabel>
+                                <FormControl>
+                                <Input
+                                    type="text"
+                                    disabled={isSubmitting}
+                                    {...field}
+                                    placeholder="Full name"
+                                />                                
+                                </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )}/>
+
                         <FormField 
                         control={form.control}
                         name="email"
