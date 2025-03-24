@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.3.0] - 2025-03-24
+### Added
+- [Features] Name on user registration form
+
 ## [0.2.0] - 2025-03-23
 ### Added
 - [Features] User avatar
