@@ -10,6 +10,16 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     signIn: "/auth/login",    
     error: "/auth/error",    
   },
+  events: {
+    async linkAccount({ user }) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          emailVerified: new Date(),
+        },
+      });
+    }
+  },
   callbacks: {
     async signIn({user, account}) {
       if(account?.provider !== "credentials") {

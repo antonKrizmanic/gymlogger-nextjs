@@ -4,6 +4,8 @@ import { RegisterSchema } from "@/src/schemas";
 import { prisma } from "@/src/lib/prisma";
 import bcrypt from "bcryptjs";
 import { getUserByEmail } from "@/src/data/user";
+import { generateVerificationToken } from "../data/verification-token";
+import { sendVerificationEmail } from "../lib/mail";
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
     const validatedFields = RegisterSchema.safeParse(values);
@@ -33,5 +35,9 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
         }
     });
 
-    return { success: "You are now registered." };
+    const verificationToken = await generateVerificationToken(email);
+
+    await sendVerificationEmail(verificationToken.email, verificationToken.token);
+
+    return { success: "Confirmation email sent!" };
 }
