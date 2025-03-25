@@ -16,13 +16,11 @@ export interface VerifyEmailProps {
     confirmLink: string;
 }
 
-export default function VerifyEmail({ email, confirmLink }: VerifyEmailProps) {
-    const previewText = `Email verification for GymNotebook`;
-
+export default function VerifyEmail({ email, confirmLink }: VerifyEmailProps) {    
     return (
         <Html>
             <Head />
-            <Preview>{previewText}</Preview>
+            <Preview>Please verify your email address</Preview>
             <Tailwind>
                 <ContentCard>                    
                     <Header>Email verification</Header>

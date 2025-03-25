@@ -11,12 +11,12 @@ function getResend() {
 }
 
 export const sendVerificationEmail = async (email: string, token: string) => {
-    const confirmLink = `https://localhost:3000/auth/new-verification?token=${token}`;
+    const confirmLink = `https://www.gymnotebook.win/auth/new-verification?token=${token}`;
 
     await getResend().emails.send({
-        from: "onboarding@resend.dev",
+        from: "donotreply@email.gymnotebook.win",
         to: email,
-        subject: "Verify your email",        
+        subject: "GymNotebook - Verify your email",        
         react: VerifyEmail({ email, confirmLink }),
     });
 }

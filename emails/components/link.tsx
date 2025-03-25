@@ -6,7 +6,7 @@ export function Link({ children, href }: PropsWithChildren<{ href: string; }>) {
     return (
         <RELink
             href={href}
-            className="text-[#684B31] no-underline"
+            className="text-[#a1a1a1] no-underline"
         >
             {children}
         </RELink>

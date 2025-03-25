@@ -1,6 +1,6 @@
 import { getPagedExercises, IExerciseRequest } from '@/src/data/exercise';
 import { ExerciseLogType, SortDirection } from '@/src/Types/Enums';
-import { ExerciseIndex } from '@/views/exercise/ExerciseIndex';
+import { ExerciseIndex } from '@/src/views/exercise/ExerciseIndex';
 
 export default async function ExercisesPage(
   props: {
