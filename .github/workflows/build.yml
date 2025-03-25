@@ -1,13 +1,15 @@
-name: Release
+name: Build
 
 on:
   push:
     branches:
       - main      
   workflow_dispatch:
+  pull_request:
+      types: [opened, synchronize, reopened]
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -29,12 +31,7 @@ jobs:
       - name: Generate Prisma Client
         run: npx prisma generate
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
-      - name: Run Prisma Migrations
-        run: npx prisma migrate deploy
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}      
 
       - name: Build application
         run: pnpm build
@@ -42,20 +39,4 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
           NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
-      
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '6.0.x'
 
-      - name: Run Changelog Manager
-        uses: Enterwell/ChangelogManager-GitHub-Action@v3
-        with: 
-          should-bump-version: true
-        id: merge-changelog
-      
-      # Committing new changes
-      - name: Commit changes
-        uses: EndBug/add-and-commit@v9.1.4
-        with:
-          message: "[skip ci] [version-bump] Automated commit for version ${{ steps.version-bump.outputs.bumped-semantic-version }}"

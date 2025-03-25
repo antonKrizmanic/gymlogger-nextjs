@@ -1,7 +1,10 @@
 import { NewVerificationForm } from "@/src/components/Auth/new-verification";
+import { Suspense } from "react";
 
-export default function NewVerificationPage() {
+export default async function NewVerificationPage() {
     return(
-        <NewVerificationForm />
+        <Suspense>
+            <NewVerificationForm />
+        </Suspense>
     )
 }
