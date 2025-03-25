@@ -99,7 +99,7 @@ dependencies:
     specifier: 19.0.0
     version: 19.0.0(react@19.0.0)
   react-email:
-    specifier: ^3.0.7
+    specifier: 3.0.7
     version: 3.0.7(react-dom@19.0.0)(react@19.0.0)
   react-hook-form:
     specifier: 7.54.2
@@ -108,7 +108,7 @@ dependencies:
     specifier: 2.15.1
     version: 2.15.1(react-dom@19.0.0)(react@19.0.0)
   resend:
-    specifier: ^4.1.2
+    specifier: 4.1.2
     version: 4.1.2(react-dom@19.0.0)(react@19.0.0)
   sonner:
     specifier: 2.0.1
@@ -263,7 +263,7 @@ packages:
       '@babel/helper-compilation-targets': 7.27.0
       '@babel/helper-module-transforms': 7.26.0(@babel/core@7.24.5)
       '@babel/helpers': 7.27.0
-      '@babel/parser': 7.24.5
+      '@babel/parser': 7.27.0
       '@babel/template': 7.27.0
       '@babel/traverse': 7.27.0
       '@babel/types': 7.27.0
@@ -3403,6 +3403,7 @@ packages:
 
   /color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
+    requiresBuild: true
 
   /color-string@1.9.1:
     resolution: {integrity: sha512-shrVawQFojnZv6xM40anx4CkoDP+fZsw/ZerEMsW/pyzsRbElpsL/DBVW7q3ExxwusdNXI3lXpuhEZkzs8p5Eg==}
