@@ -1,5 +1,8 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.6.0] - 2025-03-25
+- No new changes
+
 ## [0.5.0] - 2025-03-25
 ### Added
 - [Features] Email verification after registration
