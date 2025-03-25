@@ -6,9 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/src/lib/utils';
 import { ThemeSwitcher } from '../Theme/ThemeSwitcher';
-import { Menu, X, LogOut } from "lucide-react"
-
-import { signOut } from "next-auth/react"
+import { Menu, X } from "lucide-react"
 import UserAvatar from './UserAvatar';
 
 export function Navbar() {
@@ -22,10 +20,6 @@ export function Navbar() {
     ];
 
     const isActive = (path: string) => pathname === path;
-
-    const handleLogout = () => {
-        signOut();
-    };
 
     return (
         <nav className="bg-white dark:bg-slate-950 border-b border-gray-200 dark:border-slate-800">
@@ -56,27 +50,11 @@ export function Navbar() {
                         </div>
                     </div>
 
-                    <div className="flex items-center">
-                        {/* Theme Switcher */}
-                        <ThemeSwitcher />
-
-                        {/* Logout Button */}
-                        <button
-                            onClick={handleLogout}
-                            className={cn(
-                                'ml-4 p-2 rounded-md',
-                                'text-gray-500 dark:text-gray-400',
-                                'hover:bg-gray-100 dark:hover:bg-slate-800',
-                                'transition-colors'
-                            )}
-                            title="Sign out"
-                        >
-                            <LogOut />
-                        </button>
+                    <div className="flex items-center gap-2">                        
+                        <ThemeSwitcher />                        
                         <SessionProvider>
                             <UserAvatar />
                         </SessionProvider>
-
                         {/* Mobile menu button */}
                         <div className="sm:hidden flex items-center ml-4">
                             <button
