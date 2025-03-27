@@ -19,7 +19,7 @@ export const Social = () => {
         <div className="flex items-center w-full gap-x-2">
             <Button
             size="lg"
-            className="w-1/2"
+            className="w-1/2 hover:cursor-pointer"
             variant="outline"
             onClick={() => onClick("google")}
             >
@@ -27,7 +27,7 @@ export const Social = () => {
             </Button>
             <Button
             size="lg"
-            className="w-1/2"
+            className="w-1/2 hover:cursor-pointer"
             variant="outline"
             onClick={() => onClick("github")}
             >
