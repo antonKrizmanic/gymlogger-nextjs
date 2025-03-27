@@ -1,6 +1,6 @@
 import { Container } from "@/src/components/Common/Container";
 import DeleteExerciseButton from "@/src/components/Exercise/DeleteExerciseButton";
-import { ExerciseWorkoutHistory } from "@/src/components/Exercise/ExerciseWorkoutHistory";
+import { ExerciseTabs } from "@/src/components/Exercise/ExerciseTabs";
 import { getExercise } from "@/src/data/exercise";
 import Link from "next/link";
 import { Button } from "@/src/components/ui/button";
@@ -79,8 +79,8 @@ export default async function ExerciseDetailPage(props: { params: Promise<{ id: 
                     </CardContent>
                 </Card>
                 
-                {/* Exercise workout history */}
-                <ExerciseWorkoutHistory exerciseId={exercise.id} />
+                {/* Tabbed interface for history and progress */}
+                <ExerciseTabs exerciseId={exercise.id} />
             </div>
         </Container>
     );
