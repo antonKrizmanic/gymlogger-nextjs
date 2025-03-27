@@ -36,6 +36,15 @@ interface ChartDataItem {
   [key: string]: string | number; // Allow for dynamic access with string keys
 }
 
+// Helper function to safely convert value to number
+const safeNumberConversion = (value: any): number => {
+	if (value === null || value === undefined) return 0;
+	// Handle BigInt values
+	if (typeof value === 'bigint') return Number(value);
+	// Handle other numeric values
+	return Number(value);
+};
+
 export function WorkoutChart({ data }: WorkoutChartProps) {
   const [metric, setMetric] = useState<ChartMetric>('weight');
   const [chartType, setChartType] = useState<ChartType>('line');
@@ -51,18 +60,24 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
       // If date exists, increment workout count
       acc[existingDateIndex].workouts = (acc[existingDateIndex].workouts || 0) + 1;
 
-      // Add other metrics if they exist
-      if (curr.weight) acc[existingDateIndex].weight = (acc[existingDateIndex].weight || 0) + curr.weight;
-      if (curr.series) acc[existingDateIndex].series = (acc[existingDateIndex].series || 0) + curr.series;
-      if (curr.reps) acc[existingDateIndex].reps = (acc[existingDateIndex].reps || 0) + curr.reps;
+      // Add other metrics if they exist, ensuring proper number conversion
+      if (curr.weight !== undefined) {
+        acc[existingDateIndex].weight = (acc[existingDateIndex].weight || 0) + safeNumberConversion(curr.weight);
+      }
+      if (curr.series !== undefined) {
+        acc[existingDateIndex].series = (acc[existingDateIndex].series || 0) + safeNumberConversion(curr.series);
+      }
+      if (curr.reps !== undefined) {
+        acc[existingDateIndex].reps = (acc[existingDateIndex].reps || 0) + safeNumberConversion(curr.reps);
+      }
     } else {
       // If date doesn't exist, add a new entry
       acc.push({
         date: curr.date,
         workouts: 1,
-        weight: curr.weight || 0,
-        series: curr.series || 0,
-        reps: curr.reps || 0
+        weight: safeNumberConversion(curr.weight) || 0,
+        series: safeNumberConversion(curr.series) || 0,
+        reps: safeNumberConversion(curr.reps) || 0
       });
     }
 
@@ -180,4 +195,4 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
       </CardContent>
     </Card>
   );
-} 
+}
