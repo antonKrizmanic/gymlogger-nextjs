@@ -23,6 +23,7 @@ export const Endpoints = {
     ExerciseWorkout: {
         Base: `/api/exerciseWorkout`,
         GetLatest: (exerciseId: string, workoutId: string | null) => workoutId ? `/api/exerciseWorkout/GetLatest/${exerciseId}?workoutId=${workoutId}` : `/api/exerciseWorkout/GetLatest/${exerciseId}`,
+        GetPaginated: (exerciseId: string) => `/api/exerciseWorkout/getPaginated/${exerciseId}`,
     },
     MuscleGroup: {
         Base: `/api/muscleGroup`,
@@ -33,4 +34,4 @@ export const Endpoints = {
         ById: (id: string) => `/api/workouts/${id}`,
         GetForEdit: (id: string) => `/api/workouts/GetForEdit/${id}`,
     },
-} as const; 
+} as const;
