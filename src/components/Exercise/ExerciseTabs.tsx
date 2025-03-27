@@ -14,7 +14,7 @@ export function ExerciseTabs({ exerciseId }: ExerciseTabsProps) {
 
 	return (
 		<Tabs defaultValue="history" onValueChange={setActiveTab} className="w-full">
-			<TabsList className="grid w-[400px] grid-cols-2 mb-4">
+			<TabsList className="grid max-w-[400px] grid-cols-2 mb-4">
 				<TabsTrigger value="history" className="text-black data-[state=active]:text-white hover:cursor-pointer">History</TabsTrigger>
 				<TabsTrigger value="progress" className="text-black data-[state=active]:text-white hover:cursor-pointer">Progress</TabsTrigger>
 			</TabsList>
