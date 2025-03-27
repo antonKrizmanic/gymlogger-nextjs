@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/src/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/src/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/src/components/ui/table';
 import { Pagination } from '@/src/components/Common/Pagination';
 import { ExerciseApiWorkoutService } from '@/src/Api/Services/ExerciseApiWorkoutService';

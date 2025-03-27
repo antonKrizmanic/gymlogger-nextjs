@@ -10,7 +10,8 @@ interface ExerciseTabsProps {
 }
 
 export function ExerciseTabs({ exerciseId }: ExerciseTabsProps) {
-	const [activeTab, setActiveTab] = useState('history');
+	
+	const [, setActiveTab] = useState('history');
 
 	return (
 		<Tabs defaultValue="history" onValueChange={setActiveTab} className="w-full">

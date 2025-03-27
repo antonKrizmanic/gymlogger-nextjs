@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/src/lib/prisma';
 import { IExerciseWorkout } from '@/src/Models/Domain/Workout';
 import { ExerciseLogType, SortDirection } from '@/src/Types/Enums';
-import { Prisma } from '@prisma/client';
 import { getLoggedInUser } from '@/src/data/loggedInUser';
 import { IPagedResponse } from '@/src/Types/Common';
 
