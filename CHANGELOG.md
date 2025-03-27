@@ -1,5 +1,10 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.12.0] - 2025-03-27
+### Added
+- [Features] Charts on exercise details page
+- [Features] Improved Exercise detail page with exercise workout history
+
 ## [0.11.0] - 2025-03-27
 ### Added
 - [Features] Option to delete user profile
