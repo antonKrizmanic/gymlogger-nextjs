@@ -5,41 +5,49 @@ import { getLoggedInUser } from '@/src/data/loggedInUser';
 
 // Helper function to safely serialize BigInt, Decimal, and Date values
 function serializeData(data: any): any {
-  // Handle null/undefined
-  if (data === null || data === undefined) {
-    return data;
-  }
-  
-  // Handle BigInt
-  if (typeof data === 'bigint') {
-    return Number(data);
-  }
-  
-  // Handle Prisma Decimal
-  if (data instanceof Prisma.Decimal) {
-    return Number(data);
-  }
-  
-  // Handle Date objects - convert to ISO string
-  if (data instanceof Date) {
-    return data.toISOString();
-  }
-  
-  // Handle arrays
-  if (Array.isArray(data)) {
-    return data.map(serializeData);
-  }
-  
-  // Handle objects (but check if it's a regular object, not a Date or other special type)
-  if (typeof data === 'object' && data !== null && data.constructor === Object) {
-    return Object.fromEntries(
-      Object.entries(data).map(([key, value]) => [key, serializeData(value)])
-    );
-  }
-  
-  // Return other types as is
-  return data;
+	// Handle null/undefined
+	if (data === null || data === undefined) {
+		return data;
+	}
+	
+	// Handle BigInt
+	if (typeof data === 'bigint') {
+		return Number(data);
+	}
+	
+	// Handle Prisma Decimal
+	if (data instanceof Prisma.Decimal) {
+		return Number(data);
+	}
+	
+	// Handle Date objects - convert to ISO string
+	if (data instanceof Date) {
+		return data.toISOString();
+	}
+	
+	// Handle arrays
+	if (Array.isArray(data)) {
+		return data.map(serializeData);
+	}
+	
+	// Handle objects (but check if it's a regular object, not a Date or other special type)
+	if (typeof data === 'object' && data !== null && data.constructor === Object) {
+		return Object.fromEntries(
+			Object.entries(data).map(([key, value]) => [key, serializeData(value)])
+		);
+	}
+	
+	// Return other types as is
+	return data;
 }
+
+// Make sure all numeric calculations in workoutsByDate are safely converted
+const safeNumberConversion = (value: any): number => {
+	if (value === null || value === undefined) return 0;
+	if (typeof value === 'bigint') return Number(value);
+	if (value instanceof Prisma.Decimal) return Number(value);
+	return Number(value) || 0;
+};
 
 // Define dashboard interface
 interface Dashboard {
@@ -301,9 +309,9 @@ export async function GET() {
 
       workoutsByDate.push({
         date: currentDate.toISOString().split('T')[0],
-        weight: workoutsForDate[0]?.weight ? Number(workoutsForDate[0].weight) : 0,
-        series: workoutsForDate[0]?.count || 0,
-        reps: workoutsForDate[0]?.reps ? Number(workoutsForDate[0].reps) : 0
+        weight: safeNumberConversion(workoutsForDate[0]?.weight),
+        series: safeNumberConversion(workoutsForDate[0]?.count),
+        reps: safeNumberConversion(workoutsForDate[0]?.reps)
       });
     }
 
