@@ -44,6 +44,8 @@ export interface IExerciseWorkout {
     exerciseId: string;
     exerciseName?: string;
     workoutId: string;
+    workoutDate?: Date;
+    workoutName?: string;
     exerciseLogType: ExerciseLogType;
     totalWeight?: number;
     totalReps?: number;
