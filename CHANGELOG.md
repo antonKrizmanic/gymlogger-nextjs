@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.11.0] - 2025-03-27
+### Added
+- [Features] Option to delete user profile
+
 ## [0.10.0] - 2025-03-27
 - No new changes
 
