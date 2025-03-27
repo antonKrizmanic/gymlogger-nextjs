@@ -1,5 +1,8 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.13.0] - 2025-03-27
+- No new changes
+
 ## [0.12.0] - 2025-03-27
 ### Added
 - [Features] Charts on exercise details page
