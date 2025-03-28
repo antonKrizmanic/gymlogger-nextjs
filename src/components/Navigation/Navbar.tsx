@@ -8,6 +8,7 @@ import { cn } from '@/src/lib/utils';
 import { ThemeSwitcher } from '../Theme/ThemeSwitcher';
 import { Menu, X } from "lucide-react"
 import UserAvatar from './UserAvatar';
+import { Logotype } from "../Logo";
 
 export function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -26,9 +27,11 @@ export function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
                     <div className="flex">
-                        {/* Logo */}
+                        {/* Logo */}                        
+                        
                         <Link href="/dashboard" className="flex-shrink-0 flex items-center">
-                            <span className="text-xl font-bold text-gray-900 dark:text-white">GymNotebook</span>
+                            <Logotype className="w-[60px] h-[60px] mx-auto text-gray-900 dark:text-white"/>
+                            <span className="hidden md:inline text-xl font-bold text-gray-900 dark:text-white">GymNotebook</span>
                         </Link>
 
                         {/* Desktop Navigation */}

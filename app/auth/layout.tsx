@@ -1,3 +1,11 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    icons: {
+      icon: "../icon.svg",
+    }
+  };
+  
 export default function AuthLayout({
     children,
 }: {
