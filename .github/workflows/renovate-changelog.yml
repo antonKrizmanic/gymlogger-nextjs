@@ -1,0 +1,60 @@
+name: Create Changelog Entry for Renovate PRs
+
+on:
+    pull_request:
+        types: [opened, synchronize]
+        branches:
+            - 'renovate/**'
+
+jobs:
+    create-changelog-entry:
+        runs-on: ubuntu-latest
+        if: startsWith(github.head_ref, 'renovate/')
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+                
+            - name: Generate changelog entry
+              run: |
+                # Create changes directory if it doesn't exist
+                mkdir -p changes
+                
+                # Extract package name from branch name
+                BRANCH_NAME="${{ github.head_ref }}"
+                PACKAGE_NAME=${BRANCH_NAME#renovate/}
+                
+                # Get PR body to extract dependency info
+                PR_BODY=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                    "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}" \
+                    | jq -r '.body')
+                
+                # Try to extract specific package and version info from PR body
+                PACKAGE_INFO=$(echo "$PR_BODY" | grep -o -P '(?<=## Release Notes.*\n\n).*' | head -n 1 || echo "")
+                
+                # Prepare the filename (no extension, just the content descriptor)
+                if [ -n "$PACKAGE_INFO" ]; then
+                    FILENAME="Changed [Dependencies] ${PACKAGE_INFO}"
+                else
+                    FILENAME="Changed [Dependencies] Updated ${PACKAGE_NAME}"
+                fi
+                                
+                FILEPATH="changes/${FILENAME}"
+                
+                # Create an empty file with the descriptive filename
+                touch "$FILEPATH"
+                
+                # Check if file was created
+                if [ -f "$FILEPATH" ]; then
+                    echo "Created changelog entry: $FILEPATH"
+                else
+                    echo "Failed to create changelog entry"
+                    exit 1
+                fi
+            
+            - name: Commit changelog entry
+              run: |
+                git config --local user.email "github-actions[bot]@users.noreply.github.com"
+                git config --local user.name "github-actions[bot]"
+                git add changes/
+                git commit -m "Add changelog entry for dependency update [skip ci]" || echo "No changes to commit"
+                git push origin HEAD:${{ github.head_ref }}
