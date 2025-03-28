@@ -1,5 +1,13 @@
 import { Navbar } from "@/src/components/Navigation/Navbar";
+import { Metadata } from "next";
 
+export const metadata: Metadata = {
+    icons: {
+      icon: "../icon.svg",
+    }
+  };
+  
+  
 export default function ProtectedLayout({
     children,
 }: {

@@ -9,7 +9,14 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "GymNotebook",
   description: "Track your workouts and progress",
-
+  icons: {
+    icon: [
+      {
+        url: "/icon.svg",
+        type: "image/svg+xml",
+      },
+    ]
+  }
 };
 
 export const viewport: Viewport = {
