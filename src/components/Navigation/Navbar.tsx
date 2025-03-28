@@ -8,9 +8,6 @@ import { cn } from '@/src/lib/utils';
 import { ThemeSwitcher } from '../Theme/ThemeSwitcher';
 import { Menu, X } from "lucide-react"
 import UserAvatar from './UserAvatar';
-import Icon from "@/app/icon.svg";
-import Image from "next/image";
-import Logo from "@/app/logo.png";
 import { Logotype } from "../Logo";
 
 export function Navbar() {
