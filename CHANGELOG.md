@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.15.0] - 2025-03-28
+### Added
+- [Brand] Logo
+
 ## [0.14.0] - 2025-03-27
 - No new changes
 
