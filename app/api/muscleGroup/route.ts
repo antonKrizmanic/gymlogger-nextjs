@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { auth } from "@/src/lib/auth";
 import { getMuscleGroups } from "@/src/data/muscle-group";
-
-const prisma = new PrismaClient();
 
 export async function GET() {
     const session = await auth();

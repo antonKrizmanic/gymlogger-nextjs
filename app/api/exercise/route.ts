@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
     const pageSize = Number(searchParams.get("size")) || 12;
     const search = searchParams.get("search") || "";
     const muscleGroup = searchParams.get("muscleGroupId") || "";
-    const logType = searchParams.get("logType") || "";
+    const logType = Number(searchParams.get("logType")) || 0;
 
     const result = await getPagedExercises({
       page,

@@ -1,20 +1,23 @@
 "use client";
 import { ExerciseApiService } from '@/src/api/services/exercise-api-service';
-import { getPagedExercises, IExerciseRequest } from '@/src/data/exercise';
-import { ExerciseLogType, SortDirection } from '@/src/types/enums';
 import { ExerciseIndex } from '@/src/views/exercise/exercise-index';
 import { useEffect, useState } from 'react';
 import { IExercise } from '@/src/models/domain/exercise';
-import { IPagedResponse, IPagingDataResponseDto } from '@/src/types/common';
+import { IPagingDataResponseDto } from '@/src/types/common';
 
 export default function ExercisesPage(
   props: {
     searchParams: Record<string, string>;
   }
 ) {
-
   const [exercises, setExercises] = useState<IExercise[]>([]);
-  const [pagingData, setPagingData] = useState<IPagingDataResponseDto>({});
+  const [pagingData, setPagingData] = useState<IPagingDataResponseDto>({
+    page: 0,
+    pageSize: 12,
+    totalPages: 0,
+    totalItems: 0,
+  } as IPagingDataResponseDto);
+  
   const [isLoading, setIsLoading] = useState(true);
 
   const searchParams =  props.searchParams;
@@ -36,28 +39,13 @@ export default function ExercisesPage(
       setPagingData(response.pagingData);
       setIsLoading(false);
     };
-
-    // const pagedRequest: IExerciseRequest = {
-    //   page: parseInt(params.get('page') ?? '0'),
-    //   pageSize: parseInt(params.get('pageSize') ?? '12'),
-    //   search: params.get('search') ?? '',
-    //   sortColumn: params.get('sortColumn') ?? '',
-    //   sortDirection: params.get('sortDirection') as unknown as SortDirection ?? SortDirection.Ascending,
-    //   muscleGroupId: params.get('muscleGroupId') ?? '',
-    //   exerciseLogType: parseInt(params.get('logType') ?? '0') as unknown as ExerciseLogType ?? ExerciseLogType.Unknown,    
-    // }
+    
     getExercises();
-  },[searchParams]);
-
-  
-
-  // const response = await getPagedExercises(pagedRequest);
+  },[searchParams, params]);
 
   if (isLoading === null) {
     return <div>Loading...</div>;
   }
-
-  // const { items: exercises, pagingData } = response;  
 
   return (
     <ExerciseIndex
