@@ -1,6 +1,6 @@
-import { IPagedRequest, IPagedResponse } from "../Types/Common";
+import { IPagedRequest, IPagedResponse } from "../types/common";
 import { prisma } from "@/src/lib/prisma";
-import { IWorkoutSimple, mapWorkoutToIWorkout } from "../Models/Domain/Workout";
+import { IWorkoutSimple, mapWorkoutToIWorkout } from "../models/domain/workout";
 import { Prisma } from '@prisma/client';
 import { getLoggedInUser } from "./loggedInUser";
 

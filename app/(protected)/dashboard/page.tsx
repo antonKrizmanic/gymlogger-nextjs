@@ -1,9 +1,9 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/src/components/ui/card';
 
-import { Container } from '@/src/components/Common/Container';
-import { WorkoutChartSection } from '@/src/components/Dashboard/WorkoutChartSection';
-import { DetailButton } from '@/src/components/Common/DetailButton';
-import { EditButton } from '@/src/components/Common/EditButton';
+import { Container } from '@/src/components/common/container';
+import { WorkoutChartSection } from '@/src/components/dashboard/workout-chart-section';
+import { DetailButton } from '@/src/components/common/detail-button';
+import { EditButton } from '@/src/components/common/edit-button';
 import { getDashboard } from '@/src/data/dashboard';
 import { Button } from '@/src/components/ui/button';
 import Link from 'next/link';

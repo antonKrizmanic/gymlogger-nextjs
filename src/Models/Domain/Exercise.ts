@@ -1,4 +1,4 @@
-import { ExerciseLogType } from '../../Types/Enums';
+import { ExerciseLogType } from '../../types/enums';
 
 export interface IExercise {
     id: string;

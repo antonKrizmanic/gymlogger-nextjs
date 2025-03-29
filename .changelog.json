@@ -1,12 +1,12 @@
 {
     "categories": [
-        "Bug Fixes",
+        "BugFixes",
         "Features",
-        "Performance Improvements",
+        "PerformanceImprovements",
         "Refactoring",
         "Documentation",
-        "Build System",
-        "Code Style Changes",
+        "BuildSystem",
+        "CodeStyleChanges",
         "Other",
         "Brand",
         "Dependencies"

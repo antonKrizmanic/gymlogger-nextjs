@@ -1,8 +1,8 @@
-import { Container } from '@/src/components/Common/Container';
+import { Container } from '@/src/components/common/container';
 
 import { Card, CardContent } from '@/src/components/ui/card';
-import { WorkoutExerciseList } from '@/src/components/Workout/WorkoutExerciseList';
-import DeleteWorkoutButton from '@/src/components/Workout/DeleteWorkoutButton';
+import { WorkoutExerciseList } from '@/src/components/workout/workout-exercise-list';
+import DeleteWorkoutButton from '@/src/components/workout/delete-workout-button';
 import { getWorkout } from '@/src/data/workout';
 import Link from 'next/link';
 import { Button } from '@/src/components/ui/button';

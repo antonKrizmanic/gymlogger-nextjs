@@ -1,6 +1,6 @@
-import { Container } from "@/src/components/Common/Container";
+import { Container } from "@/src/components/common/container";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/src/components/ui/card";
-import UserDeleteDialog from "@/src/components/Auth/user-delete-dialog";
+import UserDeleteDialog from "@/src/components/auth/user-delete-dialog";
 import { auth } from "@/src/lib/auth";
 
 

@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { ExerciseLogType } from "../Types/Enums";
+import { ExerciseLogType } from "../types/enums";
 
 export const LoginSchema = z.object({
     email: z.string().email(),

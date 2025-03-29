@@ -1,4 +1,4 @@
-import { ExerciseLogType } from "@/src/Types/Enums";
+import { ExerciseLogType } from "@/src/types/enums";
 
 export interface IWorkout extends IWorkoutSimple {    
     exercises: IExerciseWorkout[];

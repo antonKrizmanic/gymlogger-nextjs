@@ -2,20 +2,20 @@
 
 import { Button } from "@/src/components/ui/button";
 
-import { Container } from "@/src/components/Common/Container";
-import { Grid } from "@/src/components/Common/Grid";
-import { MuscleGroupSelect } from "@/src/components/Common/MuscleGroupSelect";
-import { Pagination } from "@/src/components/Common/Pagination";
-import { SearchBar } from "@/src/components/Common/SearchBar";
-import { WorkoutCard } from "@/src/components/Workout/WorkoutCard";
-import { IWorkoutSimple } from "@/src/Models/Domain/Workout";
+import { Container } from "@/src/components/common/container";
+import { Grid } from "@/src/components/common/grid";
+import { MuscleGroupSelect } from "@/src/components/common/muscle-group-select";
+import { Pagination } from "@/src/components/common/pagination";
+import { SearchBar } from "@/src/components/common/search-bar";
+import { WorkoutCard } from "@/src/components/workout/workout-card";
+import { IWorkoutSimple } from "@/src/models/domain/workout";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { useDebounce } from "@/src/hooks/useDebounce";
 import Link from "next/link";
 import { Card, CardContent } from "@/src/components/ui/card";
-import { DatePicker } from "@/src/components/Form/date-picker";
+import { DatePicker } from "@/src/components/form/date-picker";
 import { Filter, Plus } from "lucide-react";
 
 const DEFAULT_PAGE_SIZE = 12;

@@ -1,4 +1,4 @@
-import { ExerciseLogType, SortDirection } from './Enums';
+import { ExerciseLogType, SortDirection } from './enums';
 
 export type QueryParams = {
     [key: string]: string | number | Date | ExerciseLogType | boolean | null | undefined;

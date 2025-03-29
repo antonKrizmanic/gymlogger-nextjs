@@ -1,4 +1,4 @@
-import { IWorkoutSimple } from './Workout';
+import { IWorkoutSimple } from './workout';
 
 export interface IDashboardDateItem {
     date: string;

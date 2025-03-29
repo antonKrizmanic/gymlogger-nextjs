@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/src/lib/prisma";
 import { getPagedExercises, IExerciseRequest } from "@/src/data/exercise";
-import { SortDirection } from "@/src/Types/Enums";
+import { SortDirection } from "@/src/types/enums";
 import { getLoggedInUser } from "@/src/data/loggedInUser";
 
 

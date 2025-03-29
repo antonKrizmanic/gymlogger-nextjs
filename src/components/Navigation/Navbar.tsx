@@ -5,10 +5,10 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/src/lib/utils';
-import { ThemeSwitcher } from '../Theme/ThemeSwitcher';
+import { ThemeSwitcher } from '../theme/theme-switcher';
 import { Menu, X } from "lucide-react"
-import UserAvatar from './UserAvatar';
-import { Logotype } from "../Logo";
+import UserAvatar from './user-avatar';
+import { Logotype } from "../logo";
 
 export function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

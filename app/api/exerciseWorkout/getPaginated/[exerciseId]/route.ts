@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/src/lib/prisma';
-import { IExerciseWorkout } from '@/src/Models/Domain/Workout';
-import { ExerciseLogType, SortDirection } from '@/src/Types/Enums';
+import { IExerciseWorkout } from '@/src/models/domain/workout';
+import { ExerciseLogType, SortDirection } from '@/src/types/enums';
 import { getLoggedInUser } from '@/src/data/loggedInUser';
-import { IPagedResponse } from '@/src/Types/Common';
+import { IPagedResponse } from '@/src/types/common';
 
 export async function GET(
     request: NextRequest,

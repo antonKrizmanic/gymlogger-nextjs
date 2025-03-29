@@ -1,6 +1,6 @@
-import { IWorkoutCreate } from '@/src/Models/Domain/Workout';
-import { Container } from '@/src/components/Common/Container';
-import { ClientWorkoutForm } from '@/src/components/Workout/ClientWorkoutForm';
+import { IWorkoutCreate } from '@/src/models/domain/workout';
+import { Container } from '@/src/components/common/container';
+import { ClientWorkoutForm } from '@/src/components/workout/client-workout-form';
 
 export default function CreateWorkoutPage() {
     // Define initial form data

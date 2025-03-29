@@ -1,4 +1,4 @@
-import { Navbar } from "@/src/components/Navigation/Navbar";
+import { Navbar } from "@/src/components/navigation/navbar";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

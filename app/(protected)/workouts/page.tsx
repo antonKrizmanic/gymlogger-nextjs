@@ -1,6 +1,6 @@
 import { getPagedWorkouts, IWorkoutRequest } from '@/src/data/workout';
-import { SortDirection } from '@/src/Types/Enums';
-import { WorkoutsIndex } from '@/src/views/workout/WorkoutsIndex';
+import { SortDirection } from '@/src/types/enums';
+import { WorkoutsIndex } from '@/src/views/workout/workoutsindex';
 
 export default async function WorkoutsPage(
   props: {
