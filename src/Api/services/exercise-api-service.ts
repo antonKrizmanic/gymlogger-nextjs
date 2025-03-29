@@ -2,14 +2,21 @@ import { BaseApiService } from './base-api-service';
 import { Endpoints } from '../endpoints';
 import { IExercise, IExerciseCreate, IExerciseUpdate } from '../../models/domain/exercise';
 import { IPagedResponse } from '../../types/common';
+import { IExerciseRequest } from '@/src/data/exercise';
 
 export class ExerciseApiService extends BaseApiService {
     public async getAllExercises(): Promise<IExercise[]> {
         return this.get<IExercise[]>(Endpoints.Exercise.GetAll);
     }
 
-    public async getExercises(request: URLSearchParams): Promise<IPagedResponse<IExercise>> {
-        return this.get<IPagedResponse<IExercise>>(Endpoints.Exercise.Base, request);
+    public async getExercises(request: IExerciseRequest): Promise<IPagedResponse<IExercise>> {
+        const params = new URLSearchParams(
+            Object.entries(request)
+                .flatMap(([key, value]) =>
+                    Array.isArray(value) ? value.map((v) => [key, v]) : [[key, value ?? ""]]
+                )
+        );
+        return this.get<IPagedResponse<IExercise>>(Endpoints.Exercise.Base, params);
     }
 
     public async getExercise(id: string): Promise<IExercise> {

@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from "@prisma/client";
 import { v4 as uuidv4 } from 'uuid';
 import { getLoggedInUser } from '@/src/data/loggedInUser';
+import { get } from 'http';
+import { getPagedWorkouts } from '@/src/data/workout';
+import { SortDirection } from '@/src/types/enums';
 
 const prisma = new PrismaClient();
 
@@ -18,106 +21,26 @@ export async function GET(request: NextRequest) {
         const muscleGroupId = searchParams.get('muscleGroupId') || undefined;
         const workoutDateParam = searchParams.get('workoutDate');
         const workoutDate = workoutDateParam ? new Date(workoutDateParam) : undefined;
-        const sortDirection = searchParams.get('sortDirection') === 'asc' ? 'asc' : 'desc';
-        
-        const where: any = {
-            belongsToUserId: loggedInUser.id,
-        };
 
-        // Add search condition if provided
-        if (search) {
-            where.OR = [
-                { name: { contains: search, mode: 'insensitive' } },
-                { description: { contains: search, mode: 'insensitive' } }
-            ];
-        }
-
-        // Add muscle group filter if provided
-        if (muscleGroupId) {
-            where.muscleGroupId = muscleGroupId;
-        }
-
-        // Add date filter if provided
-        if (workoutDate) {
-            const startOfDay = new Date(workoutDate);
-            startOfDay.setHours(0, 0, 0, 0);
-
-            const endOfDay = new Date(workoutDate);
-            endOfDay.setHours(23, 59, 59, 999);
-
-            where.date = {
-                gte: startOfDay,
-                lte: endOfDay
-            };
-        }
-
-        // Get total count for pagination
-        const totalItems = await prisma.workout.count({ where });
-
-        // Get workouts with pagination
-        const workouts = await prisma.workout.findMany({
-            where,
-            include: {
-                muscleGroup: {
-                    select: {
-                        name: true
-                    }
-                },
-                exerciseWorkouts: {
-                    include: {
-                        exercise: {
-                            select: {
-                                name: true
-                            }
-                        },
-                        exerciseSets: true
-                    }
-                }
-            },
-            orderBy: {
-                date: sortDirection
-            },
-            skip: page * pageSize,
-            take: pageSize
+        const result = await getPagedWorkouts({
+            page,
+            pageSize,
+            search,
+            muscleGroupId,
+            workoutDate,
+            sortColumn: "date",
+            sortDirection: SortDirection.Descending,
         });
 
-        // Map and calculate totals
-        const mappedWorkouts = workouts.map(workout => {
-            let totalWeight = 0;
-            let totalReps = 0;
-            let totalSets = 0;
-
-            // Calculate totals from exercise sets
-            workout.exerciseWorkouts.forEach(ew => {
-                ew.exerciseSets.forEach(set => {
-                    totalWeight += Number(set.weight) || 0;
-                    totalReps += Number(set.reps) || 0;
-                    totalSets += 1;
-                });
+        if (result) {
+            return NextResponse.json({
+                items: result.items,
+                pagingData: result.pagingData,
             });
-
-            return {
-                id: workout.id,
-                name: workout.name,
-                description: workout.description,
-                date: workout.date,
-                muscleGroupId: workout.muscleGroupId,
-                muscleGroupName: workout.muscleGroup?.name,
-                totalWeight,
-                totalReps,
-                totalSets
-            };
-        });
-
-        return NextResponse.json({
-            items: mappedWorkouts,
-            pagingData: {
-                page,
-                pageSize,
-                totalItems,
-                totalPages: Math.ceil(totalItems / pageSize)
-            }
-        });
+        }
+        else {
+            return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        }
     } catch (error) {
         console.error('Error fetching workouts:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

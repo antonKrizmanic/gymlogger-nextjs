@@ -1,57 +1,40 @@
 "use client";
-import { ExerciseApiService } from '@/src/api/services/exercise-api-service';
 import { ExerciseIndex } from '@/src/views/exercise/exercise-index';
-import { useEffect, useState } from 'react';
-import { IExercise } from '@/src/models/domain/exercise';
-import { IPagingDataResponseDto } from '@/src/types/common';
+import { useState } from 'react';
+import { Container } from '@/src/components/common/container';
+import { Button } from '@/src/components/ui/button';
+import Link from 'next/link';
+import { Filter, Plus } from 'lucide-react';
 
-export default function ExercisesPage(
-  props: {
-    searchParams: Record<string, string>;
-  }
-) {
-  const [exercises, setExercises] = useState<IExercise[]>([]);
-  const [pagingData, setPagingData] = useState<IPagingDataResponseDto>({
-    page: 0,
-    pageSize: 12,
-    totalPages: 0,
-    totalItems: 0,
-  } as IPagingDataResponseDto);
-  
-  const [isLoading, setIsLoading] = useState(true);
-
-  const searchParams =  props.searchParams;
-
-  // Konstruiramo URLSearchParams objekt na temelju searchParams
-  const params = new URLSearchParams(
-    Object.entries(searchParams)
-      .flatMap(([key, value]) =>
-        Array.isArray(value) ? value.map((v) => [key, v]) : [[key, value ?? ""]]
-      )
-  );
-
-  useEffect(() => {
-    const getExercises = async () => {
-      setIsLoading(true);
-      const service = new ExerciseApiService();
-      const response = await service.getExercises(params);
-      setExercises(response.items);
-      setPagingData(response.pagingData);
-      setIsLoading(false);
-    };
-    
-    getExercises();
-  },[searchParams, params]);
-
-  if (isLoading === null) {
-    return <div>Loading...</div>;
-  }
+export default function ExercisesPage() {  
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   return (
-    <ExerciseIndex
-      exercises={exercises}
-      currentPage={pagingData.page}
-      pageSize={pagingData.pageSize}
-      totalPages={pagingData.totalPages} />
+    <Container>
+      <div className="pb-4">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-200">Exercises</h1>
+      </div>
+      {/* Top controls */}
+      <div className="mb-8 space-y-4">
+        <div className="flex justify-between items-center">
+          <div className="flex gap-2">
+            <Button asChild className="hover:cursor-pointer hover:opacity-95 transition-opacity duration-200 ease-in-out">
+              <Link href="/exercises/create">
+                <Plus />
+                New
+              </Link>
+            </Button>
+            <Button onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="hover:cursor-pointer hover:opacity-95 transition-opacity duration-200 ease-in-out">
+              <Filter />
+              Filter
+            </Button>
+          </div>
+        </div>
+      </div>
+      <ExerciseIndex 
+        isFilterOpen={isFilterOpen}
+      />
+    </Container>
   );
 }
