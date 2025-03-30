@@ -82,7 +82,7 @@ export default async function HomePage() {
 
                         <Card>
                             <CardHeader>
-                                <CardTitle>Wwights</CardTitle>
+                                <CardTitle>Weights</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <p><b>Weights in this week:</b> {dashboard.weightThisWeek} kg</p>
