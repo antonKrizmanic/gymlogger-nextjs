@@ -75,6 +75,7 @@ export async function GET(
         const mappedExerciseWorkout: IExerciseWorkout = {
             exerciseId: result.exerciseId,
             exerciseName: result.exercise?.name,
+            exerciseDescription: result.exercise?.description,
             workoutId: result.workoutId,
             exerciseLogType: (result.exercise?.exerciseLogType ?? 0) as ExerciseLogType,
             totalWeight: result.totalWeight ? Number(result.totalWeight) : undefined,

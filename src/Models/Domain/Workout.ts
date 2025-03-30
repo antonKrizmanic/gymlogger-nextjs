@@ -43,6 +43,7 @@ export interface IExerciseSetCreate extends Omit<IExerciseSet, 'id'> {
 export interface IExerciseWorkout {
     exerciseId: string;
     exerciseName?: string;
+    exerciseDescription?: string | null;
     workoutId: string;
     workoutDate?: Date;
     workoutName?: string;
@@ -78,6 +79,7 @@ export const mapWorkoutToIWorkout = (workout: any): IWorkout => {
         exercises: workout.exerciseWorkouts?.map((exercise: any) => ({
             exerciseId: exercise.exerciseId,
             exerciseName: exercise.exercise?.name,
+            exerciseDescription: exercise.exercise?.description,
             workoutId: exercise.workoutId,
             exerciseLogType: exercise.exercise?.exerciseLogType as unknown as ExerciseLogType,
             totalWeight: Number(exercise.totalWeight),

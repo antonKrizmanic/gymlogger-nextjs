@@ -2,10 +2,17 @@ import { BaseApiService } from './base-api-service';
 import { Endpoints } from '../endpoints';
 import { IWorkout, IWorkoutCreate, IWorkoutUpdate } from '../../models/domain/workout';
 import { IPagedResponse } from '../../types/common';
+import { IWorkoutRequest } from '@/src/data/workout';
 
 export class WorkoutApiService extends BaseApiService {
-    public async getWorkouts(request: URLSearchParams): Promise<IPagedResponse<IWorkout>> {
-        return this.get<IPagedResponse<IWorkout>>(Endpoints.Workout.Base, request);
+    public async getWorkouts(request: IWorkoutRequest): Promise<IPagedResponse<IWorkout>> {
+        const params = new URLSearchParams(
+            Object.entries(request)
+                .flatMap(([key, value]) =>
+                    Array.isArray(value) ? value.map((v) => [key, v]) : [[key, value ?? ""]]
+                )
+        );
+        return this.get<IPagedResponse<IWorkout>>(Endpoints.Workout.Base, params);
     }
 
     public async getWorkout(id: string): Promise<IWorkout> {

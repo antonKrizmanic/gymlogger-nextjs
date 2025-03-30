@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from "@prisma/client";
 import { v4 as uuidv4 } from 'uuid';
 import { getLoggedInUser } from '@/src/data/loggedInUser';
-import { get } from 'http';
 import { getPagedWorkouts } from '@/src/data/workout';
 import { SortDirection } from '@/src/types/enums';
 

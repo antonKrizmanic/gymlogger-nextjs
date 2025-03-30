@@ -1,50 +1,55 @@
-import { getPagedWorkouts, IWorkoutRequest } from '@/src/data/workout';
-import { SortDirection } from '@/src/types/enums';
-import { WorkoutsIndex } from '@/src/views/workout/workoutsindex';
+"use client";
+import { Container } from '@/src/components/common/container';
+import { Button } from '@/src/components/ui/button';
+import { WorkoutsIndex } from '@/src/views/workout/workouts-index';
+import { Filter, Plus } from 'lucide-react';
+import Link from 'next/link';
+import { useState, Suspense } from 'react';
 
-export default async function WorkoutsPage(
-  props: {
-    searchParams: Promise<Record<string, string>>;
-  }
-) {
-  const searchParams = await props.searchParams;
-  
-  // Construct URLSearchParams object from searchParams
-  const params = new URLSearchParams(
-    Object.entries(searchParams)
-      .flatMap(([key, value]) =>
-        Array.isArray(value) ? value.map((v) => [key, v]) : [[key, value ?? ""]]
-      )
-  );  
-  
-  const pagedRequest: IWorkoutRequest = {
-    page: parseInt(params.get('page') ?? '0'),
-    pageSize: parseInt(params.get('pageSize') ?? '12'),
-    search: params.get('search') ?? '',
-    sortColumn: params.get('sortColumn') ?? '',
-    sortDirection: params.get('sortDirection') as unknown as SortDirection ?? SortDirection.Ascending,
-    muscleGroupId: params.get('muscleGroupId') ?? '',
-    workoutDate: params.get('workoutDate') ? new Date(params.get('workoutDate') || '') : undefined
-  }
-  
-  const response = await getPagedWorkouts(pagedRequest);
+// Create a client component that uses searchParams
+const WorkoutsContent = () => {
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    
+    return (
+        <>
+            <div className="mb-8 space-y-4">
+                <div className="flex justify-between items-center">
+                    <div className="flex gap-2">
+                        <Button asChild className="hover:cursor-pointer hover:opacity-95 transition-opacity duration-200 ease-in-out">
+                            <Link href='/workouts/create'>
+                                <Plus />
+                                New
+                            </Link>
+                        </Button>
+                        <Button onClick={() => setIsFilterOpen(!isFilterOpen)}
+                            className="hover:cursor-pointer hover:opacity-95 transition-opacity duration-200 ease-in-out">
+                            <Filter />
+                            Filter
+                        </Button>
+                    </div>
+                </div>
+            </div>
+            <WorkoutsIndex
+                isFilterOpen={isFilterOpen}
+            />
+        </>
+    );
+};
 
-  if (response === null) {
-    return <div>Loading...</div>;
-  }
-
-  const { items: workouts, pagingData } = response;
-  
-
-  if(workouts === undefined) {
-    return <div>Loading...</div>;
-  }
-  
-  return (
-    <WorkoutsIndex
-      workouts={workouts}
-      currentPage={pagingData.page}
-      pageSize={pagingData.pageSize}
-      totalPages={pagingData.totalPages} />    
-  );
+// Main page component with Suspense boundary
+export default function WorkoutsPage() {
+    return (
+        <Container>
+            <div className="pb-4">
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-200">Workouts</h1>
+            </div>
+            <Suspense fallback={
+                <div className="flex items-center justify-center min-h-[400px]">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                </div>
+            }>
+                <WorkoutsContent />
+            </Suspense>
+        </Container>
+    );
 }

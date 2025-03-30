@@ -103,7 +103,7 @@ export const ExerciseIndex = ({ isFilterOpen }: IExerciseIndexProps) => {
                 setExercises(response.items);
                 setPagingData(response.pagingData);
             } catch (error) {
-                // Handle error appropriately
+                console.error(error);
             } finally {
                 setIsLoading(false);
             }
@@ -133,6 +133,7 @@ export const ExerciseIndex = ({ isFilterOpen }: IExerciseIndexProps) => {
     }, [searchTerm, selectedMuscleGroup, selectedLogType, updateUrl]);
 
     const handlePageChange = useCallback((page: number) => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         updateUrl(page, searchTerm, pageSize, selectedMuscleGroup, selectedLogType);
     }, [searchTerm, pageSize, selectedMuscleGroup, selectedLogType, updateUrl]);
 
