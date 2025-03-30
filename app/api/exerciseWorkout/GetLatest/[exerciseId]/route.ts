@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/src/lib/prisma';
-import { IExerciseWorkout } from '@/src/Models/Domain/Workout';
-import { ExerciseLogType } from '@/src/Types/Enums';
+import { IExerciseWorkout } from '@/src/models/domain/workout';
+import { ExerciseLogType } from '@/src/types/enums';
 import { Prisma } from '@prisma/client';
 import { getLoggedInUser } from '@/src/data/loggedInUser';
 
@@ -75,6 +75,7 @@ export async function GET(
         const mappedExerciseWorkout: IExerciseWorkout = {
             exerciseId: result.exerciseId,
             exerciseName: result.exercise?.name,
+            exerciseDescription: result.exercise?.description,
             workoutId: result.workoutId,
             exerciseLogType: (result.exercise?.exerciseLogType ?? 0) as ExerciseLogType,
             totalWeight: result.totalWeight ? Number(result.totalWeight) : undefined,

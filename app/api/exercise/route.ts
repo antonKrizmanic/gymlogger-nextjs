@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/src/lib/prisma";
 import { getPagedExercises, IExerciseRequest } from "@/src/data/exercise";
-import { SortDirection } from "@/src/Types/Enums";
+import { SortDirection } from "@/src/types/enums";
 import { getLoggedInUser } from "@/src/data/loggedInUser";
 
 
@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
     const pageSize = Number(searchParams.get("size")) || 12;
     const search = searchParams.get("search") || "";
     const muscleGroup = searchParams.get("muscleGroupId") || "";
-    const logType = searchParams.get("logType") || "";
+    const logType = Number(searchParams.get("exerciseLogType")) || 0;
 
     const result = await getPagedExercises({
       page,

@@ -1,45 +1,55 @@
-import { getPagedExercises, IExerciseRequest } from '@/src/data/exercise';
-import { ExerciseLogType, SortDirection } from '@/src/Types/Enums';
-import { ExerciseIndex } from '@/src/views/exercise/ExerciseIndex';
+"use client";
+import { Container } from '@/src/components/common/container';
+import { Button } from '@/src/components/ui/button';
+import { ExerciseIndex } from '@/src/views/exercise/exercise-index';
+import { Filter, Plus } from 'lucide-react';
+import Link from 'next/link';
+import { useState, Suspense } from 'react';
 
-export default async function ExercisesPage(
-  props: {
-    searchParams: Promise<Record<string, string>>;
-  }
-) {
-  const searchParams = await props.searchParams;
-
-  // Konstruiramo URLSearchParams objekt na temelju searchParams
-  const params = new URLSearchParams(
-    Object.entries(searchParams)
-      .flatMap(([key, value]) =>
-        Array.isArray(value) ? value.map((v) => [key, v]) : [[key, value ?? ""]]
-      )
-  );
-
-  const pagedRequest: IExerciseRequest = {
-    page: parseInt(params.get('page') ?? '0'),
-    pageSize: parseInt(params.get('pageSize') ?? '12'),
-    search: params.get('search') ?? '',
-    sortColumn: params.get('sortColumn') ?? '',
-    sortDirection: params.get('sortDirection') as unknown as SortDirection ?? SortDirection.Ascending,
-    muscleGroupId: params.get('muscleGroupId') ?? '',
-    exerciseLogType: parseInt(params.get('logType') ?? '0') as unknown as ExerciseLogType ?? ExerciseLogType.Unknown,    
-  }
-
-  const response = await getPagedExercises(pagedRequest);
-
-  if (response === null) {
-    return <div>Loading...</div>;
-  }
-
-  const { items: exercises, pagingData } = response;  
+// Create a client component that contains the ExerciseIndex with useSearchParams
+const ExerciseContent = () => {
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   return (
-    <ExerciseIndex
-      exercises={exercises}
-      currentPage={pagingData.page}
-      pageSize={pagingData.pageSize}
-      totalPages={pagingData.totalPages} />
+    <>
+      {/* Top controls */}
+      <div className="mb-8 space-y-4">
+        <div className="flex justify-between items-center">
+          <div className="flex gap-2">
+            <Button asChild className="hover:cursor-pointer hover:opacity-95 transition-opacity duration-200 ease-in-out">
+              <Link href="/exercises/create">
+                <Plus />
+                New
+              </Link>
+            </Button>
+            <Button onClick={() => setIsFilterOpen(!isFilterOpen)}
+              className="hover:cursor-pointer hover:opacity-95 transition-opacity duration-200 ease-in-out">
+              <Filter />
+              Filter
+            </Button>
+          </div>
+        </div>
+      </div>
+      <ExerciseIndex isFilterOpen={isFilterOpen} />
+    </>
+
+  );
+};
+
+export default function ExercisesPage() {  
+
+  return (
+    <Container>
+      <div className="pb-4">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-200">Exercises</h1>
+      </div>
+      <Suspense fallback={
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+        </div>
+      }>
+        <ExerciseContent />
+      </Suspense>
+    </Container>
   );
 }

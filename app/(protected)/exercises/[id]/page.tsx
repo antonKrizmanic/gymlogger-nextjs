@@ -1,6 +1,6 @@
-import { Container } from "@/src/components/Common/Container";
-import DeleteExerciseButton from "@/src/components/Exercise/DeleteExerciseButton";
-import { ExerciseTabs } from "@/src/components/Exercise/ExerciseTabs";
+import { Container } from "@/src/components/common/container";
+import DeleteExerciseButton from "@/src/components/exercise/delete-exercise-button";
+import { ExerciseTabs } from "@/src/components/exercise/exercise-tabs";
 import { getExercise } from "@/src/data/exercise";
 import Link from "next/link";
 import { Button } from "@/src/components/ui/button";

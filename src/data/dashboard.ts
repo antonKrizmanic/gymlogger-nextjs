@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../lib/prisma";
-import { IDashboard, IDashboardDateItem } from "../Models/Domain/Dashboard";
+import { IDashboard, IDashboardDateItem } from "../models/domain/dashboard";
 import { getLoggedInUser } from "./loggedInUser";
 
 export const getDashboard = async () => {

@@ -1,7 +1,7 @@
-import { ExerciseLogType } from '@/src/Types/Enums';
-import { IExerciseCreate } from '@/src/Models/Domain/Exercise';
-import { Container } from '@/src/components/Common/Container';
-import { ClientExerciseForm } from '@/src/components/Exercise/ClientExerciseForm';
+import { ExerciseLogType } from '@/src/types/enums';
+import { IExerciseCreate } from '@/src/models/domain/exercise';
+import { Container } from '@/src/components/common/container';
+import { ClientExerciseForm } from '@/src/components/exercise/client-exercise-form';
 
 export default function CreateExercisePage() {
     // Define initial form data

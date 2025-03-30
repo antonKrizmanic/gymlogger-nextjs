@@ -1,7 +1,7 @@
-import { IExercise, mapExerciseToIExercise } from "../Models/Domain/Exercise";
-import { IPagedRequest, IPagedResponse } from "../Types/Common";
+import { IExercise, mapExerciseToIExercise } from "../models/domain/exercise";
+import { IPagedRequest, IPagedResponse } from "../types/common";
 import { prisma } from "@/src/lib/prisma";
-import { ExerciseLogType } from "../Types/Enums";
+import { ExerciseLogType } from "../types/enums";
 import { auth } from "../lib/auth";
 import { getLoggedInUser } from "./loggedInUser";
 
@@ -11,13 +11,16 @@ export interface IExerciseRequest extends IPagedRequest {
   search?: string;
 }
 
-export const getExercise = async (id: string) => {
+export const getExercise = async (id: string): Promise<IExercise | null> => {
   const session = await auth();
   if (!session) return null;
 
   const exercise = await prisma.exercise.findUnique({
     where: {
       id,
+    },
+    include: {
+      muscleGroup: true,
     },
   });
 
