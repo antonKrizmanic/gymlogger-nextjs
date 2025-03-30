@@ -1,5 +1,8 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.18.0] - 2025-03-30
+- No new changes
+
 ## [0.17.0] - 2025-03-29
 - No new changes
 
