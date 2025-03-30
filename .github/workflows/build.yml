@@ -32,6 +32,9 @@ jobs:
         run: npx prisma generate
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}      
+      
+      - name: Clean next cache
+        run: pnpm dlx next clean
 
       - name: Build application
         run: pnpm build
