@@ -1,5 +1,5 @@
 "use client";
-import { Container } from '@/src/components/common/container';
+import { Container } from '../../../src/components/common/container';
 import { Button } from '@/src/components/ui/button';
 import { WorkoutsIndex } from '@/src/views/workout/workouts-index';
 import { Filter, Plus } from 'lucide-react';

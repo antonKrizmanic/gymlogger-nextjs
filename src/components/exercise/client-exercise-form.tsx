@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ExerciseApiService } from '@/src/api/services/exercise-api-service';
+import { ExerciseApiService } from '../../../src/api/services/exercise-api-service';
 import { IExerciseCreate, IExerciseUpdate } from '@/src/models/domain/exercise';
 import { ExerciseForm } from './exercise-form';
 import { toast } from 'sonner';

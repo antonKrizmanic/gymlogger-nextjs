@@ -1,6 +1,6 @@
 "use client";
 
-import { LoginForm } from "@/src/components/auth/login-form";
+import { LoginForm } from "../../../src/components/auth/login-form";
 
 interface LoginForm {
   email: string;
