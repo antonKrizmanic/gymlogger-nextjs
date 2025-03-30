@@ -1,5 +1,21 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.19.0] - 2025-03-30
+### Added
+- [BuildSystem] Renovate Changelog action
+- [BuildSystem] build script
+
+### Changed
+- [BuildSystem] vercel-deploy renamed to release
+- [Features] using client data fetching for workouts and exercises pages
+- [BuildSystem] scripts name
+
+### Fixed
+- [BugFixes] Dashboard chart fixed
+
+### Removed
+- [BuildSystem] build-pull-request.yml since it's done on Vercel
+
 ## [0.18.0] - 2025-03-30
 - No new changes
 
