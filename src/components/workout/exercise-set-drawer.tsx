@@ -10,7 +10,7 @@ import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from "../ui/drawer"
 
-interface ExerciseSetDialogProps {
+interface ExerciseSetDrawerProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   set: IExerciseSetCreate
@@ -20,7 +20,7 @@ interface ExerciseSetDialogProps {
   isNew?: boolean
 }
 
-export function ExerciseSetDialog({
+export function ExerciseSetDrawer({
   open,
   onOpenChange,
   set,
@@ -28,7 +28,7 @@ export function ExerciseSetDialog({
   exerciseType,
   onSave,
   isNew = false,
-}: ExerciseSetDialogProps) {
+}: ExerciseSetDrawerProps) {
   const [localSet, setLocalSet] = useState<IExerciseSetCreate>(set)
 
   // Update local state when the set prop changes
