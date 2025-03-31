@@ -1,5 +1,12 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.20.0] - 2025-03-31
+### Changed
+- [Features] Replaced set dialog with set drawer
+
+### Fixed
+- [BuildSystem] renovate changelog workflow
+
 ## [0.19.0] - 2025-03-30
 ### Added
 - [BuildSystem] Renovate Changelog action
