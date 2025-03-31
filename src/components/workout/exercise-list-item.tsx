@@ -12,7 +12,7 @@ import { ExerciseApiService } from "@/src/api/services/exercise-api-service"
 
 import { ExerciseSelect } from "./exercise-select"
 import { ExerciseSetEdit } from "./exercise-set-edit"
-import { ExerciseSetDialog } from "./exercise-set-dialog"
+import { ExerciseSetDrawer } from "./exercise-set-drawer"
 import { ExerciseSets } from "./exercise-sets"
 import { Button } from "@/src/components/ui/button"
 import { Textarea } from "@/src/components/ui/textarea"
@@ -339,7 +339,7 @@ export function ExerciseListItem({
       </CardContent>
 
       {/* Dialog for adding/editing sets on mobile */}
-      <ExerciseSetDialog
+      <ExerciseSetDrawer
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         set={currentSet}
