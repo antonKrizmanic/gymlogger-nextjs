@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.21.0] - 2025-03-31
+### Changed
+- [Dependencies] Updated tailwindcss-monorepo
+
 ## [0.20.0] - 2025-03-31
 ### Changed
 - [Features] Replaced set dialog with set drawer
