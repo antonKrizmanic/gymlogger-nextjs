@@ -81,8 +81,8 @@ dependencies:
     specifier: 4.1.0
     version: 4.1.0
   lucide-react:
-    specifier: 0.484.0
-    version: 0.484.0(react@19.0.0)
+    specifier: 0.485.0
+    version: 0.485.0(react@19.0.0)
   next:
     specifier: 15.2.4
     version: 15.2.4(@babel/core@7.24.5)(react-dom@19.0.0)(react@19.0.0)
@@ -3442,6 +3442,7 @@ packages:
 
   /color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
+    requiresBuild: true
 
   /color-string@1.9.1:
     resolution: {integrity: sha512-shrVawQFojnZv6xM40anx4CkoDP+fZsw/ZerEMsW/pyzsRbElpsL/DBVW7q3ExxwusdNXI3lXpuhEZkzs8p5Eg==}
@@ -5140,8 +5141,8 @@ packages:
       yallist: 3.1.1
     dev: false
 
-  /lucide-react@0.484.0(react@19.0.0):
-    resolution: {integrity: sha512-oZy8coK9kZzvqhSgfbGkPtTgyjpBvs3ukLgDPv14dSOZtBtboryWF5o8i3qen7QbGg7JhiJBz5mK1p8YoMZTLQ==}
+  /lucide-react@0.485.0(react@19.0.0):
+    resolution: {integrity: sha512-NvyQJ0LKyyCxL23nPKESlr/jmz8r7fJO1bkuptSNYSy0s8VVj4ojhX0YAgmE1e0ewfxUZjIlZpvH+otfTnla8Q==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
     dependencies:
