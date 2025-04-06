@@ -1,5 +1,11 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.23.0] - 2025-04-06
+### Changed
+- [Dependencies] Updated lucide-monorepo
+- [Dependencies] Updated react-day-picker-9.x
+- [Dependencies] Updated tailwind-merge-3.x
+
 ## [0.22.0] - 2025-04-03
 ### Changed
 - [Dependencies] Updated react-hook-form-7.x
