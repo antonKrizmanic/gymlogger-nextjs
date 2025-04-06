@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.24.0] - 2025-04-06
+### Changed
+- [Dependencies] Updated lucide-monorepo
+
 ## [0.23.0] - 2025-04-06
 ### Changed
 - [Dependencies] Updated lucide-monorepo
