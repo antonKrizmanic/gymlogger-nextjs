@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.29.0] - 2025-04-08
+### Changed
+- [Dependencies] Updated react-monorepo
+
 ## [0.28.0] - 2025-04-08
 ### Changed
 - [Dependencies] Updated sonner-2.x
