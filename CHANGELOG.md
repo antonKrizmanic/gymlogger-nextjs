@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.32.0] - 2025-04-08
+### Changed
+- [Dependencies] Updated node-22.x
+
 ## [0.31.0] - 2025-04-08
 ### Changed
 - [Dependencies] Updated react-email-components-0.x
