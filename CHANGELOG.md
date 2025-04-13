@@ -1,5 +1,11 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.33.0] - 2025-04-13
+### Changed
+- [Dependencies] Updated react-day-picker-9.x
+- [Dependencies] Updated tailwind-merge-3.x
+- [Dependencies] Updated typescript-5.x
+
 ## [0.32.0] - 2025-04-08
 ### Changed
 - [Dependencies] Updated node-22.x
