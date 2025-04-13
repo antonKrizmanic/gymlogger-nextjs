@@ -108,8 +108,8 @@ dependencies:
     specifier: 7.55.0
     version: 7.55.0(react@19.1.0)
   recharts:
-    specifier: 2.15.1
-    version: 2.15.1(react-dom@19.1.0)(react@19.1.0)
+    specifier: 2.15.2
+    version: 2.15.2(react-dom@19.1.0)(react@19.1.0)
   resend:
     specifier: 4.2.0
     version: 4.2.0(react-dom@19.1.0)(react@19.1.0)
@@ -5850,8 +5850,8 @@ packages:
       decimal.js-light: 2.5.1
     dev: false
 
-  /recharts@2.15.1(react-dom@19.1.0)(react@19.1.0):
-    resolution: {integrity: sha512-v8PUTUlyiDe56qUj82w/EDVuzEFXwEHp9/xOowGAZwfLjB9uAy3GllQVIYMWF6nU+qibx85WF75zD7AjqoT54Q==}
+  /recharts@2.15.2(react-dom@19.1.0)(react@19.1.0):
+    resolution: {integrity: sha512-xv9lVztv3ingk7V3Jf05wfAZbM9Q2umJzu5t/cfnAK7LUslNrGT7LPBr74G+ok8kSCeFMaePmWMg0rcYOnczTw==}
     engines: {node: '>=14'}
     peerDependencies:
       react: ^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
