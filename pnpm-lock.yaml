@@ -96,8 +96,8 @@ dependencies:
     specifier: 19.1.0
     version: 19.1.0
   react-day-picker:
-    specifier: 9.6.5
-    version: 9.6.5(react@19.1.0)
+    specifier: 9.6.6
+    version: 9.6.6(react@19.1.0)
   react-dom:
     specifier: 19.1.0
     version: 19.1.0(react@19.1.0)
@@ -5672,8 +5672,8 @@ packages:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
     dev: true
 
-  /react-day-picker@9.6.5(react@19.1.0):
-    resolution: {integrity: sha512-/LsK+2tv+ByIbO9NcRFfbt2MX0ngcLP7sQBxL/dwgaPj6XzHIh364d78ZFwMZyQzOJ93GPEdM1ZCv5FlUttNGw==}
+  /react-day-picker@9.6.6(react@19.1.0):
+    resolution: {integrity: sha512-BIbhJu9yqQt8/13mTJIorEC4xpwGTa3JDW0C3UoVwNHhJsb2uWNveXmGYy7n8oV/uBsoEOGTitJOl+XpPzKsOQ==}
     engines: {node: '>=18'}
     peerDependencies:
       react: '>=16.8.0'
