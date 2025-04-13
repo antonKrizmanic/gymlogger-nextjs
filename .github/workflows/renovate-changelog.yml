@@ -1,63 +1,123 @@
-name: Create Changelog Entry for Renovate PRs
+name: Create Changelog PR for Renovate Updates
 
 on:
-    workflow_dispatch:
-    pull_request:
-        types: [opened, synchronize]        
+  workflow_dispatch:
+  pull_request:
+    types: [opened, synchronize, closed]
+    branches-ignore:
+      - 'changelog/**'
 
 jobs:
-    create-changelog-entry:
-        runs-on: ubuntu-latest
-        if: startsWith(github.head_ref, 'renovate/')
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
-              with:
-                ref: ${{ github.head_ref }}
-                fetch-depth: 0
-                
-            - name: Generate changelog entry
-              run: |
-                # Create changes directory if it doesn't exist
-                mkdir -p changes
-                
-                # Extract package name from branch name
-                BRANCH_NAME="${{ github.head_ref }}"
-                PACKAGE_NAME=${BRANCH_NAME#renovate/}
-                
-                # Get PR body to extract dependency info
-                PR_BODY=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                    "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}" \
-                    | jq -r '.body')
-                
-                # Try to extract specific package and version info from PR body
-                PACKAGE_INFO=$(echo "$PR_BODY" | grep -o -P '(?<=## Release Notes.*\n\n).*' | head -n 1 || echo "")
-                
-                # Prepare the filename (no extension, just the content descriptor)
-                if [ -n "$PACKAGE_INFO" ]; then
-                    FILENAME="Changed [Dependencies] ${PACKAGE_INFO}"
-                else
-                    FILENAME="Changed [Dependencies] Updated ${PACKAGE_NAME}"
-                fi
-                                
-                FILEPATH="changes/${FILENAME}"
-                
-                # Create an empty file with the descriptive filename
-                touch "$FILEPATH"
-                
-                # Check if file was created
-                if [ -f "$FILEPATH" ]; then
-                    echo "Created changelog entry: $FILEPATH"
-                else
-                    echo "Failed to create changelog entry"
-                    exit 1
-                fi
-            
-            - name: Commit changelog entry
-              run: |
-                git config --local user.email "github-actions[bot]@users.noreply.github.com"
-                git config --local user.name "github-actions[bot]"                
-                git add changes/
-                git commit -m "Add changelog entry for dependency update [skip ci]" || echo "No changes to commit"
-                git pull --rebase origin ${{ github.head_ref }}
-                git push origin HEAD:${{ github.head_ref }}
+  create-changelog-pr:
+    runs-on: ubuntu-latest
+    if: startsWith(github.head_ref, 'renovate/')
+
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up GitHub CLI
+        uses: cli/cli-action@v2
+
+      - name: Generate changelog entry
+        run: |
+          mkdir -p changes
+          
+          BRANCH_NAME="${{ github.head_ref }}"
+          PACKAGE_NAME=${BRANCH_NAME#renovate/}
+          
+          PR_BODY=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}" \
+            | jq -r '.body')
+          
+          PACKAGE_INFO=$(echo "$PR_BODY" | grep -o -P '(?<=## Release Notes.*\n\n).*' | head -n 1 || echo "")
+          
+          if [ -n "$PACKAGE_INFO" ]; then
+            FILENAME="Changed [Dependencies] ${PACKAGE_INFO}"
+          else
+            FILENAME="Changed [Dependencies] Updated ${PACKAGE_NAME}"
+          fi
+          
+          FILEPATH="changes/${FILENAME}"
+          touch "$FILEPATH"
+
+          echo "Created changelog entry: $FILEPATH"
+
+      - name: Check if changelog branch already exists
+        id: check_branch
+        run: |
+          if git ls-remote --exit-code --heads origin changelog/aggregate; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create or switch to changelog branch
+        run: |
+          if [ "${{ steps.check_branch.outputs.exists }}" == "true" ]; then
+            git fetch origin changelog/aggregate
+            git checkout changelog/aggregate
+          else
+            git checkout -b changelog/aggregate
+          fi
+
+      - name: Commit changelog entry
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "GitHub Actions Bot"
+
+          git add changes/
+          git commit -m "Add changelog entry for dependency update [skip ci]" || echo "No changes to commit"
+          git push origin changelog/aggregate
+
+      - name: Check if changelog PR already exists
+        id: check_pr
+        run: |
+          PR_NUMBER=$(gh pr list --head changelog/aggregate --json number --jq '.[0].number')
+          if [ -n "$PR_NUMBER" ]; then
+            echo "pr_exists=true" >> $GITHUB_OUTPUT
+            echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          else
+            echo "pr_exists=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create changelog PR if not exists
+        if: steps.check_pr.outputs.pr_exists == 'false'
+        run: |
+          gh pr create --title "Changelog for dependency updates" \
+                       --body "Aggregated changelog for recent dependency updates." \
+                       --base main \
+                       --head changelog/aggregate \
+                       --label "changelog"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  auto-merge-changelog:
+    if: github.event.action == 'closed' && startsWith(github.head_ref, 'renovate/') && github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up GitHub CLI
+        uses: cli/cli-action@v2
+
+      - name: Check for open changelog PR
+        id: check_pr
+        run: |
+          PR_NUMBER=$(gh pr list --head changelog/aggregate --json number --jq '.[0].number')
+          if [ -n "$PR_NUMBER" ]; then
+            echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge changelog PR if exists
+        if: steps.check_pr.outputs.pr_number != ''
+        run: |
+          gh pr merge ${{ steps.check_pr.outputs.pr_number }} --squash --admin
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
