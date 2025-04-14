@@ -1,5 +1,16 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.35.0] - 2025-04-14
+### Changed
+- [Dependencies] Updated eslint-monorepo
+- [Dependencies] Updated prisma-monorepo
+- [Dependencies] Updated headlessui-react-2.x
+- [Dependencies] Updated recharts-2.x
+- [Dependencies] Updated react-monorepo
+- [Dependencies] Updated tailwindcss-monorepo
+- [Dependencies] Updated radix-ui-primitives-monorepo
+- [Dependencies] Updated nextjs-monorepo
+
 ## [0.34.0] - 2025-04-13
 ### Changed
 - [Dependencies] Updated react-day-picker-9.x
