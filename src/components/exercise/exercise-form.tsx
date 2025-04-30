@@ -32,7 +32,7 @@ export function ExerciseForm({ title, exercise, isLoading, onSubmit, cancelHref 
       name: exercise.name,
       muscleGroupId: exercise.muscleGroupId,
       exerciseLogType: exercise.exerciseLogType === ExerciseLogType.Unknown 
-        ? undefined 
+        ? ExerciseLogType.WeightAndReps 
         : exercise.exerciseLogType,
       description: exercise.description || "",
     },
