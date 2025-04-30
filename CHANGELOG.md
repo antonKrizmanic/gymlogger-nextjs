@@ -1,5 +1,15 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.37.0] - 2025-04-30
+### Changed
+- [Dependencies] Updated auth-prisma-adapter-2.x
+- [Dependencies] Updated zod-3.x
+- [Dependencies] Updated react-hook-form-7.x
+- [Dependencies] Updated axios-1.x
+- [Dependencies] Updated react-day-picker-9.x
+- [Dependencies] Updated next-auth-5.x
+- [Dependencies] Updated resend-4.x
+
 ## [0.36.0] - 2025-04-17
 ### Changed
 - [Dependencies] Updated node-22.x
