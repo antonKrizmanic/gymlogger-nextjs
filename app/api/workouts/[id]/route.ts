@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/src/lib/prisma';
 import { v4 as uuidv4 } from 'uuid';
 import { getLoggedInUser } from '@/src/data/loggedInUser';
+import { getWorkout } from '@/src/data/workout';
 
 export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
@@ -12,64 +13,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
     try {
         const { id } = params;
 
-        // Validate GUID format
-        const guidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
-        if (!id || !guidRegex.test(id)) {
-            return NextResponse.json({ error: 'Invalid GUID format' }, { status: 400 });
-        }
-
-        const workout = await prisma.workout.findUnique({
-            select: {
-                id: true,
-                name: true,
-                muscleGroupId: true,
-                description: true,
-                date: true,
-                muscleGroup: {
-                    select: {
-                        name: true
-                    }
-                },
-                exerciseWorkouts: {
-                    select: {
-                        index: true,
-                        totalReps: true,
-                        totalWeight: true,
-                        totalSets: true,
-                        note: true,
-                        exerciseSets: {
-                            select: {
-                                id: true,
-                                weight: true,
-                                reps: true,
-                                time: true,
-                                index: true,
-                                note: true
-                            }
-                        },
-                        exercise: {
-                            select: {
-                                id: true,
-                                name: true,
-                                description: true,
-                                exerciseLogType: true,
-                                belongsToUserId: true,                                
-                                muscleGroupId: true,
-                                muscleGroup: {
-                                    select: {
-                                        name: true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            where: {
-                id,
-                belongsToUserId: loggedInUser.id
-            }
-        });
+        const workout = await getWorkout(id);
         
         if (!workout) {
             return NextResponse.json(
@@ -78,35 +22,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
             );
         }
         // Map from DB schema to our interface
-        return NextResponse.json({
-            id: workout.id,
-            name: workout.name,
-            muscleGroupId: workout.muscleGroupId,
-            muscleGroupName: workout.muscleGroup.name,
-            totalWeight: workout.exerciseWorkouts.reduce((acc, ew) => acc + Number(ew.totalWeight), 0),
-            totalReps: workout.exerciseWorkouts.reduce((acc, ew) => acc + Number(ew.totalReps), 0),
-            totalSets: workout.exerciseWorkouts.reduce((acc, ew) => acc + Number(ew.totalSets), 0),
-            description: workout.description,
-            date: workout.date,
-            exercises: workout.exerciseWorkouts.map(ew => ({
-                note: ew.note,
-                index: ew.index,
-                totalReps: ew.totalReps,
-                totalWeight: ew.totalWeight,
-                totalSets: ew.totalSets,
-                exerciseId: ew.exercise.id,
-                exerciseName: ew.exercise.name,
-                exerciseLogType: ew.exercise.exerciseLogType,                
-                sets: ew.exerciseSets.map(set => ({                    
-                    id: set.id,
-                    index: set.index,
-                    time: set.time,
-                    weight: set.weight,
-                    reps: set.reps,  
-                    note: set.note
-                }))
-            }))
-        });
+        return NextResponse.json(workout);
     } catch (error) {
         console.error('Error fetching workout:', error);
         return NextResponse.json(
