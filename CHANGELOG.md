@@ -1,5 +1,10 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.38.0] - 2025-05-09
+### Changed
+- [Dependencies] Updated hookform-resolvers-5.x
+- [Dependencies] Updated react-email-components-0.x
+
 ## [0.37.0] - 2025-04-30
 ### Changed
 - [Dependencies] Updated auth-prisma-adapter-2.x
