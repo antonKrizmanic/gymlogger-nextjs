@@ -1,3 +1,5 @@
+'use client';
+
 import { IWorkoutCreate } from '@/src/models/domain/workout';
 import { Container } from '@/src/components/common/container';
 import { ClientWorkoutForm } from '@/src/components/workout/client-workout-form';

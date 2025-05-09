@@ -1,25 +1,64 @@
-import { Container } from '@/src/components/common/container';
+'use client';
 
+import { Container } from '@/src/components/common/container';
 import { Card, CardContent } from '@/src/components/ui/card';
 import { WorkoutExerciseList } from '@/src/components/workout/workout-exercise-list';
 import DeleteWorkoutButton from '@/src/components/workout/delete-workout-button';
-import { getWorkout } from '@/src/data/workout';
 import Link from 'next/link';
 import { Button } from '@/src/components/ui/button';
 import { MoveLeft, Pencil } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { WorkoutApiService } from '@/src/api/services/workout-api-service';
+import { IWorkout } from '@/src/models/domain/workout';
+import { useParams } from 'next/navigation';
 
+export default function WorkoutDetailPage() {
+    const params = useParams();
+    const id = params.id as string;
+    const [workout, setWorkout] = useState<IWorkout | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
+    useEffect(() => {
+        const fetchWorkout = async () => {
+            try {
+                setLoading(true);
+                const workoutApiService = new WorkoutApiService();
+                const data = await workoutApiService.getWorkout(id);
+                setWorkout(data);
+                setError(null);
+            } catch (err) {
+                console.error('Error fetching workout:', err);
+                setError('Failed to load workout');
+            } finally {
+                setLoading(false);
+            }
+        };
 
-export default async function WorkoutDetailPage(props: { params: Promise<{ id: string }> }) {
-    const params = await props.params;
-    const id = await params.id;
-    const workout = await getWorkout(id);
+        if (id) {
+            fetchWorkout();
+        }
+    }, [id]);
 
-    if (!workout) {
+    if (loading) {
         return (
-            <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-                <p className="text-lg text-gray-600 dark:text-gray-400">Workout not found</p>
-            </div>
+            <Container>
+                <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                </div>
+            </Container>
+        );
+    }
+
+    if (error || !workout) {
+        return (
+            <Container>
+                <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
+                    <p className="text-lg text-gray-600 dark:text-gray-400">
+                        {error || 'Workout not found'}
+                    </p>
+                </div>
+            </Container>
         );
     }
 
