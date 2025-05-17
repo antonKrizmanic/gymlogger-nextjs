@@ -117,8 +117,8 @@ dependencies:
     specifier: 2.0.3
     version: 2.0.3(react-dom@19.1.0)(react@19.1.0)
   tailwind-merge:
-    specifier: 3.2.0
-    version: 3.2.0
+    specifier: 3.3.0
+    version: 3.3.0
   tailwindcss-animate:
     specifier: 1.0.7
     version: 1.0.7(tailwindcss@4.1.6)
@@ -6943,8 +6943,8 @@ packages:
     resolution: {integrity: sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==}
     dev: false
 
-  /tailwind-merge@3.2.0:
-    resolution: {integrity: sha512-FQT/OVqCD+7edmmJpsgCsY820RTD5AkBryuG5IUqR5YQZSdj5xlH5nLgH7YPths7WsLPSpSBNneJdM8aS8aeFA==}
+  /tailwind-merge@3.3.0:
+    resolution: {integrity: sha512-fyW/pEfcQSiigd5SNn0nApUOxx0zB/dm6UDU/rEwc2c3sX2smWUNbapHv+QRqLGVp9GWX3THIa7MUGPo+YkDzQ==}
     dev: false
 
   /tailwindcss-animate@1.0.7(tailwindcss@4.1.6):
