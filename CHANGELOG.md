@@ -1,5 +1,11 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.39.0] - 2025-05-24
+### Changed
+- [Dependencies] Updated tailwind-merge-3.x
+- [Dependencies] Updated hookform-resolvers-5.x
+- [Dependencies] Updated react-email-components-0.x
+
 ## [0.38.0] - 2025-05-09
 ### Changed
 - [Dependencies] Updated hookform-resolvers-5.x
