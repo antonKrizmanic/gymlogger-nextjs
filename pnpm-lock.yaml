@@ -129,8 +129,8 @@ dependencies:
     specifier: 1.1.2
     version: 1.1.2(@types/react-dom@19.1.5)(@types/react@19.1.6)(react-dom@19.1.0)(react@19.1.0)
   zod:
-    specifier: 3.25.48
-    version: 3.25.48
+    specifier: 3.25.49
+    version: 3.25.49
 
 devDependencies:
   '@eslint/eslintrc':
@@ -6811,6 +6811,6 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /zod@3.25.48:
-    resolution: {integrity: sha512-0X1mz8FtgEIvaxGjdIImYpZEaZMrund9pGXm3M6vM7Reba0e2eI71KPjSCGXBfwKDPwPoywf6waUKc3/tFvX2Q==}
+  /zod@3.25.49:
+    resolution: {integrity: sha512-JMMPMy9ZBk3XFEdbM3iL1brx4NUSejd6xr3ELrrGEfGb355gjhiAWtG3K5o+AViV/3ZfkIrCzXsZn6SbLwTR8Q==}
     dev: false
