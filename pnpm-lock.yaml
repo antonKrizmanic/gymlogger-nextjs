@@ -27,8 +27,8 @@ dependencies:
     specifier: 5.0.1
     version: 5.0.1(react-hook-form@7.57.0)
   '@icons-pack/react-simple-icons':
-    specifier: 12.4.0
-    version: 12.4.0(react@19.1.0)
+    specifier: 13.0.0
+    version: 13.0.0(react@19.1.0)
   '@prisma/client':
     specifier: 6.8.2
     version: 6.8.2(prisma@6.8.2)(typescript@5.8.3)
@@ -833,8 +833,8 @@ packages:
     engines: {node: '>=18.18'}
     dev: true
 
-  /@icons-pack/react-simple-icons@12.4.0(react@19.1.0):
-    resolution: {integrity: sha512-h8sOIVaUFKlMGgVMbhsPEyLOVW6in27KILV4V5q/I5iK4Mz6Du6qc91aFe2D7/qfLyYPr5XIP270GKmsltVfAw==}
+  /@icons-pack/react-simple-icons@13.0.0(react@19.1.0):
+    resolution: {integrity: sha512-Dmofr27ZlfBHS/2HDBKodKTUTnIjhH7cjw36WPt1CLg+1gytjr+LeabwWZ6khu/QUxmLjs3e1KrNPiuvOkEpJQ==}
     peerDependencies:
       react: ^16.13 || ^17 || ^18 || ^19
     dependencies:
