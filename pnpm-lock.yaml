@@ -60,8 +60,8 @@ dependencies:
     specifier: 1.1.12
     version: 1.1.12(@types/react-dom@19.1.6)(@types/react@19.1.7)(react-dom@19.1.0)(react@19.1.0)
   '@react-email/components':
-    specifier: 0.0.41
-    version: 0.0.41(react-dom@19.1.0)(react@19.1.0)
+    specifier: 0.0.42
+    version: 0.0.42(react-dom@19.1.0)(react@19.1.0)
   axios:
     specifier: 1.9.0
     version: 1.9.0
@@ -2361,8 +2361,8 @@ packages:
       react: 19.1.0
     dev: false
 
-  /@react-email/components@0.0.41(react-dom@19.1.0)(react@19.1.0):
-    resolution: {integrity: sha512-WUI3wHwra3QS0pwrovSU6b0I0f3TvY33ph0y44LuhSYDSQlMRyeOzgoT6HRDY5FXMDF57cHYq9WoKwpwP0yd7Q==}
+  /@react-email/components@0.0.42(react-dom@19.1.0)(react@19.1.0):
+    resolution: {integrity: sha512-KZtf7RjCoLgEwa5swrsbEF/liGrmfMlZCDNDXqaAjlgF3iRq0h5KY/HNMs6LbLmW7fEneRhnynrwApwbkEwe+A==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
@@ -2386,7 +2386,7 @@ packages:
       '@react-email/row': 0.0.12(react@19.1.0)
       '@react-email/section': 0.0.16(react@19.1.0)
       '@react-email/tailwind': 1.0.5(react@19.1.0)
-      '@react-email/text': 0.1.4(react@19.1.0)
+      '@react-email/text': 0.1.5(react@19.1.0)
       react: 19.1.0
     transitivePeerDependencies:
       - react-dom
@@ -2523,8 +2523,8 @@ packages:
       react: 19.1.0
     dev: false
 
-  /@react-email/text@0.1.4(react@19.1.0):
-    resolution: {integrity: sha512-cMNE02y8172DocpNGh97uV5HSTawaS4CKG/zOku8Pu+m6ehBKbAjgtQZDIxhgstw8+TWraFB8ltS1DPjfG8nLA==}
+  /@react-email/text@0.1.5(react@19.1.0):
+    resolution: {integrity: sha512-o5PNHFSE085VMXayxH+SJ1LSOtGsTv+RpNKnTiJDrJUwoBu77G3PlKOsZZQHCNyD28WsQpl9v2WcJLbQudqwPg==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
