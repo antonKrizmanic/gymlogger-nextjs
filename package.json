@@ -59,7 +59,7 @@
     "@eslint/eslintrc": "3.3.1",
     "@tailwindcss/postcss": "4.0.17",
     "@types/axios": "0.14.4",
-    "@types/node": "22.13.13",
+    "@types/node": "22.16.5",
     "@types/react": "19.0.12",
     "@types/react-dom": "19.0.4",
     "eslint": "9.32.0",
