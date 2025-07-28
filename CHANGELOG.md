@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.23.0] - 2025-07-28
+### Changed
+- [Dependencies] Updated axios-1.x
+
 ## [0.22.0] - 2025-07-28
 ### Changed
 - [Dependencies] Updated icons-pack-react-simple-icons-13.x
