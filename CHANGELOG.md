@@ -1,5 +1,15 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.22.0] - 2025-07-28
+### Changed
+- [Dependencies] Updated icons-pack-react-simple-icons-13.x
+- [Dependencies] Updated sonner-2.x
+- [Dependencies] Updated zod-4.x
+- [Dependencies] Updated major-font-awesome
+- [Dependencies] Updated react-email-4.x
+- [Dependencies] Updated react-hook-form-7.x
+- [Dependencies] Updated recharts-3.x
+
 ## [0.21.0] - 2025-03-31
 ### Changed
 - [Dependencies] Updated tailwindcss-monorepo
