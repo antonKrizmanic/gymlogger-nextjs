@@ -1,5 +1,10 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.24.0] - 2025-07-28
+### Changed
+- [Dependencies] Updated react-email-components-0.x
+- [Dependencies] Updated headlessui-react-2.x
+
 ## [0.23.0] - 2025-07-28
 ### Changed
 - [Dependencies] Updated axios-1.x
