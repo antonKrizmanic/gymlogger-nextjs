@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/src/lib/prisma";
 import { getLoggedInUser } from "@/src/data/loggedInUser";
-import { getExercise } from "@/src/data/exercise";
 
 export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
@@ -12,7 +11,30 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
     try {
         const { id } = params;
 
-        const exercise = await getExercise(id);
+        // Provjera valjanosti GUID-a (možeš koristiti regex za dodatnu sigurnost)
+        const guidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+        if (!id || !guidRegex.test(id)) {
+            return NextResponse.json({ error: "Invalid GUID format" }, { status: 400 });
+        }
+
+        const exercise = await prisma.exercise.findUnique({
+            select: {
+                id: true,
+                name: true,
+                muscleGroupId: true,
+                description: true,
+                exerciseLogType: true,
+                belongsToUserId: true,
+                muscleGroup: {
+                    select: {
+                        name: true
+                    }
+                }
+            },
+            where: {
+                id: id
+            }
+        });
         
         if (!exercise) {
             return NextResponse.json(
@@ -20,8 +42,16 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
                 { status: 404 }
             );
         }
-        
-        return NextResponse.json(exercise);
+        // Map from DB schema to our interface
+        return NextResponse.json({
+            id: exercise.id,
+            name: exercise.name,
+            muscleGroupId: exercise.muscleGroupId,
+            muscleGroupName: exercise.muscleGroup.name,
+            description: exercise.description,
+            exerciseLogType: exercise.exerciseLogType,
+            isPublic: exercise.belongsToUserId === null // If it doesn't belong to a user, it's public
+        });
     } catch (error) {
         console.error('Error fetching exercise:', error);
         return NextResponse.json(

@@ -71,7 +71,9 @@ export function ExerciseListItem({
     fetchExerciseData()
   }, [exercise.exerciseId, workoutId])
 
-  const handleExerciseSelect = async (exerciseId: string) => {    
+  const handleExerciseSelect = async (exerciseId: string) => {
+    console.log("Selected exercise ID:", exerciseId)
+    // Let the parent component know about the change
     onAddExercise(index, exerciseId)
   }
 

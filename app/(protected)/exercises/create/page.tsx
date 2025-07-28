@@ -1,5 +1,3 @@
-'use client';
-
 import { ExerciseLogType } from '@/src/types/enums';
 import { IExerciseCreate } from '@/src/models/domain/exercise';
 import { Container } from '@/src/components/common/container';

@@ -24,7 +24,9 @@ export const RegisterSchema = z.object({
 export const ExerciseSchema = z.object({
     name: z.string().min(1, { message: "Name is required" }),
     muscleGroupId: z.string().min(1, { message: "Muscle group must be selected" }),
-    exerciseLogType: z.nativeEnum(ExerciseLogType),
+    exerciseLogType: z.nativeEnum(ExerciseLogType).refine((value) => value !== ExerciseLogType.Unknown, {
+      message: "Log type must be selected",
+    }),
     description: z.string().optional(),
   })
   
