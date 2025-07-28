@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.26.0] - 2025-07-28
+### Changed
+- [Dependencies] Updated eslint-monorepo
+
 ## [0.25.0] - 2025-07-28
 ### Changed
 - [Dependencies] Updated eslint-monorepo
