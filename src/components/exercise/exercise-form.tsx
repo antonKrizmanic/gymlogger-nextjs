@@ -1,20 +1,23 @@
 "use client"
 
-import type { IExerciseCreate } from "@/src/models/domain/exercise"
-import { ExerciseLogType } from "@/src/types/enums"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { MuscleGroupSelect } from "../common/muscle-group-select"
-import { LogTypeSelect } from "../common/log-type-select"
-import { Button } from "../ui/button"
-import Link from "next/link"
-import { Loader2 } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/components/ui/form"
 import { Input } from "@/src/components/ui/input"
 import { Textarea } from "@/src/components/ui/textarea"
+import type { IExerciseCreate } from "@/src/models/domain/exercise"
 import { ExerciseSchema } from "@/src/schemas/index"
+import { ExerciseLogType } from "@/src/types/enums"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Loader2 } from "lucide-react"
+import Link from "next/link"
+import { useForm } from "react-hook-form"
+import * as z from "zod"
+import { LogTypeSelect } from "../common/log-type-select"
+import { MuscleGroupSelect } from "../common/muscle-group-select"
+import { Button } from "../ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
+
+// Create a type that matches the refined schema
+type ExerciseFormData = z.infer<typeof ExerciseSchema>
 
 interface ExerciseFormProps {
   title: string
@@ -26,20 +29,20 @@ interface ExerciseFormProps {
 
 export function ExerciseForm({ title, exercise, isLoading, onSubmit, cancelHref }: ExerciseFormProps) {
   // Initialize the form with react-hook-form and zod validation
-  const form = useForm<z.infer<typeof ExerciseSchema>>({
-    resolver: zodResolver(ExerciseSchema),
+  const form = useForm<ExerciseFormData>({
+    resolver: zodResolver(ExerciseSchema) as any,
     defaultValues: {
       name: exercise.name,
       muscleGroupId: exercise.muscleGroupId,
-      exerciseLogType: exercise.exerciseLogType === ExerciseLogType.Unknown 
-        ? undefined 
-        : exercise.exerciseLogType,
+      exerciseLogType: exercise.exerciseLogType === ExerciseLogType.Unknown
+        ? undefined
+        : exercise.exerciseLogType as ExerciseFormData['exerciseLogType'],
       description: exercise.description || "",
     },
   })
 
   // Handle form submission
-  const handleSubmit = (values: z.infer<typeof ExerciseSchema>) => {
+  const handleSubmit = (values: ExerciseFormData) => {
     onSubmit({
       ...exercise,
       ...values,
