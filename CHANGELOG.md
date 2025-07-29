@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.27.0] - 2025-07-29
+### Changed
+- [Dependencies] Updated radix-ui-primitives-monorepo
+
 ## [0.26.0] - 2025-07-28
 ### Changed
 - [Dependencies] Updated eslint-monorepo
