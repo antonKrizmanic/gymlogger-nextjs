@@ -16,7 +16,7 @@ dependencies:
     version: 2.2.0(react@19.1.0)
   '@hookform/resolvers':
     specifier: 4.1.3
-    version: 4.1.3(react-hook-form@7.61.0)
+    version: 4.1.3(react-hook-form@7.61.1)
   '@icons-pack/react-simple-icons':
     specifier: 12.3.0
     version: 12.3.0(react@19.1.0)
@@ -96,8 +96,8 @@ dependencies:
     specifier: 4.2.3
     version: 4.2.3
   react-hook-form:
-    specifier: 7.61.0
-    version: 7.61.0(react@19.1.0)
+    specifier: 7.61.1
+    version: 7.61.1(react@19.1.0)
   recharts:
     specifier: 2.15.4
     version: 2.15.4(react-dom@19.1.0)(react@19.1.0)
@@ -686,13 +686,13 @@ packages:
       react: 19.1.0
     dev: false
 
-  /@hookform/resolvers@4.1.3(react-hook-form@7.61.0):
+  /@hookform/resolvers@4.1.3(react-hook-form@7.61.1):
     resolution: {integrity: sha512-Jsv6UOWYTrEFJ/01ZrnwVXs7KDvP8XIo115i++5PWvNkNvkrsTfGiLS6w+eJ57CYtUtDQalUWovCZDHFJ8u1VQ==}
     peerDependencies:
       react-hook-form: ^7.0.0
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.61.0(react@19.1.0)
+      react-hook-form: 7.61.1(react@19.1.0)
     dev: false
 
   /@humanfs/core@0.19.1:
@@ -5375,8 +5375,8 @@ packages:
       - utf-8-validate
     dev: false
 
-  /react-hook-form@7.61.0(react@19.1.0):
-    resolution: {integrity: sha512-o8S/HcCeuaAQVib36fPCgOLaaQN/v7Anj8zlYjcLMcz+4FnNfMsoDAEvVCefLb3KDnS43wq3pwcifehhkwowuQ==}
+  /react-hook-form@7.61.1(react@19.1.0):
+    resolution: {integrity: sha512-2vbXUFDYgqEgM2RcXcAT2PwDW/80QARi+PKmHy5q2KhuKvOlG8iIYgf7eIlIANR5trW9fJbP4r5aub3a4egsew==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
