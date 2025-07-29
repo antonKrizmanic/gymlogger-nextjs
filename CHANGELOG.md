@@ -1,5 +1,10 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.28.0] - 2025-07-29
+### Changed
+- [Dependencies] Updated react-hook-form-7.x
+- [Dependencies] Updated node-22.x
+
 ## [0.27.0] - 2025-07-29
 ### Changed
 - [Dependencies] Updated radix-ui-primitives-monorepo
