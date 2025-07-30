@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.33.0] - 2025-07-30
+### Changed
+- [Dependencies] Updated react-monorepo
+
 ## [0.32.0] - 2025-07-30
 ### Changed
 - [Dependencies] Updated tailwindcss-monorepo
