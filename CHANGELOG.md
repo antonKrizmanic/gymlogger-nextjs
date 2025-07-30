@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.31.0] - 2025-07-30
+### Changed
+- [Dependencies] Updated prisma-monorepo
+
 ## [0.30.0] - 2025-07-29
 ### Changed
 - [Dependencies] Updated nextjs-monorepo
