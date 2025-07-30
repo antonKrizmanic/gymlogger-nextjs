@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.1",
-    "@tailwindcss/postcss": "4.0.17",
+    "@tailwindcss/postcss": "4.1.11",
     "@types/axios": "0.14.4",
     "@types/node": "22.16.5",
     "@types/react": "19.0.12",
@@ -65,7 +65,7 @@
     "eslint": "9.32.0",
     "eslint-config-next": "15.4.4",
     "prisma": "6.12.0",
-    "tailwindcss": "4.0.17",
+    "tailwindcss": "4.1.11",
     "ts-node": "10.9.2",
     "typescript": "5.8.2"
   }
