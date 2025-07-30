@@ -1,5 +1,15 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.34.0] - 2025-07-30
+### Changed
+- [Dependencies] Updated prisma-monorepo
+- [Dependencies] Updated icons-pack-react-simple-icons-13.x
+- [Dependencies] Updated sonner-2.x
+- [Dependencies] Updated zod-4.x
+- [Dependencies] Updated major-font-awesome
+- [Dependencies] Updated react-email-4.x
+- [Dependencies] Updated recharts-3.x
+
 ## [0.33.0] - 2025-07-30
 ### Changed
 - [Dependencies] Updated react-monorepo
