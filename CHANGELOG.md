@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.37.0] - 2025-07-31
+### Changed
+- [Dependencies] Updated react-monorepo
+
 ## [0.36.0] - 2025-07-31
 ### Changed
 - [Dependencies] Updated typescript-5.x
