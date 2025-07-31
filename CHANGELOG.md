@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.39.0] - 2025-07-31
+### Changed
+- [Dependencies] Updated next-auth-5.x
+
 ## [0.38.0] - 2025-07-31
 ### Changed
 - [Dependencies] Updated react-email-4.x
