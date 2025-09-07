@@ -1,5 +1,10 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.40.0] - 2025-09-07
+### Changed
+- [Dependencies] Updated headlessui-react-2.x
+- [Dependencies] Updated nextjs-monorepo
+
 ## [0.39.0] - 2025-07-31
 ### Changed
 - [Dependencies] Updated next-auth-5.x
