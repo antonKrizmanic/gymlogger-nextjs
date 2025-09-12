@@ -1,4 +1,4 @@
-import { Button } from "@/src/components/ui/button"
+import { Button } from "@/src/components/ui/button";
 import { Pencil } from "lucide-react";
 import Link from "next/link";
 
@@ -8,7 +8,7 @@ interface EditButtonProps {
 
 export function EditButton({ href }: EditButtonProps) {
     return (
-        <Button asChild className="rounded-1 w-full">
+        <Button asChild className="rounded-1 w-full" variant="accentOutline">
             <Link href={href}><Pencil /></Link>
         </Button>
 

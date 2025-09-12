@@ -2,12 +2,12 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
-import type { IExerciseSetCreate } from "@/src/models/domain/workout"
-import { ExerciseLogType } from "@/src/types/enums"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
+import type { IExerciseSetCreate } from "@/src/models/domain/workout"
+import { ExerciseLogType } from "@/src/types/enums"
+import { useEffect, useState } from "react"
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from "../ui/drawer"
 
 interface ExerciseSetDrawerProps {
@@ -73,8 +73,8 @@ export function ExerciseSetDrawer({
           handleRepsChange={handleRepsChange}
           handleTimeChange={handleTimeChange}
           handleNoteChange={handleNoteChange} />
-        <DrawerFooter className="pt-2">          
-          <Button type="button" onClick={handleSave}>Save</Button>
+        <DrawerFooter className="pt-2">
+          <Button type="button" onClick={handleSave} variant="accent">Save</Button>
           <DrawerClose asChild>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
           </DrawerClose>

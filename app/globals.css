@@ -8,7 +8,7 @@
 @layer base {
   :root {
     /* Brand Colors */
-    --brand-navy: 210 25% 25%; /* #2c3e50 */
+    --brand-navy: 213 55% 28%; /* #20426D */
     --brand-navy-light: 210 25% 35%; /* #34495e */
     --brand-navy-dark: 210 25% 15%; /* #1a252f */
     
@@ -30,7 +30,7 @@
     --popover-foreground: 222.2 84% 4.9%;
     
     /* Primary (Navy) */
-    --primary: 210 25% 25%; /* #2c3e50 */
+    --primary: 213 55% 28%; /* #20426D */
     --primary-foreground: 210 40% 98%;
     
     /* Secondary */
@@ -52,13 +52,13 @@
     /* Border */
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 210 25% 25%; /* Brand navy for focus rings */
+    --ring: 213 55% 28%; /* Brand navy for focus rings */
     
     /* Radius */
     --radius: 0.5rem;
     
     /* Chart Colors */
-    --chart-1: 210 25% 25%; /* Navy */
+    --chart-1: 213 55% 28%; /* Navy */
     --chart-2: 38 92% 50%; /* Gold */
     --chart-3: 16 185 129; /* Success */
     --chart-4: 245 101 101; /* Error */
@@ -67,12 +67,12 @@
     /* Sidebar */
     --sidebar: 0 0% 100%;
     --sidebar-foreground: 222.2 84% 4.9%;
-    --sidebar-primary: 210 25% 25%;
+    --sidebar-primary: 213 55% 28%;
     --sidebar-primary-foreground: 210 40% 98%;
     --sidebar-accent: 210 40% 96%;
     --sidebar-accent-foreground: 222.2 84% 4.9%;
     --sidebar-border: 214.3 31.8% 91.4%;
-    --sidebar-ring: 210 25% 25%;
+    --sidebar-ring: 213 55% 28%;
   }
  
   .dark {
@@ -85,7 +85,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
     
-    --primary: 210 25% 25%; /* Keep navy in dark mode */
+    --primary: 213 55% 28%; /* Keep navy in dark mode */
     --primary-foreground: 210 40% 98%;
     
     --secondary: 217.2 32.6% 17.5%;
@@ -102,10 +102,10 @@
     
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 210 25% 25%;
+    --ring: 213 55% 28%;
     
     /* Chart Colors (Dark) */
-    --chart-1: 210 25% 25%; /* Navy */
+    --chart-1: 213 55% 28%; /* Navy */
     --chart-2: 38 92% 50%; /* Gold */
     --chart-3: 16 185 129; /* Success */
     --chart-4: 245 101 101; /* Error */
@@ -114,12 +114,12 @@
     /* Sidebar (Dark) */
     --sidebar: 222.2 84% 4.9%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 210 25% 25%;
+    --sidebar-primary: 213 55% 28%;
     --sidebar-primary-foreground: 210 40% 98%;
     --sidebar-accent: 217.2 32.6% 17.5%;
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 217.2 32.6% 17.5%;
-    --sidebar-ring: 210 25% 25%;
+    --sidebar-ring: 213 55% 28%;
   }
 }
 
@@ -132,17 +132,17 @@
   /* Primary (Navy) scale for Tailwind v4 classes like text-primary-900 */
   --color-primary: hsl(var(--primary));
   --color-primary-foreground: hsl(var(--primary-foreground));
-  --color-primary-50: hsl(210 25% 97%);
-  --color-primary-100: hsl(210 25% 92%);
-  --color-primary-200: hsl(210 22% 85%);
-  --color-primary-300: hsl(210 22% 74%);
-  --color-primary-400: hsl(210 22% 60%);
-  --color-primary-500: hsl(210 25% 25%);
-  --color-primary-600: hsl(210 25% 22%);
-  --color-primary-700: hsl(210 25% 20%);
-  --color-primary-800: hsl(210 25% 18%);
-  --color-primary-900: hsl(210 25% 16%);
-  --color-primary-950: hsl(210 25% 14%);
+  --color-primary-50: hsl(213 55% 96%);
+  --color-primary-100: hsl(213 55% 90%);
+  --color-primary-200: hsl(213 50% 80%);
+  --color-primary-300: hsl(213 50% 65%);
+  --color-primary-400: hsl(213 50% 45%);
+  --color-primary-500: hsl(213 55% 28%);
+  --color-primary-600: hsl(213 55% 24%);
+  --color-primary-700: hsl(213 55% 20%);
+  --color-primary-800: hsl(213 55% 16%);
+  --color-primary-900: hsl(213 55% 12%);
+  --color-primary-950: hsl(213 55% 10%);
 
   /* Gold (Accent) scale for classes like bg-gold-600 */
   --color-accent: hsl(var(--accent));

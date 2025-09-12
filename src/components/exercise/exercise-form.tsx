@@ -130,7 +130,7 @@ export function ExerciseForm({ title, exercise, isLoading, onSubmit, cancelHref 
               <Button variant="outline" type="button">
                 <Link href={cancelHref}>Cancel</Link>
               </Button>
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading} variant="accent">
                 {isLoading ? (
                   <>
                     <Loader2 className="animate-spin" />

@@ -1,16 +1,17 @@
-import { IWorkoutSimple } from '@/src/models/domain/workout';
+
 import { WorkoutApiService } from '@/src/api/services/workout-api-service';
+import { IWorkoutSimple } from '@/src/models/domain/workout';
+import { DeleteButton } from '../common/delete-button';
 import { DetailButton } from '../common/detail-button';
 import { EditButton } from '../common/edit-button';
 import {
     Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
     CardHeader,
     CardTitle,
-    CardDescription,
-    CardContent,
-    CardFooter,
 } from '../ui/card';
-import { DeleteButton } from '../common/delete-button';
 
 interface WorkoutCardProps {
     workout: IWorkoutSimple;
@@ -52,12 +53,12 @@ export function WorkoutCard({ workout, onDelete }: WorkoutCardProps) {
                     <EditButton href={`/workouts/${workout.id}/edit`} />
                 </div>
                 <div className="w-1/3">
-                <DeleteButton
-                    entityName={workout.name || ''}
-                    entityType="Workout"
-                    deleteAction={deleteAction}
-                    onDelete={onDelete} />
-                </div>                
+                    <DeleteButton
+                        entityName={workout.name || ''}
+                        entityType="Workout"
+                        deleteAction={deleteAction}
+                        onDelete={onDelete} />
+                </div>
             </CardFooter>
         </Card>
     );

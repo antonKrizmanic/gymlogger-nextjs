@@ -1,18 +1,18 @@
 "use client"
-import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import Link from "next/link"
 import { Loader2 } from "lucide-react"
+import Link from "next/link"
+import { useForm } from "react-hook-form"
 
-import type { IWorkoutCreate } from "@/src/models/domain/workout"
-import { workoutSchema, type WorkoutSchema } from "@/src/schemas/index"
-import { ExerciseList } from "./exercise-list"
+import { DatePicker } from "@/src/components/form/date-picker"
 import { Button } from "@/src/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/components/ui/form"
 import { Input } from "@/src/components/ui/input"
 import { Textarea } from "@/src/components/ui/textarea"
-import { DatePicker } from "@/src/components/form/date-picker"
+import type { IWorkoutCreate } from "@/src/models/domain/workout"
+import { workoutSchema, type WorkoutSchema } from "@/src/schemas/index"
+import { ExerciseList } from "./exercise-list"
 
 interface WorkoutFormProps {
   workoutId: string | null
@@ -46,9 +46,10 @@ export function WorkoutForm({ workoutId, title, workout, isLoading, onSubmit, ca
   }
 
   return (
-    <Card>
+    <Card className="relative overflow-hidden">
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle className="text-2xl font-display">{title}</CardTitle>
+        <CardDescription>Fill in workout details and exercises below.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -111,20 +112,20 @@ export function WorkoutForm({ workoutId, title, workout, isLoading, onSubmit, ca
             />
 
             {/* Submit and Cancel buttons */}
-            <div className="flex md:flex-row flex-col-reverse justify-end gap-4">
-              <Button variant="outline" type="button">
+            <div className="sticky bottom-0 z-10 bg-card/80 backdrop-blur supports-[backdrop-filter]:bg-card/60 px-2 py-3 -mx-2 border-t border-border flex md:flex-row flex-col-reverse justify-end gap-4">
+              <Button variant="outline" type="button" className="hover:translate-y-[-1px] transition-transform">
                 <Link className="flex items-center justify-center w-full h-full" href={cancelHref}>
                   Cancel
                 </Link>
               </Button>
-              <Button className="justify-center" type="submit" disabled={isLoading}>
+              <Button className="justify-center hover:translate-y-[-1px] transition-transform" type="submit" disabled={isLoading} variant="accent">
                 {isLoading ? (
                   <>
                     <Loader2 className="animate-spin" />
                     Saving...
                   </>
                 ) : (
-                  <>                    
+                  <>
                     Save
                   </>
                 )}

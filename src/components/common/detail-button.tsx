@@ -8,8 +8,8 @@ interface DetailButtonProps {
 
 export function DetailButton({ href }: DetailButtonProps) {
     return (
-        <Button asChild className="w-full" variant="outline">
-            <Link href={href}><Eye className="mr-2" /> Details</Link>
+        <Button asChild className="w-full" variant="accentOutline">
+            <Link href={href}><Eye /></Link>
         </Button>
     );
 }
