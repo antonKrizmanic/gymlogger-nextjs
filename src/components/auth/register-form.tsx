@@ -51,7 +51,7 @@ export const RegisterForm = () => {
 
     return (
         <CardWrapper
-            headerLabel="Create an account"
+            headerLabel="Start your fitness transformation today"
             backButtonLabel="Already have an account?"
             backButtonHref="/auth/login"
             showSocial={false}
@@ -134,14 +134,19 @@ export const RegisterForm = () => {
                     </div>
                     <FormError message={error} />
                     <FormSuccess message={success} />
-                    <Button disabled={isSubmitting} type="submit" className="w-full hover:cursor-pointer">
+                    <Button
+                        disabled={isSubmitting}
+                        type="submit"
+                        className="w-full hover:cursor-pointer h-12 text-lg font-semibold"
+                        size="lg"
+                    >
                         {isSubmitting ? (
                             <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Creating account...
+                                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                Creating your account...
                             </>
                         ) : (
-                            "Register"
+                            "Create Account"
                         )}
                     </Button>
                 </form>

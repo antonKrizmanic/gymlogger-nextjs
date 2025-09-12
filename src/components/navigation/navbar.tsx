@@ -1,74 +1,106 @@
 'use client';
 
-import { SessionProvider } from "next-auth/react"
-import { useState } from 'react';
+import { cn } from '@/src/lib/utils';
+import { Activity, Dumbbell, Home, Menu, X } from "lucide-react";
+import { SessionProvider } from "next-auth/react";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { cn } from '@/src/lib/utils';
-import { ThemeSwitcher } from '../theme/theme-switcher';
-import { Menu, X } from "lucide-react"
-import UserAvatar from './user-avatar';
+import { useEffect, useState } from 'react';
 import { Logotype } from "../logo";
+import { ThemeSwitcher } from '../theme/theme-switcher';
+import UserAvatar from './user-avatar';
 
 export function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
     const pathname = usePathname();
 
-   
+    // Handle scroll effect
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 20);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     const navItems = [
-        { name: 'Workouts', href: '/workouts' },
-        { name: 'Exercises', href: '/exercises' },
+        { name: 'Dashboard', href: '/dashboard', icon: Home },
+        { name: 'Workouts', href: '/workouts', icon: Dumbbell },
+        { name: 'Exercises', href: '/exercises', icon: Activity },
     ];
 
-    const isActive = (path: string) => pathname === path;
+    const isActive = (path: string) => pathname === path || pathname.startsWith(path);
 
     return (
-        <nav className="bg-white dark:bg-slate-950 border-b border-gray-200 dark:border-slate-800">
+        <nav className={cn(
+            "sticky top-0 z-50 border-b transition-all duration-300",
+            scrolled
+                ? "bg-background/80 backdrop-blur-md border-border shadow-sm"
+                : "bg-background border-border"
+        )}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16">
                     <div className="flex">
-                        {/* Logo */}                        
-                        
-                        <Link href="/dashboard" className="flex-shrink-0 flex items-center">
-                            <Logotype className="w-[60px] h-[60px] mx-auto text-gray-900 dark:text-white"/>
-                            <span className="hidden md:inline text-xl font-bold text-gray-900 dark:text-white">GymNotebook</span>
+                        {/* Logo */}
+                        <Link href="/dashboard" className="flex-shrink-0 flex items-center group">
+                            <div className="p-2 bg-primary/10 rounded-xl mr-3 group-hover:bg-primary/20 transition-colors">
+                                <Logotype />
+                            </div>
+                            <span className="hidden sm:inline text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+                                GymNotebook
+                            </span>
                         </Link>
 
                         {/* Desktop Navigation */}
-                        <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                            {navItems.map((item) => (
-                                <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    className={cn(
-                                        'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium',
-                                        isActive(item.href)
-                                            ? 'border-gray-700 text-gray-700 dark:text-gray-300 dark:border-gray-300'
-                                            : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-700 hover:text-gray-700 dark:hover:text-gray-200'
-                                    )}
-                                >
-                                    {item.name}
-                                </Link>
-                            ))}
+                        <div className="hidden md:ml-8 md:flex md:space-x-1">
+                            {navItems.map((item) => {
+                                const Icon = item.icon;
+                                return (
+                                    <Link
+                                        key={item.href}
+                                        href={item.href}
+                                        className={cn(
+                                            'relative inline-flex items-center px-4 py-2 text-sm font-medium transition-all duration-200',
+                                            isActive(item.href)
+                                                ? 'bg-primary/10 text-primary rounded-lg'
+                                                : 'text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-lg'
+                                        )}
+                                    >
+                                        <Icon className="h-4 w-4 mr-2" />
+                                        {item.name}
+                                        {isActive(item.href) && (
+                                            <div className="absolute inset-x-0 bottom-0 h-0.5 bg-primary rounded-full" />
+                                        )}
+                                    </Link>
+                                );
+                            })}
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2">                        
-                        <ThemeSwitcher />                        
+                    <div className="flex items-center gap-3">
+                        <ThemeSwitcher />
                         <SessionProvider>
                             <UserAvatar />
                         </SessionProvider>
+
                         {/* Mobile menu button */}
-                        <div className="sm:hidden flex items-center ml-4">
+                        <div className="md:hidden flex items-center">
                             <button
                                 type="button"
                                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                                className="inline-flex items-center justify-center p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-primary-500"
-                                aria-expanded="false"
+                                className={cn(
+                                    "inline-flex items-center justify-center p-2 rounded-lg transition-all duration-200",
+                                    "text-muted-foreground hover:text-foreground hover:bg-muted/50",
+                                    "focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                )}
+                                aria-expanded={isMobileMenuOpen}
                             >
-                                <span className="sr-only">Open main menu</span>
-                                <Menu className={cn('h-6 w-6', isMobileMenuOpen ? 'hidden' : 'block')} />
-                                <X className={cn('h-6 w-6', isMobileMenuOpen ? 'block' : 'hidden')} />
+                                <span className="sr-only">
+                                    {isMobileMenuOpen ? 'Close main menu' : 'Open main menu'}
+                                </span>
+                                <Menu className={cn('h-5 w-5 transition-transform', isMobileMenuOpen ? 'rotate-90 opacity-0' : 'rotate-0 opacity-100')} />
+                                <X className={cn('h-5 w-5 absolute transition-transform', isMobileMenuOpen ? 'rotate-0 opacity-100' : '-rotate-90 opacity-0')} />
                             </button>
                         </div>
                     </div>
@@ -76,22 +108,32 @@ export function Navbar() {
             </div>
 
             {/* Mobile menu */}
-            <div className={cn('sm:hidden', isMobileMenuOpen ? 'block' : 'hidden')}>
-                <div className="pt-2 pb-3 space-y-1">
-                    {navItems.map((item) => (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className={cn(
-                                'block pl-3 pr-4 py-2 border-l-4 text-base font-medium',
-                                isActive(item.href)
-                                    ? 'border-gray-700 text-gray-700 dark:text-gray-300 dark:border-gray-300'
-                                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-700 hover:text-gray-700 dark:hover:text-gray-200'
-                            )}
-                        >
-                            {item.name}
-                        </Link>
-                    ))}
+            <div className={cn(
+                'md:hidden transition-all duration-300 ease-in-out',
+                isMobileMenuOpen
+                    ? 'max-h-96 opacity-100'
+                    : 'max-h-0 opacity-0 overflow-hidden'
+            )}>
+                <div className="px-4 pt-2 pb-4 space-y-2 bg-background/95 backdrop-blur-sm border-t border-border">
+                    {navItems.map((item) => {
+                        const Icon = item.icon;
+                        return (
+                            <Link
+                                key={item.href}
+                                href={item.href}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className={cn(
+                                    'flex items-center px-4 py-3 rounded-lg text-base font-medium transition-all duration-200',
+                                    isActive(item.href)
+                                        ? 'bg-primary/15 text-primary border-l-4 border-primary'
+                                        : 'text-muted-foreground hover:text-primary hover:bg-primary/5'
+                                )}
+                            >
+                                <Icon className="h-5 w-5 mr-3" />
+                                {item.name}
+                            </Link>
+                        );
+                    })}
                 </div>
             </div>
         </nav>

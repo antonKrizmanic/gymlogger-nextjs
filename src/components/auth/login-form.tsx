@@ -48,7 +48,7 @@ export const LoginForm = () => {
 
     return (
         <CardWrapper
-            headerLabel="Welcome back"
+            headerLabel="Welcome back! Ready to continue your fitness journey?"
             backButtonLabel="Don't have an account?"
             backButtonHref="/auth/register"
             showSocial={true}
@@ -95,14 +95,19 @@ export const LoginForm = () => {
                     </div>
                     <FormError message={error} />
                     <FormSuccess message={success} />
-                    <Button disabled={isSubmitting} type="submit" className="w-full hover:cursor-pointer">
+                    <Button
+                        disabled={isSubmitting}
+                        type="submit"
+                        className="w-full hover:cursor-pointer h-12 text-lg font-semibold"
+                        size="lg"
+                    >
                         {isSubmitting ? (
                             <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Logging in...
+                                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                Signing you in...
                             </>
                         ) : (
-                            "Login"
+                            "Sign In"
                         )}
                     </Button>
                 </form>

@@ -2,23 +2,24 @@
 
 import { IDashboardDateItem } from '@/src/models/domain/dashboard';
 
+import { BarChart3, Dumbbell, Target, TrendingUp } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import { useState } from 'react';
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  BarChart,
   Bar,
-  TooltipProps
+  BarChart,
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  TooltipProps,
+  XAxis,
+  YAxis
 } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
-import { useTheme } from 'next-themes';
-import { Card, CardContent } from '../ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface WorkoutChartProps {
   data: IDashboardDateItem[];
@@ -38,11 +39,11 @@ interface ChartDataItem {
 
 // Helper function to safely convert value to number
 const safeNumberConversion = (value: any): number => {
-	if (value === null || value === undefined) return 0;
-	// Handle BigInt values
-	if (typeof value === 'bigint') return Number(value);
-	// Handle other numeric values
-	return Number(value);
+  if (value === null || value === undefined) return 0;
+  // Handle BigInt values
+  if (typeof value === 'bigint') return Number(value);
+  // Handle other numeric values
+  return Number(value);
 };
 
 export function WorkoutChart({ data }: WorkoutChartProps) {
@@ -93,104 +94,232 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
     date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
   }));
 
-  const getColor = () => {
-    return isDarkMode ? '#4d7a7a' : '#68a2a2';
+  // Get colors based on metric and theme - using primary color for all
+  const getChartColors = () => {
+    return isDarkMode ? '#818cf8' : '#6366f1';  // Primary indigo for all metrics
   };
 
-  // Get label based on metric
-  const getLabel = () => {
+  // Get secondary colors for gradients - using primary variations
+  const getSecondaryColor = () => {
+    return isDarkMode ? '#a5b4fc' : '#818cf8';  // Primary indigo variations for all
+  };
+
+  // Get label and icon based on metric
+  const getMetricInfo = () => {
     switch (metric) {
-      case 'weight': return 'Weight (kg)';
-      case 'series': return 'Series';
-      case 'reps': return 'Repetitions';
-      default: return 'Weight (kg)';
+      case 'weight':
+        return {
+          label: 'Total Weight (kg)',
+          icon: <Dumbbell className="h-4 w-4" />,
+          description: 'Total weight lifted across all exercises'
+        };
+      case 'series':
+        return {
+          label: 'Training Sets',
+          icon: <Target className="h-4 w-4" />,
+          description: 'Number of sets completed'
+        };
+      case 'reps':
+        return {
+          label: 'Total Repetitions',
+          icon: <TrendingUp className="h-4 w-4" />,
+          description: 'Total reps performed across all exercises'
+        };
+      default:
+        return {
+          label: 'Total Weight (kg)',
+          icon: <Dumbbell className="h-4 w-4" />,
+          description: 'Total weight lifted across all exercises'
+        };
     }
   };
 
   // Custom tooltip component
   const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
     if (active && payload && payload.length) {
+      const metricInfo = getMetricInfo();
       return (
-        <div className="bg-white dark:bg-slate-800 p-3 border border-gray-200 dark:border-gray-700 rounded shadow-md">
-          <p className="font-medium text-gray-900 dark:text-white">{label}</p>
-          <p className="text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-medium" style={{ color: payload[0].color }}>
-              {payload[0].name}:
-            </span>{' '}
-            {payload[0].value}
-          </p>
+        <div className="bg-card border border-border shadow-xl rounded-lg p-4">
+          <p className="font-semibold text-muted-foreground mb-2">{label}</p>
+          <div className="flex items-center space-x-2">
+            <div
+              className="w-3 h-3 rounded-full"
+              style={{ backgroundColor: payload[0].color }}
+            />
+            <span className="text-sm text-muted-foreground">
+              {metricInfo.label}:
+            </span>
+            <span className="text-sm font-bold text-muted-foreground">
+              {payload[0].value}
+              {metric === 'weight' ? ' kg' : ''}
+            </span>
+          </div>
         </div>
       );
     }
     return null;
   };
 
+  const metricInfo = getMetricInfo();
+
   return (
-    <Card className="p-4">
-      <CardContent>
-        <div className="flex flex-col space-y-4">
-          <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium text-gray-600 dark:text-white">Workout Progress</h3>
-            <div className="flex space-x-2">
-              <select
-                value={metric}
-                onChange={(e) => setMetric(e.target.value as ChartMetric)}
-                className="px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-slate-800 text-sm text-gray-900 dark:text-white"
-              >
-                <option value="weight">Weight</option>
-                <option value="series">Series</option>
-                <option value="reps">Reps</option>
-              </select>
-              <select
-                value={chartType}
-                onChange={(e) => setChartType(e.target.value as ChartType)}
-                className="px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-slate-800 text-sm text-gray-900 dark:text-white"
-              >
-                <option value="line">Line</option>
-                <option value="bar">Bar</option>
-              </select>
+    <Card className="border-0 shadow-lg">
+      <CardHeader className="pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              {metricInfo.icon}
+            </div>
+            <div>
+              <CardTitle className="text-xl font-bold text-foreground">
+                {metricInfo.label}
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">
+                {metricInfo.description}
+              </p>
             </div>
           </div>
 
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              {chartType === 'line' ? (
-                <LineChart
-                  data={formattedData}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey={metric}
-                    stroke={getColor()}
-                    activeDot={{ r: 8 }}
-                    name={getLabel()}
-                  />
-                </LineChart>
-              ) : (
-                <BarChart
-                  data={formattedData}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Legend />
-                  <Bar
-                    dataKey={metric}
-                    fill={getColor()}
-                    name={getLabel()}
-                  />
-                </BarChart>
-              )}
-            </ResponsiveContainer>
+          <div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-3">
+            <div className="space-y-1 flex-1 sm:flex-none">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                Metric
+              </label>
+              <Select value={metric} onValueChange={(value) => setMetric(value as ChartMetric)}>
+                <SelectTrigger className="w-full sm:w-[140px] h-10">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="weight">
+                    <div className="flex items-center space-x-2">
+                      <Dumbbell className="h-4 w-4" />
+                      <span>Weight</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="series">
+                    <div className="flex items-center space-x-2">
+                      <Target className="h-4 w-4" />
+                      <span>Sets</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="reps">
+                    <div className="flex items-center space-x-2">
+                      <TrendingUp className="h-4 w-4" />
+                      <span>Reps</span>
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1 flex-1 sm:flex-none">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                Chart Type
+              </label>
+              <Select value={chartType} onValueChange={(value) => setChartType(value as ChartType)}>
+                <SelectTrigger className="w-full sm:w-[120px] h-10">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="line">
+                    <div className="flex items-center space-x-2">
+                      <TrendingUp className="h-4 w-4" />
+                      <span>Line</span>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="bar">
+                    <div className="flex items-center space-x-2">
+                      <BarChart3 className="h-4 w-4" />
+                      <span>Bar</span>
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
+        </div>
+      </CardHeader>
+
+      <CardContent>
+
+        <div className="h-80 mt-4">
+          <ResponsiveContainer width="100%" height="100%">
+            {chartType === 'line' ? (
+              <LineChart
+                data={formattedData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+              >
+                <defs>
+                  <linearGradient id={`gradient-${metric}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={getChartColors()} stopOpacity={0.3} />
+                    <stop offset="95%" stopColor={getChartColors()} stopOpacity={0.05} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#334155' : '#e2e8f0'} />
+                <XAxis
+                  dataKey="date"
+                  stroke={isDarkMode ? '#94a3b8' : '#64748b'}
+                  fontSize={12}
+                  fontWeight={500}
+                />
+                <YAxis
+                  stroke={isDarkMode ? '#94a3b8' : '#64748b'}
+                  fontSize={12}
+                  fontWeight={500}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Line
+                  type="monotone"
+                  dataKey={metric}
+                  stroke={getChartColors()}
+                  strokeWidth={3}
+                  fill={`url(#gradient-${metric})`}
+                  activeDot={{
+                    r: 6,
+                    fill: getChartColors(),
+                    stroke: isDarkMode ? '#1a1f29' : '#ffffff',
+                    strokeWidth: 2
+                  }}
+                  dot={{
+                    r: 4,
+                    fill: getChartColors(),
+                    stroke: isDarkMode ? '#1a1f29' : '#ffffff',
+                    strokeWidth: 1
+                  }}
+                />
+              </LineChart>
+            ) : (
+              <BarChart
+                data={formattedData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+              >
+                <defs>
+                  <linearGradient id={`barGradient-${metric}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={getChartColors()} stopOpacity={0.9} />
+                    <stop offset="95%" stopColor={getSecondaryColor()} stopOpacity={0.7} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#334155' : '#e2e8f0'} />
+                <XAxis
+                  dataKey="date"
+                  stroke={isDarkMode ? '#94a3b8' : '#64748b'}
+                  fontSize={12}
+                  fontWeight={500}
+                />
+                <YAxis
+                  stroke={isDarkMode ? '#94a3b8' : '#64748b'}
+                  fontSize={12}
+                  fontWeight={500}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Bar
+                  dataKey={metric}
+                  fill={`url(#barGradient-${metric})`}
+                  radius={[4, 4, 0, 0]}
+                />
+              </BarChart>
+            )}
+          </ResponsiveContainer>
         </div>
       </CardContent>
     </Card>
