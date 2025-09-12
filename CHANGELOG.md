@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.41.0] - 2025-09-12
+### Changed
+- [Dependencies] Updated nextjs-monorepo
+
 ## [0.40.0] - 2025-09-07
 ### Changed
 - [Dependencies] Updated headlessui-react-2.x
