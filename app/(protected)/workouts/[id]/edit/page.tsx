@@ -3,6 +3,9 @@ import { ClientWorkoutForm } from '@/src/components/workout/client-workout-form'
 import { getWorkout } from '@/src/data/workout';
 import { IWorkoutCreate } from '@/src/models/domain/workout';
 
+// Force dynamic rendering to prevent caching
+export const dynamic = 'force-dynamic';
+
 export default async function EditWorkoutPage(props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
     const id = await params.id;

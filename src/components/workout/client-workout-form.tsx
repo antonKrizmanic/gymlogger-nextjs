@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { toast } from "sonner"
 import { WorkoutApiService } from '@/src/api/services/workout-api-service';
 import { IWorkoutCreate, IWorkoutUpdate } from '@/src/models/domain/workout';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { toast } from "sonner";
 import { WorkoutForm } from './workout-form';
 
 interface ClientWorkoutFormProps {
@@ -17,6 +17,12 @@ interface ClientWorkoutFormProps {
 export function ClientWorkoutForm({ title, workout, id, cancelHref }: ClientWorkoutFormProps) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+
+    // For new workouts (no id), always use current date
+    const workoutData = id ? workout : {
+        ...workout,
+        date: new Date()
+    };
 
     const handleSubmit = async (formData: IWorkoutCreate) => {
         // Basic validation
@@ -60,7 +66,7 @@ export function ClientWorkoutForm({ title, workout, id, cancelHref }: ClientWork
         <WorkoutForm
             workoutId={id || null}
             title={title}
-            workout={workout}
+            workout={workoutData}
             onSubmit={handleSubmit}
             cancelHref={cancelHref}
             isLoading={isLoading}

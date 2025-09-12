@@ -1,10 +1,5 @@
 "use client";
 
-import * as z from "zod";
-import { useTransition, useState } from "react";
-import { useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import { LoginSchema } from "@/src/schemas/index";
 import {
     Form,
     FormControl,
@@ -13,13 +8,19 @@ import {
     FormLabel,
     FormMessage
 } from "@/src/components/ui/form";
+import { LoginSchema } from "@/src/schemas/index";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
-import { CardWrapper } from "./card-wrapper";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { login } from "@/src/actions/login";
+import { Loader2 } from "lucide-react";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
-import { login } from "@/src/actions/login";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { CardWrapper } from "./card-wrapper";
 
 export const LoginForm = () => {
     const [isSubmitting, setIsSubmitting] = useTransition();
@@ -38,67 +39,74 @@ export const LoginForm = () => {
         setSuccess(undefined);
         setIsSubmitting(() => {
             login(values)
-            .then((data:any) => {                
-                setError(data.error);
-                setSuccess(data.success);
-            })
-        });           
+                .then((data: any) => {
+                    setError(data.error);
+                    setSuccess(data.success);
+                })
+        });
     }
 
-   return (
+    return (
         <CardWrapper
             headerLabel="Welcome back"
             backButtonLabel="Don't have an account?"
             backButtonHref="/auth/register"
             showSocial={true}
-            >
+        >
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}
                     className="space-y-6">
-                     <div className="space-y-4">
-                        <FormField 
-                        control={form.control}
-                        name="email"
-                        render={({field}) =>(
-                            <FormItem>
-                                <FormLabel>Email</FormLabel>
-                                <FormControl>
-                                <Input
-                                    type="email"
-                                    disabled={isSubmitting}
-                                    {...field}
-                                    placeholder="Email"
-                                />                                
-                                </FormControl>
-                                <FormMessage/>
-                            </FormItem>
-                        )}/>
+                    <div className="space-y-4">
+                        <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Email</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="email"
+                                            disabled={isSubmitting}
+                                            {...field}
+                                            placeholder="Email"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
 
-                        <FormField 
-                        control={form.control}
-                        name="password"
-                        render={({field}) =>(
-                            <FormItem>
-                                <FormLabel>Password</FormLabel>
-                                <FormControl>
-                                <Input
-                                    type="password"
-                                    disabled={isSubmitting}
-                                    {...field}
-                                    placeholder="Password"
-                                />                                
-                                </FormControl>
-                                <FormMessage/>
-                            </FormItem>
-                        )}/>
-                    </div>  
-                <FormError message={error}/>
-                <FormSuccess message={success}/>
-                <Button disabled={isSubmitting} type="submit" className="w-full hover:cursor-pointer">
-                    Login
-                </Button>
+                        <FormField
+                            control={form.control}
+                            name="password"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Password</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="password"
+                                            disabled={isSubmitting}
+                                            {...field}
+                                            placeholder="Password"
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )} />
+                    </div>
+                    <FormError message={error} />
+                    <FormSuccess message={success} />
+                    <Button disabled={isSubmitting} type="submit" className="w-full hover:cursor-pointer">
+                        {isSubmitting ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Logging in...
+                            </>
+                        ) : (
+                            "Login"
+                        )}
+                    </Button>
                 </form>
             </Form>
         </CardWrapper>
-   )
+    )
 } 
