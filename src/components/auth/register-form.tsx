@@ -134,7 +134,7 @@ export const RegisterForm = () => {
                     </div>
                     <FormError message={error} />
                     <FormSuccess message={success} />
-                    <Button disabled={isSubmitting} type="submit" className="w-full hover:cursor-pointer">
+                    <Button disabled={isSubmitting} type="submit" variant="accent" className="w-full hover:cursor-pointer">
                         {isSubmitting ? (
                             <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
