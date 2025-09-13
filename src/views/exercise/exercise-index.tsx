@@ -170,15 +170,15 @@ export const ExerciseIndex = ({ isFilterOpen }: IExerciseIndexProps) => {
             </div>
 
             {/* Exercise grid */}
-            <Grid
+            <Grid<IExercise>
                 items={exercises}
                 renderItem={(exercise) => (
                     <ExerciseCard
-                        key={exercise.id}
                         exercise={exercise}
                         onDelete={handleExerciseDelete}
                     />
                 )}
+                keyExtractor={(exercise) => exercise.id}
                 isLoading={isLoading}
                 emptyMessage="No exercises found"
             />

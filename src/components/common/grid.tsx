@@ -8,7 +8,7 @@ interface GridProps<T> {
     keyExtractor?: (item: T, index: number) => string;
 }
 
-export const Grid = memo(function Grid<T>({
+function GridComponent<T>({
     items,
     renderItem,
     isLoading,
@@ -48,4 +48,6 @@ export const Grid = memo(function Grid<T>({
             {renderedItems}
         </div>
     );
-}) 
+}
+
+export const Grid = memo(GridComponent) as typeof GridComponent; 
