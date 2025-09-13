@@ -22,8 +22,8 @@ if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma;
 }
 
-// Add graceful shutdown handling
-if (process.env.NODE_ENV === 'production') {
+// Add graceful shutdown handling - only on server side
+if (typeof window === 'undefined' && process.env.NODE_ENV === 'production') {
   process.on('beforeExit', async () => {
     await prisma.$disconnect();
   });
