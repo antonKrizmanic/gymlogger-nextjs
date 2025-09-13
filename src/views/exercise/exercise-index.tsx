@@ -1,20 +1,18 @@
 'use client';
 
-import { Card, CardContent } from "@/src/components/ui/card";
+import { ExerciseApiService } from "@/src/api/services/exercise-api-service";
 import { Grid } from "@/src/components/common/grid";
 import { LogTypeSelect } from "@/src/components/common/log-type-select";
 import { MuscleGroupSelect } from "@/src/components/common/muscle-group-select";
 import { Pagination } from "@/src/components/common/pagination";
 import { SearchBar } from "@/src/components/common/search-bar";
 import { ExerciseCard } from "@/src/components/exercise/exercise-card";
-import { IExercise } from "@/src/models/domain/exercise";
-import { ExerciseLogType } from "@/src/types/enums";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState, useMemo } from "react";
-import { ExerciseApiService } from "@/src/api/services/exercise-api-service";
-import { IPagingDataResponseDto } from "@/src/types/common";
 import { IExerciseRequest } from "@/src/data/exercise";
+import { IExercise } from "@/src/models/domain/exercise";
+import { IPagingDataResponseDto } from "@/src/types/common";
+import { ExerciseLogType } from "@/src/types/enums";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -83,14 +81,14 @@ export const ExerciseIndex = ({ isFilterOpen }: IExerciseIndexProps) => {
         size: number,
         muscleGroup?: string,
         logType?: ExerciseLogType
-    ) => {        
+    ) => {
         const params = new URLSearchParams();
         params.set('page', page.toString());
         params.set('size', size.toString());
         if (search) params.set('search', search);
         if (muscleGroup) params.set('muscleGroup', muscleGroup);
         if (logType !== undefined) params.set('logType', logType.toString());
-        router.push(`/exercises?${params.toString()}`);        
+        router.push(`/exercises?${params.toString()}`);
     }, [router]);
 
     // Fetch exercises when request changes
@@ -147,22 +145,20 @@ export const ExerciseIndex = ({ isFilterOpen }: IExerciseIndexProps) => {
             <div className="mb-8 space-y-4">
                 {/* Filter card */}
                 {isFilterOpen && (
-                    <Card>
-                        <CardContent className="flex flex-col md:flex-row justify-between items-center gap-4">
-                            <div className="w-full md:w-1/2">
-                                <MuscleGroupSelect
-                                    selectedMuscleGroup={selectedMuscleGroup}
-                                    onMuscleGroupChange={handleMuscleGroupChange}
-                                />
-                            </div>
-                            <div className="w-full md:w-1/2">
-                                <LogTypeSelect
-                                    selectedLogType={selectedLogType ?? ExerciseLogType.Unknown}
-                                    onLogTypeChange={handleLogTypeChange}
-                                />
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <>
+                        <div className="w-full md:w-1/2">
+                            <MuscleGroupSelect
+                                selectedMuscleGroup={selectedMuscleGroup}
+                                onMuscleGroupChange={handleMuscleGroupChange}
+                            />
+                        </div>
+                        <div className="w-full md:w-1/2 pb-4">
+                            <LogTypeSelect
+                                selectedLogType={selectedLogType ?? ExerciseLogType.Unknown}
+                                onLogTypeChange={handleLogTypeChange}
+                            />
+                        </div>
+                    </>
                 )}
 
                 {/* Search bar */}

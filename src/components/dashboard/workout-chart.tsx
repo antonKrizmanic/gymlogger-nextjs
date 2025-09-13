@@ -94,14 +94,14 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
     date: new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
   }));
 
-  // Get colors based on metric and theme - using primary color for all
+  // Get colors based on metric and theme - using primary teal color for all
   const getChartColors = () => {
-    return isDarkMode ? '#818cf8' : '#6366f1';  // Primary indigo for all metrics
+    return isDarkMode ? '#2dd4bf' : '#14b8a6';  // Primary teal for all metrics
   };
 
-  // Get secondary colors for gradients - using primary variations
+  // Get secondary colors for gradients - using teal variations
   const getSecondaryColor = () => {
-    return isDarkMode ? '#a5b4fc' : '#818cf8';  // Primary indigo variations for all
+    return isDarkMode ? '#5eead4' : '#2dd4bf';  // Teal variations for all
   };
 
   // Get label and icon based on metric
