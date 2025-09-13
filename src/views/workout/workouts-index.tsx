@@ -1,19 +1,18 @@
 'use client';
 
+import { WorkoutApiService } from "@/src/api/services/workout-api-service";
 import { Grid } from "@/src/components/common/grid";
 import { MuscleGroupSelect } from "@/src/components/common/muscle-group-select";
 import { Pagination } from "@/src/components/common/pagination";
 import { SearchBar } from "@/src/components/common/search-bar";
-import { WorkoutCard } from "@/src/components/workout/workout-card";
-import { IWorkoutSimple } from "@/src/models/domain/workout";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Card, CardContent } from "@/src/components/ui/card";
 import { DatePicker } from "@/src/components/form/date-picker";
-import { IPagingDataResponseDto } from "@/src/types/common";
+import { Card, CardContent } from "@/src/components/ui/card";
+import { WorkoutCard } from "@/src/components/workout/workout-card";
 import { IWorkoutRequest } from "@/src/data/workout";
-import { WorkoutApiService } from "@/src/api/services/workout-api-service";
+import { IWorkoutSimple } from "@/src/models/domain/workout";
+import { IPagingDataResponseDto } from "@/src/types/common";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -151,15 +150,13 @@ export function WorkoutsIndex({ isFilterOpen }: WorkoutsIndexProps) {
             <div className="mb-8 space-y-4">
                 {/* Filter card */}
                 {isFilterOpen && (
-                    <Card>
-                        <CardContent className="flex flex-col md:flex-row justify-between items-center gap-4">
-                            <div className="w-full md:w-1/2">
+                    <Card className="border-0 shadow-lg">
+                        <CardContent className="pt-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <MuscleGroupSelect
                                     selectedMuscleGroup={selectedMuscleGroup}
                                     onMuscleGroupChange={handleMuscleGroupChange}
                                 />
-                            </div>
-                            <div className="w-full md:w-1/2">
                                 <DatePicker
                                     label="Workout Date"
                                     value={workoutDate || undefined}

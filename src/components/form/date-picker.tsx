@@ -1,14 +1,14 @@
 "use client"
 
-import * as React from "react"
 import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
+import { CalendarIcon, X } from "lucide-react"
+import * as React from "react"
 
-import { cn } from "@/src/lib/utils"
 import { Button } from "@/src/components/ui/button"
 import { Calendar } from "@/src/components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/src/components/ui/popover"
 import { Label } from "@/src/components/ui/label"
+import { Popover, PopoverContent, PopoverTrigger } from "@/src/components/ui/popover"
+import { cn } from "@/src/lib/utils"
 
 interface DatePickerProps {
   value?: Date | null
@@ -63,7 +63,7 @@ export function DatePicker({
   return (
     <div className="space-y-2">
       {label && (
-        <Label htmlFor={id} className={cn("block text-sm font-medium", labelClassName)}>
+        <Label htmlFor={id} className={cn("text-xs font-medium text-muted-foreground uppercase tracking-wide", labelClassName)}>
           {label} {required && <span className="text-destructive">*</span>}
         </Label>
       )}
@@ -72,25 +72,40 @@ export function DatePicker({
           <Button
             id={id}
             variant={"outline"}
-            className={cn("w-full justify-start text-left font-normal", !value && "text-muted-foreground", className)}
+            className={cn(
+              "w-full h-10 justify-between text-left font-normal",
+              !value && "text-muted-foreground",
+              className
+            )}
             disabled={disabled}
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {displayValue}
+            <div className="flex items-center">
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {displayValue}
+            </div>
+            {clearable && value && (
+              <X
+                className="h-4 w-4 opacity-50 hover:opacity-100 transition-opacity"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSelect(null);
+                }}
+              />
+            )}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
           <Calendar
             mode="single"
             selected={value || undefined}
-            onSelect={handleSelect}            
+            onSelect={handleSelect}
             startMonth={minDate}
             endMonth={maxDate}
           />
           {clearable && value && (
             <div className="p-3 border-t border-border">
               <Button variant="ghost" size="sm" className="w-full" onClick={() => handleSelect(null)}>
-                Clear
+                Clear Date
               </Button>
             </div>
           )}

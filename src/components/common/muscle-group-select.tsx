@@ -1,9 +1,10 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { MuscleGroupApiService } from "@/src/api/services/muscle-group-api-service"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select"
 import type { IMuscleGroup } from "@/src/models/domain/muscle-group"
-import { MuscleGroupApiService } from "@/src/api/services/muscle-group-api-service"
+import { Target } from "lucide-react"
+import { useEffect, useState } from "react"
 
 interface MuscleGroupSelectProps {
   selectedMuscleGroup: string
@@ -60,17 +61,22 @@ export function MuscleGroupSelect({
 
   return (
     <div className="space-y-2">
-      <label htmlFor="muscleGroup" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+      <label htmlFor="muscleGroup" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
         Muscle Group
       </label>
       <Select value={getSelectValue()} onValueChange={handleValueChange}>
-        <SelectTrigger className="w-full">
+        <SelectTrigger className="w-full h-10">
           <SelectValue placeholder={showMessageOption ? "Select Muscle Group" : "All Muscle Groups"} />
         </SelectTrigger>
         <SelectContent>
           {groups.map((group) => (
             <SelectItem key={group.id} value={group.id}>
-              {group.name}
+              <div className="flex items-center space-x-2">
+                {group.id !== ALL_GROUPS_ID && group.id !== SELECT_MESSAGE_ID && (
+                  <Target className="h-4 w-4" />
+                )}
+                <span>{group.name}</span>
+              </div>
             </SelectItem>
           ))}
         </SelectContent>

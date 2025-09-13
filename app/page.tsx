@@ -3,14 +3,10 @@
 import { Button } from "@/src/components/ui/button";
 import { Card, CardContent } from "@/src/components/ui/card";
 import {
-    Award,
     BarChart3,
-    Calendar,
     CheckCircle,
     Dumbbell,
     Loader2,
-    Smartphone,
-    Target,
     TrendingUp,
     Users
 } from "lucide-react";
@@ -38,25 +34,10 @@ export default function IndexPage() {
             description: "Visualize your strength gains and performance improvements with detailed charts and statistics."
         },
         {
-            icon: <Target className="h-8 w-8 text-primary" />,
-            title: "Goal Setting",
-            description: "Set personal fitness goals and track your progress towards achieving them with smart insights."
-        },
-        {
-            icon: <Calendar className="h-8 w-8 text-primary" />,
-            title: "Workout Planning",
-            description: "Plan your workouts in advance and maintain consistency with customizable training schedules."
-        },
-        {
             icon: <BarChart3 className="h-8 w-8 text-primary" />,
             title: "Performance Metrics",
             description: "Analyze your training volume, frequency, and intensity to optimize your workout routines."
         },
-        {
-            icon: <Award className="h-8 w-8 text-primary" />,
-            title: "Achievement System",
-            description: "Celebrate milestones and stay motivated with achievements for reaching your fitness goals."
-        }
     ];
 
     const benefits = [
@@ -175,32 +156,6 @@ export default function IndexPage() {
                                     </div>
                                 ))}
                             </div>
-                        </div>
-                        <div className="relative">
-                            <Card className="border-0 shadow-2xl">
-                                <CardContent className="p-8">
-                                    <div className="space-y-6">
-                                        <div className="flex items-center space-x-3">
-                                            <Smartphone className="h-6 w-6 text-primary" />
-                                            <span className="font-semibold text-foreground">Mobile Optimized</span>
-                                        </div>
-                                        <div className="space-y-4">
-                                            <div className="h-3 bg-primary/20 rounded-full">
-                                                <div className="h-3 bg-primary rounded-full w-4/5"></div>
-                                            </div>
-                                            <div className="h-3 bg-primary/20 rounded-full">
-                                                <div className="h-3 bg-primary rounded-full w-3/5"></div>
-                                            </div>
-                                            <div className="h-3 bg-primary/20 rounded-full">
-                                                <div className="h-3 bg-primary rounded-full w-5/6"></div>
-                                            </div>
-                                        </div>
-                                        <p className="text-sm text-muted-foreground">
-                                            Track your progress anywhere, anytime with our responsive design.
-                                        </p>
-                                    </div>
-                                </CardContent>
-                            </Card>
                         </div>
                     </div>
                 </div>

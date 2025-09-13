@@ -1,11 +1,27 @@
 import { Container } from "@/src/components/common/container";
 import DeleteExerciseButton from "@/src/components/exercise/delete-exercise-button";
 import { ExerciseTabs } from "@/src/components/exercise/exercise-tabs";
-import { getExercise } from "@/src/data/exercise";
-import Link from "next/link";
+import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
-import { MoveLeft, Pencil } from "lucide-react";
+import { getExercise } from "@/src/data/exercise";
+import { ExerciseLogType } from "@/src/types/enums";
+import { Activity, Clock, MoveLeft, Pencil, Repeat, Target, Weight } from "lucide-react";
+import Link from "next/link";
+
+// Function to convert ExerciseLogType enum to user-friendly text with icon
+const getLogTypeInfo = (logType: ExerciseLogType) => {
+    switch (logType) {
+        case ExerciseLogType.WeightAndReps:
+            return { label: 'Weight & Reps', icon: Weight, variant: 'default' as const };
+        case ExerciseLogType.TimeOnly:
+            return { label: 'Time Only', icon: Clock, variant: 'secondary' as const };
+        case ExerciseLogType.RepsOnly:
+            return { label: 'Reps Only', icon: Repeat, variant: 'outline' as const };
+        default:
+            return { label: 'Unknown', icon: Activity, variant: 'outline' as const };
+    }
+};
 
 export default async function ExerciseDetailPage(props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
@@ -14,74 +30,111 @@ export default async function ExerciseDetailPage(props: { params: Promise<{ id: 
 
     if (!exercise) {
         return (
-            <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-                <p className="text-lg text-gray-600 dark:text-gray-400">Exercise not found</p>
+            <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-accent/20">
+                <Container>
+                    <div className="flex items-center justify-center min-h-[calc(100vh-8rem)]">
+                        <Card className="border-0 shadow-xl max-w-md w-full">
+                            <CardContent className="text-center py-12">
+                                <div className="flex flex-col items-center space-y-4">
+                                    <div className="p-4 bg-destructive/10 rounded-full">
+                                        <Activity className="h-8 w-8 text-destructive" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <h3 className="text-xl font-semibold text-foreground">Exercise Not Found</h3>
+                                        <p className="text-muted-foreground">
+                                            The exercise you&apos;re looking for doesn&apos;t exist or has been removed.
+                                        </p>
+                                    </div>
+                                    <Button asChild className="mt-4">
+                                        <Link href="/exercises">
+                                            <MoveLeft className="mr-2 h-4 w-4" />
+                                            Back to Exercises
+                                        </Link>
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </Container>
             </div>
         );
     }
 
+    const logTypeInfo = getLogTypeInfo(exercise.exerciseLogType);
+    const LogTypeIcon = logTypeInfo.icon;
+
     return (
-        <Container>
-            <div className="space-y-4 pb-4">
-                {/* Title */}
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-200">
-                    {exercise.name || 'Unnamed Exercise'}
-                </h1>
-                
-                {/* Action buttons */}
-                <div className="flex items-center gap-2">
-                    {/* Back button */}
-                    <Button asChild>
-                        <Link href="/exercises">
-                            <MoveLeft />
-                            Back
-                        </Link> 
-                    </Button>                      
-                    <Button asChild> 
-                    <Link href={`/exercises/${exercise.id}/edit`}>
-                        <Pencil /> Edit
-                    </Link>
-                    </Button>
-                    <DeleteExerciseButton exercise={exercise} />
-                </div>
-                
-                {/* Exercise details */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Exercise Details</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <h3 className="font-semibold text-sm text-gray-700 dark:text-gray-400">Muscle Group</h3>
-                                <p className="text-gray-500 dark:text-gray-100">{exercise.muscleGroupName}</p>
-                            </div>
-                            <div>
-                                <h3 className="font-semibold text-sm text-gray-700 dark:text-gray-400">Log Type</h3>
-                                <p className="text-gray-500 dark:text-gray-100">
-                                    {exercise.exerciseLogType === 1
-                                        ? "Weight and Reps"
-                                        : exercise.exerciseLogType === 2
-                                        ? "Reps Only"
-                                        : exercise.exerciseLogType === 3
-                                        ? "Time Only"
-                                        : "Unknown"}
-                                </p>
+        <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-accent/20">
+            <Container>
+                {/* Hero Section */}
+                <div className="space-y-6 pb-8">
+                    <div className="space-y-4">
+                        {/* Back Navigation */}
+                        <Button asChild variant="ghost" className="p-0 h-auto font-normal text-muted-foreground hover:text-foreground">
+                            <Link href="/exercises" className="flex items-center gap-2">
+                                <MoveLeft className="h-4 w-4" />
+                                Back to Exercises
+                            </Link>
+                        </Button>
+
+                        {/* Exercise Title & Badges */}
+                        <div className="space-y-4">
+                            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground flex items-center">
+                                <div className="p-3 bg-primary/10 rounded-xl mr-4">
+                                    <Activity className="h-8 w-8 text-primary" />
+                                </div>
+                                {exercise.name || 'Unnamed Exercise'}
+                            </h1>
+
+                            {/* Badges */}
+                            <div className="flex flex-wrap gap-3">
+                                {exercise.muscleGroupName && (
+                                    <Badge variant="secondary" className="text-sm px-3 py-1 flex items-center gap-2">
+                                        <Target className="h-4 w-4" />
+                                        {exercise.muscleGroupName}
+                                    </Badge>
+                                )}
+                                <Badge variant={logTypeInfo.variant} className="text-sm px-3 py-1 flex items-center gap-2">
+                                    <LogTypeIcon className="h-4 w-4" />
+                                    {logTypeInfo.label}
+                                </Badge>
                             </div>
                         </div>
-                        
-                        {exercise.description && (
-                            <div className="mt-4">
-                                <h3 className="font-semibold text-sm text-gray-700 dark:text-gray-400">Description</h3>
-                                <p className="text-gray-500 dark:text-gray-100 whitespace-pre-wrap">{exercise.description}</p>
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
-                
+
+                        {/* Action Buttons */}
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <Button asChild size="lg" className="px-6 py-3 text-lg font-semibold">
+                                <Link href={`/exercises/${exercise.id}/edit`}>
+                                    <Pencil className="mr-2 h-5 w-5" />
+                                    Edit Exercise
+                                </Link>
+                            </Button>
+                            <DeleteExerciseButton exercise={exercise} />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Exercise Details Card */}
+                {exercise.description && (
+                    <Card className="border-0 shadow-lg mb-8">
+                        <CardHeader>
+                            <CardTitle className="text-xl font-bold text-foreground flex items-center">
+                                <Activity className="mr-2 h-6 w-6 text-primary" />
+                                Description
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                                {exercise.description}
+                            </p>
+                        </CardContent>
+                    </Card>
+                )}
+
+
                 {/* Tabbed interface for history and progress */}
                 <ExerciseTabs exerciseId={exercise.id} />
-            </div>
-        </Container>
+            </Container>
+        </div>
     );
 }

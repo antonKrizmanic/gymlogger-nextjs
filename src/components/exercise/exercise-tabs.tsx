@@ -1,32 +1,55 @@
 'use client';
 
-import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/src/components/ui/tabs';
-import { ExerciseWorkoutHistory } from './exercise-workout-history';
+import { BarChart3, History } from 'lucide-react';
+import { useState } from 'react';
 import { ExerciseProgress } from './exercise-progress';
+import { ExerciseWorkoutHistory } from './exercise-workout-history';
 
 interface ExerciseTabsProps {
 	exerciseId: string;
 }
 
 export function ExerciseTabs({ exerciseId }: ExerciseTabsProps) {
-	
 	const [, setActiveTab] = useState('history');
 
 	return (
-		<Tabs defaultValue="history" onValueChange={setActiveTab} className="w-full">
-			<TabsList className="grid max-w-[400px] grid-cols-2 mb-4">
-				<TabsTrigger value="history" className="text-black data-[state=active]:text-white hover:cursor-pointer">History</TabsTrigger>
-				<TabsTrigger value="progress" className="text-black data-[state=active]:text-white hover:cursor-pointer">Progress</TabsTrigger>
-			</TabsList>
-			
-			<TabsContent value="history">
-				<ExerciseWorkoutHistory exerciseId={exerciseId} />
-			</TabsContent>
-			
-			<TabsContent value="progress">
-				<ExerciseProgress exerciseId={exerciseId} />
-			</TabsContent>
-		</Tabs>
+		<Card className="border-0 shadow-lg">
+			<CardHeader>
+				<CardTitle className="text-xl font-bold text-foreground flex items-center">
+					<BarChart3 className="mr-2 h-6 w-6 text-primary" />
+					Exercise Analytics
+				</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<Tabs defaultValue="history" onValueChange={setActiveTab} className="w-full">
+					<TabsList className="grid w-full grid-cols-2 mb-6 bg-muted/50">
+						<TabsTrigger
+							value="history"
+							className="flex items-center gap-2 font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+						>
+							<History className="h-4 w-4" />
+							Workout History
+						</TabsTrigger>
+						<TabsTrigger
+							value="progress"
+							className="flex items-center gap-2 font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+						>
+							<BarChart3 className="h-4 w-4" />
+							Progress Charts
+						</TabsTrigger>
+					</TabsList>
+
+					<TabsContent value="history" className="mt-0">
+						<ExerciseWorkoutHistory exerciseId={exerciseId} />
+					</TabsContent>
+
+					<TabsContent value="progress" className="mt-0">
+						<ExerciseProgress exerciseId={exerciseId} />
+					</TabsContent>
+				</Tabs>
+			</CardContent>
+		</Card>
 	);
 }
