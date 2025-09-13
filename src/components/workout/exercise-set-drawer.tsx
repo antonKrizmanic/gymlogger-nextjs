@@ -2,12 +2,12 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
-import type { IExerciseSetCreate } from "@/src/models/domain/workout"
-import { ExerciseLogType } from "@/src/types/enums"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
 import { Label } from "@/src/components/ui/label"
+import type { IExerciseSetCreate } from "@/src/models/domain/workout"
+import { ExerciseLogType } from "@/src/types/enums"
+import { useEffect, useState } from "react"
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from "../ui/drawer"
 
 interface ExerciseSetDrawerProps {
@@ -62,9 +62,15 @@ export function ExerciseSetDrawer({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="bg-white text-black dark:bg-slate-900 dark:text-white">
-        <DrawerHeader className="text-left">
-          <DrawerTitle className="text-black dark:text-white">{isNew ? "Add New Set" : `Edit Set ${index + 1}`}</DrawerTitle>
+      <DrawerContent className="border-t-2 border-primary/20">
+        <DrawerHeader className="text-center space-y-2">
+          <div className="w-12 h-1 bg-muted-foreground/20 rounded-full mx-auto" />
+          <DrawerTitle className="text-xl font-bold">
+            {isNew ? "Add New Set" : `Edit Set ${index + 1}`}
+          </DrawerTitle>
+          <p className="text-sm text-muted-foreground">
+            {isNew ? "Add a new set to your exercise" : "Modify the values for this set"}
+          </p>
         </DrawerHeader>
         <SetForm
           exerciseType={exerciseType}
@@ -73,10 +79,23 @@ export function ExerciseSetDrawer({
           handleRepsChange={handleRepsChange}
           handleTimeChange={handleTimeChange}
           handleNoteChange={handleNoteChange} />
-        <DrawerFooter className="pt-2">          
-          <Button type="button" onClick={handleSave}>Save</Button>
+        <DrawerFooter className="pt-6 pb-6 space-y-3">
+          <Button
+            type="button"
+            onClick={handleSave}
+            className="h-12 text-base font-semibold"
+          >
+            {isNew ? "Add Set" : "Save Changes"}
+          </Button>
           <DrawerClose asChild>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              className="h-12 text-base border-2"
+            >
+              Cancel
+            </Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
@@ -96,12 +115,14 @@ interface SetFormProps {
 
 function SetForm({ exerciseType, localSet, handleWeightChange, handleRepsChange, handleTimeChange, handleNoteChange }: SetFormProps) {
   return (
-    <div className="grid gap-4 px-4">
+    <div className="grid gap-6 px-6 py-4">
       {exerciseType === ExerciseLogType.WeightAndReps && (
         <>
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="reps">Reps</Label>
+              <Label htmlFor="reps" className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                Repetitions
+              </Label>
               <Input
                 id="reps"
                 name="reps"
@@ -109,18 +130,22 @@ function SetForm({ exerciseType, localSet, handleWeightChange, handleRepsChange,
                 inputMode="numeric"
                 value={localSet.reps || ""}
                 onChange={handleRepsChange}
-                className="h-10"
+                className="h-12 border-2 text-lg"
+                placeholder="0"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="weight">Weight (kg)</Label>
+              <Label htmlFor="weight" className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                Weight (kg)
+              </Label>
               <Input
                 id="weight"
                 name="weight"
                 type="number"
                 value={localSet.weight || ""}
                 onChange={handleWeightChange}
-                className="h-10"
+                className="h-12 border-2 text-lg"
+                placeholder="0"
               />
             </div>
           </div>
@@ -129,7 +154,9 @@ function SetForm({ exerciseType, localSet, handleWeightChange, handleRepsChange,
 
       {exerciseType === ExerciseLogType.RepsOnly && (
         <div className="space-y-2">
-          <Label htmlFor="reps">Reps</Label>
+          <Label htmlFor="reps" className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            Repetitions
+          </Label>
           <Input
             id="reps"
             name="reps"
@@ -137,14 +164,17 @@ function SetForm({ exerciseType, localSet, handleWeightChange, handleRepsChange,
             inputMode="numeric"
             value={localSet.reps || ""}
             onChange={handleRepsChange}
-            className="h-10"
+            className="h-12 border-2 text-lg"
+            placeholder="0"
           />
         </div>
       )}
 
       {exerciseType === ExerciseLogType.TimeOnly && (
         <div className="space-y-2">
-          <Label htmlFor="time">Time (seconds)</Label>
+          <Label htmlFor="time" className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            Time (seconds)
+          </Label>
           <Input
             id="time"
             name="time"
@@ -152,14 +182,24 @@ function SetForm({ exerciseType, localSet, handleWeightChange, handleRepsChange,
             inputMode="numeric"
             value={localSet.time || ""}
             onChange={handleTimeChange}
-            className="h-10"
+            className="h-12 border-2 text-lg"
+            placeholder="0"
           />
         </div>
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="note">Notes</Label>
-        <Input id="note" name="note" value={localSet.note || ""} onChange={handleNoteChange} className="h-10" />
+        <Label htmlFor="note" className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+          Set Notes
+        </Label>
+        <Input
+          id="note"
+          name="note"
+          value={localSet.note || ""}
+          onChange={handleNoteChange}
+          className="h-12 border-2"
+          placeholder="Add notes for this set..."
+        />
       </div>
     </div>
   )

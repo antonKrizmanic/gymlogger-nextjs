@@ -6,7 +6,6 @@ import { MuscleGroupSelect } from "@/src/components/common/muscle-group-select";
 import { Pagination } from "@/src/components/common/pagination";
 import { SearchBar } from "@/src/components/common/search-bar";
 import { DatePicker } from "@/src/components/form/date-picker";
-import { Card, CardContent } from "@/src/components/ui/card";
 import { WorkoutCard } from "@/src/components/workout/workout-card";
 import { IWorkoutRequest } from "@/src/data/workout";
 import { IWorkoutSimple } from "@/src/models/domain/workout";
@@ -150,23 +149,19 @@ export function WorkoutsIndex({ isFilterOpen }: WorkoutsIndexProps) {
             <div className="mb-8 space-y-4">
                 {/* Filter card */}
                 {isFilterOpen && (
-                    <Card className="border-0 shadow-lg">
-                        <CardContent className="pt-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <MuscleGroupSelect
-                                    selectedMuscleGroup={selectedMuscleGroup}
-                                    onMuscleGroupChange={handleMuscleGroupChange}
-                                />
-                                <DatePicker
-                                    label="Workout Date"
-                                    value={workoutDate || undefined}
-                                    onChange={handleWorkoutDateChange}
-                                    maxDate={new Date()}
-                                    clearable
-                                />
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4">
+                        <MuscleGroupSelect
+                            selectedMuscleGroup={selectedMuscleGroup}
+                            onMuscleGroupChange={handleMuscleGroupChange}
+                        />
+                        <DatePicker
+                            label="Workout Date"
+                            value={workoutDate || undefined}
+                            onChange={handleWorkoutDateChange}
+                            maxDate={new Date()}
+                            clearable
+                        />
+                    </div>
                 )}
 
                 <SearchBar

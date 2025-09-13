@@ -63,7 +63,13 @@ export function DatePicker({
   return (
     <div className="space-y-2">
       {label && (
-        <Label htmlFor={id} className={cn("text-xs font-medium text-muted-foreground uppercase tracking-wide", labelClassName)}>
+        <Label
+          htmlFor={id}
+          className={cn(
+            "text-xs font-medium text-muted-foreground uppercase tracking-wide",
+            labelClassName
+          )}
+        >
           {label} {required && <span className="text-destructive">*</span>}
         </Label>
       )}
@@ -71,40 +77,62 @@ export function DatePicker({
         <PopoverTrigger asChild>
           <Button
             id={id}
-            variant={"outline"}
+            variant="outline"
             className={cn(
-              "w-full h-10 justify-between text-left font-normal",
+              "w-full h-10 justify-start text-left font-normal border-2 shadow-sm transition-all duration-200",
+              "hover:border-primary/50 hover:shadow-md",
+              "focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary",
               !value && "text-muted-foreground",
+              disabled && "opacity-50 cursor-not-allowed",
               className
             )}
             disabled={disabled}
           >
-            <div className="flex items-center">
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {displayValue}
+            <div className="flex items-center w-full">
+              <div className="flex items-center flex-1">
+                <CalendarIcon className="mr-2 h-4 w-4 text-primary" />
+                <span className="truncate">{displayValue}</span>
+              </div>
+              {clearable && value && !disabled && (
+                <div className="ml-2 flex-shrink-0">
+                  <div
+                    className="p-1 rounded-full hover:bg-muted transition-colors duration-150"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSelect(null);
+                    }}
+                  >
+                    <X className="h-3 w-3 text-muted-foreground hover:text-destructive transition-colors" />
+                  </div>
+                </div>
+              )}
             </div>
-            {clearable && value && (
-              <X
-                className="h-4 w-4 opacity-50 hover:opacity-100 transition-opacity"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleSelect(null);
-                }}
-              />
-            )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={value || undefined}
-            onSelect={handleSelect}
-            startMonth={minDate}
-            endMonth={maxDate}
-          />
+        <PopoverContent
+          className="w-auto p-0 border-2 shadow-xl rounded-lg"
+          align="start"
+          sideOffset={4}
+        >
+          <div className="p-1">
+            <Calendar
+              mode="single"
+              selected={value || undefined}
+              onSelect={handleSelect}
+              startMonth={minDate}
+              endMonth={maxDate}
+              className="rounded-md"
+            />
+          </div>
           {clearable && value && (
-            <div className="p-3 border-t border-border">
-              <Button variant="ghost" size="sm" className="w-full" onClick={() => handleSelect(null)}>
+            <div className="p-3 border-t border-border bg-muted/30">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full text-xs hover:bg-destructive/10 hover:text-destructive transition-colors"
+                onClick={() => handleSelect(null)}
+              >
+                <X className="mr-2 h-3 w-3" />
                 Clear Date
               </Button>
             </div>

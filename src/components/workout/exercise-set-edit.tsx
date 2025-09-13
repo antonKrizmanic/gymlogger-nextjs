@@ -2,11 +2,11 @@
 
 import type React from "react"
 
-import { Copy, X } from "lucide-react"
-import type { IExerciseSetCreate } from "@/src/models/domain/workout"
-import { ExerciseLogType } from "@/src/types/enums"
 import { Button } from "@/src/components/ui/button"
 import { Input } from "@/src/components/ui/input"
+import type { IExerciseSetCreate } from "@/src/models/domain/workout"
+import { ExerciseLogType } from "@/src/types/enums"
+import { Copy, X } from "lucide-react"
 
 interface ExerciseSetEditProps {
   set: IExerciseSetCreate
@@ -39,8 +39,10 @@ export function ExerciseSetEdit({ set, index, exerciseType, onSetChange, onCopy,
   }
 
   return (
-    <div className="flex items-center gap-4 p-2 rounded-lg bg-muted">
-      <span className="text-sm font-medium w-8 text-center">{index + 1}</span>
+    <div className="flex items-center gap-4 p-4 rounded-lg bg-gradient-to-r from-muted/80 to-muted/40 border border-muted-foreground/10 shadow-sm">
+      <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
+        <span className="text-sm font-bold text-primary">{index + 1}</span>
+      </div>
 
       {exerciseType === ExerciseLogType.WeightAndReps && (
         <>
@@ -50,16 +52,16 @@ export function ExerciseSetEdit({ set, index, exerciseType, onSetChange, onCopy,
               placeholder="Reps"
               value={set.reps || ""}
               onChange={handleRepsChange}
-              className="h-9"
+              className="h-10 border-2"
             />
           </div>
           <div className="flex-1">
             <Input
               type="number"
-              placeholder="Weight"
+              placeholder="Weight (kg)"
               value={set.weight || ""}
               onChange={handleWeightChange}
-              className="h-9"
+              className="h-10 border-2"
             />
           </div>
         </>
@@ -67,7 +69,13 @@ export function ExerciseSetEdit({ set, index, exerciseType, onSetChange, onCopy,
 
       {exerciseType === ExerciseLogType.RepsOnly && (
         <div className="flex-1">
-          <Input type="number" placeholder="Reps" value={set.reps || ""} onChange={handleRepsChange} className="h-9" />
+          <Input
+            type="number"
+            placeholder="Reps"
+            value={set.reps || ""}
+            onChange={handleRepsChange}
+            className="h-10 border-2"
+          />
         </div>
       )}
 
@@ -75,25 +83,30 @@ export function ExerciseSetEdit({ set, index, exerciseType, onSetChange, onCopy,
         <div className="flex-1">
           <Input
             type="number"
-            placeholder="Time (s)"
+            placeholder="Time (seconds)"
             value={set.time || ""}
             onChange={handleTimeChange}
-            className="h-9"
+            className="h-10 border-2"
           />
         </div>
       )}
 
       <div className="flex-1">
-        <Input placeholder="Notes" value={set.note || ""} onChange={handleNoteChange} className="h-9" />
+        <Input
+          placeholder="Set notes..."
+          value={set.note || ""}
+          onChange={handleNoteChange}
+          className="h-10 border-2"
+        />
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-shrink-0">
         <Button
           type="button"
           onClick={onCopy}
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-muted-foreground hover:text-foreground"
+          className="h-9 w-9 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
         >
           <Copy className="h-4 w-4" />
           <span className="sr-only">Copy set</span>
@@ -103,7 +116,7 @@ export function ExerciseSetEdit({ set, index, exerciseType, onSetChange, onCopy,
           onClick={onRemove}
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-muted-foreground hover:text-destructive"
+          className="h-9 w-9 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
         >
           <X className="h-4 w-4" />
           <span className="sr-only">Remove set</span>

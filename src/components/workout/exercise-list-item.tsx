@@ -1,25 +1,25 @@
 "use client"
-import { useEffect, useState } from "react"
 import type React from "react"
+import { useEffect, useState } from "react"
 
-import { X, PlusCircle, Info, Pencil, Copy } from "lucide-react"
+import { Copy, Info, Pencil, PlusCircle, X } from "lucide-react"
 
-import type { IExerciseSetCreate, IExerciseWorkout, IExerciseWorkoutCreate } from "@/src/models/domain/workout"
-import type { IExercise } from "@/src/models/domain/exercise"
-import { ExerciseLogType } from "@/src/types/enums"
-import { ExerciseApiWorkoutService } from "@/src/api/services/exercise-workout-api-service"
 import { ExerciseApiService } from "@/src/api/services/exercise-api-service"
+import { ExerciseApiWorkoutService } from "@/src/api/services/exercise-workout-api-service"
+import type { IExercise } from "@/src/models/domain/exercise"
+import type { IExerciseSetCreate, IExerciseWorkout, IExerciseWorkoutCreate } from "@/src/models/domain/workout"
+import { ExerciseLogType } from "@/src/types/enums"
 
-import { ExerciseSelect } from "./exercise-select"
-import { ExerciseSetEdit } from "./exercise-set-edit"
-import { ExerciseSetDrawer } from "./exercise-set-drawer"
-import { ExerciseSets } from "./exercise-sets"
 import { Button } from "@/src/components/ui/button"
-import { Textarea } from "@/src/components/ui/textarea"
-import { Label } from "@/src/components/ui/label"
-import { Card, CardContent } from "@/src/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/src/components/ui/collapsible"
+import { Label } from "@/src/components/ui/label"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/components/ui/table"
+import { Textarea } from "@/src/components/ui/textarea"
+import { ExerciseSelect } from "./exercise-select"
+import { ExerciseSetDrawer } from "./exercise-set-drawer"
+import { ExerciseSetEdit } from "./exercise-set-edit"
+import { ExerciseSets } from "./exercise-sets"
 
 interface ExerciseListItemProps {
   exercise: IExerciseWorkoutCreate
@@ -53,7 +53,7 @@ export function ExerciseListItem({
         const exerciseService = new ExerciseApiService()
         const exerciseResponse = await exerciseService.getExercise(exercise.exerciseId)
         setSelectedExercise(exerciseResponse || null)
-        
+
         // Fetch the last exercise workout
         const exerciseWorkoutService = new ExerciseApiWorkoutService()
         const lastWorkoutResponse = await exerciseWorkoutService.getLatestExerciseWorkout(
@@ -175,41 +175,51 @@ export function ExerciseListItem({
       : { index: exercise.sets?.length || 0, note: "" }
 
   return (
-    <Card className="overflow-hidden">
-      <CardContent className="p-4 space-y-4">
-        <div className="flex items-start gap-4">
-          {/* Exercise selection */}
-          <div className="flex-1">
-            <ExerciseSelect
-              selectedExerciseId={exercise.exerciseId}
-              onExerciseSelect={(exerciseId) => handleExerciseSelect(exerciseId)}
-              required
-            />
-          </div>
-
-          {/* Remove button */}
-          <Button
-            type="button"
-            onClick={() => onRemoveExercise(index)}
-            variant="ghost"
-            size="icon"
-            className="text-muted-foreground hover:text-destructive"
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Remove exercise</span>
-          </Button>
+    <Card className="border-0 border-b-1 rounded-none p-0 pb-4 bg-gradient-to-br from-card to-card/80 overflow-hidden">
+      <CardHeader className="pb-0 flex flex-row items-center justify-between">
+        <CardTitle className="text-xl font-bold text-foreground">
+          {index + 1}. Exercise
+        </CardTitle>
+        {/* Remove button */}
+        <Button
+          type="button"
+          onClick={() => onRemoveExercise(index)}
+          variant="ghost"
+          size="icon"
+          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+        >
+          <X className="h-5 w-5" />
+          <span className="sr-only">Remove exercise</span>
+        </Button>
+      </CardHeader>
+      <CardContent className="space-y-4 p-0">
+        {/* Exercise selection */}
+        <div className="w-full">
+          <ExerciseSelect
+            selectedExerciseId={exercise.exerciseId}
+            onExerciseSelect={(exerciseId) => handleExerciseSelect(exerciseId)}
+            required
+          />
         </div>
 
         {selectedExercise?.description && (
-          <div className="text-sm text-muted-foreground">
-            <p>{selectedExercise.description}</p>
+          <div className="p-3 bg-muted/50 rounded-lg border-l-4 border-primary/20">
+            <p className="text-sm text-muted-foreground">{selectedExercise.description}</p>
           </div>
         )}
 
         {/* Notes field */}
-        <div>
-          <Label htmlFor={`note-${index}`}>Notes</Label>
-          <Textarea id={`note-${index}`} value={exercise.note || ""} onChange={handleNoteChange} className="mt-1" />
+        <div className="space-y-2">
+          <Label htmlFor={`note-${index}`} className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            Exercise Notes
+          </Label>
+          <Textarea
+            id={`note-${index}`}
+            value={exercise.note || ""}
+            onChange={handleNoteChange}
+            className="border-2 min-h-[60px]"
+            placeholder="Add notes for this exercise..."
+          />
         </div>
 
         {lastExercise && (
@@ -298,7 +308,7 @@ export function ExerciseListItem({
                                 size="icon"
                                 className="h-8 w-8 text-muted-foreground hover:text-foreground"
                               >
-                                <Copy className="h-4 w-4" />                                
+                                <Copy className="h-4 w-4" />
                               </Button>
                               <Button
                                 onClick={() => handleEditSet(setIndex)}
@@ -348,7 +358,7 @@ export function ExerciseListItem({
         onSave={handleDialogSave}
         isNew={currentSetIndex === null}
       />
-    </Card>
+    </Card >
   )
 }
 

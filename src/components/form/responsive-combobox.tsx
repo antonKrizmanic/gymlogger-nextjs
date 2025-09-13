@@ -1,7 +1,5 @@
 "use client"
 
-import * as React from "react"
-import { useMediaQuery } from "@/src/hooks/use-media-query"
 import { Button } from "@/src/components/ui/button"
 import {
   Command,
@@ -13,6 +11,8 @@ import {
 } from "@/src/components/ui/command"
 import { Drawer, DrawerContent, DrawerTrigger } from "@/src/components/ui/drawer"
 import { Popover, PopoverContent, PopoverTrigger } from "@/src/components/ui/popover"
+import { useMediaQuery } from "@/src/hooks/use-media-query"
+import * as React from "react"
 
 export type ComboboxItem = {
   value: string
@@ -149,9 +149,8 @@ function ItemList({
                 onSelectItem(items.find((i) => i.value === value) || null)
                 setSearch("") // Reset search after selection
               }}
-              className={`text-gray-800 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white ${
-                selectedValue === item.value ? "bg-accent text-accent-foreground" : ""
-              }`}
+              className={`text-gray-800 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white ${selectedValue === item.value ? "bg-accent text-accent-foreground" : ""
+                }`}
             >
               {item.label}
             </CommandItem>
