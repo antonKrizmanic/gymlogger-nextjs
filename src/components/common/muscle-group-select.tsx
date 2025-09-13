@@ -4,7 +4,7 @@ import { MuscleGroupApiService } from "@/src/api/services/muscle-group-api-servi
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select"
 import type { IMuscleGroup } from "@/src/models/domain/muscle-group"
 import { Target } from "lucide-react"
-import { useEffect, useState } from "react"
+import { memo, useCallback, useEffect, useMemo, useState } from "react"
 
 interface MuscleGroupSelectProps {
   selectedMuscleGroup: string
@@ -13,7 +13,7 @@ interface MuscleGroupSelectProps {
   showMessageOption?: boolean
 }
 
-export function MuscleGroupSelect({
+export const MuscleGroupSelect = memo(function MuscleGroupSelect({
   selectedMuscleGroup,
   onMuscleGroupChange,
   showAllOption = true,
@@ -21,9 +21,13 @@ export function MuscleGroupSelect({
 }: MuscleGroupSelectProps) {
   const [groups, setGroups] = useState<IMuscleGroup[]>([])
 
-  // Special identifiers for placeholder options
-  const ALL_GROUPS_ID = "all-groups"
-  const SELECT_MESSAGE_ID = "select-message"
+  // Special identifiers for placeholder options - memoized
+  const identifiers = useMemo(() => ({
+    ALL_GROUPS_ID: "all-groups",
+    SELECT_MESSAGE_ID: "select-message"
+  }), [])
+
+  const { ALL_GROUPS_ID, SELECT_MESSAGE_ID } = identifiers
 
   useEffect(() => {
     const fetchMuscleGroups = async () => {
@@ -41,30 +45,30 @@ export function MuscleGroupSelect({
     fetchMuscleGroups()
   }, [showAllOption, showMessageOption])
 
-  // Handle the value conversion
-  const handleValueChange = (value: string) => {
+  // Handle the value conversion - memoized
+  const handleValueChange = useCallback((value: string) => {
     // Convert special identifiers back to empty string for the parent component
     if (value === ALL_GROUPS_ID || value === SELECT_MESSAGE_ID) {
       onMuscleGroupChange("")
     } else {
       onMuscleGroupChange(value)
     }
-  }
+  }, [ALL_GROUPS_ID, SELECT_MESSAGE_ID, onMuscleGroupChange])
 
-  // Convert empty string to the appropriate special identifier for the Select component
-  const getSelectValue = () => {
+  // Convert empty string to the appropriate special identifier for the Select component - memoized
+  const selectValue = useMemo(() => {
     if (selectedMuscleGroup === "") {
       return showAllOption ? ALL_GROUPS_ID : showMessageOption ? SELECT_MESSAGE_ID : undefined
     }
     return selectedMuscleGroup
-  }
+  }, [selectedMuscleGroup, showAllOption, showMessageOption, ALL_GROUPS_ID, SELECT_MESSAGE_ID])
 
   return (
     <div className="space-y-2">
       <label htmlFor="muscleGroup" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
         Muscle Group
       </label>
-      <Select value={getSelectValue()} onValueChange={handleValueChange}>
+      <Select value={selectValue} onValueChange={handleValueChange}>
         <SelectTrigger className="w-full h-10">
           <SelectValue placeholder={showMessageOption ? "Select Muscle Group" : "All Muscle Groups"} />
         </SelectTrigger>
@@ -83,5 +87,5 @@ export function MuscleGroupSelect({
       </Select>
     </div>
   )
-}
+})
 

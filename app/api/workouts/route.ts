@@ -1,12 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from "@prisma/client";
-import { v4 as uuidv4 } from 'uuid';
 import { getLoggedInUser } from '@/src/data/loggedInUser';
 import { getPagedWorkouts } from '@/src/data/workout';
+import { prisma } from '@/src/lib/prisma'; // Use centralized prisma instance
 import { SortDirection } from '@/src/types/enums';
-
-const prisma = new PrismaClient();
-
+import { NextRequest, NextResponse } from 'next/server';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function GET(request: NextRequest) {
     try {

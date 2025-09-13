@@ -3,6 +3,7 @@
 import { Button } from "@/src/components/ui/button"
 import type { IExerciseWorkoutCreate } from "@/src/models/domain/workout"
 import { Activity, PlusCircle } from "lucide-react"
+import { memo, useCallback, useMemo } from "react"
 import { ExerciseListItem } from "./exercise-list-item"
 
 interface ExerciseListProps {
@@ -11,8 +12,8 @@ interface ExerciseListProps {
   workoutId: string | null
 }
 
-export function ExerciseList({ exercises, onExercisesChange, workoutId }: ExerciseListProps) {
-  const handleAddExercise = () => {
+export const ExerciseList = memo(function ExerciseList({ exercises, onExercisesChange, workoutId }: ExerciseListProps) {
+  const handleAddExercise = useCallback(() => {
     const newExercise: IExerciseWorkoutCreate = {
       exerciseId: "",
       index: exercises.length,
@@ -27,18 +28,18 @@ export function ExerciseList({ exercises, onExercisesChange, workoutId }: Exerci
     })
 
     onExercisesChange(updatedExercises)
-  }
+  }, [exercises.length, onExercisesChange])
 
-  const handleRemoveExercise = (index: number) => {
+  const handleRemoveExercise = useCallback((index: number) => {
     const updatedExercises = exercises.filter((_, i) => i !== index)
     // Update indices
     updatedExercises.forEach((exercise, i) => {
       exercise.index = i
     })
     onExercisesChange(updatedExercises)
-  }
+  }, [exercises, onExercisesChange])
 
-  const handleExerciseSelect = async (index: number, exerciseId: string) => {
+  const handleExerciseSelect = useCallback(async (index: number, exerciseId: string) => {
     // Update the exercise ID while preserving the index
     const updatedExercises = [...exercises]
     updatedExercises[index] = {
@@ -47,13 +48,20 @@ export function ExerciseList({ exercises, onExercisesChange, workoutId }: Exerci
       sets: updatedExercises[index].sets || [], // Preserve existing sets if any
     }
     onExercisesChange(updatedExercises)
-  }
+  }, [exercises, onExercisesChange])
 
-  const onExerciseChange = (exercise: IExerciseWorkoutCreate, index: number) => {
+  const onExerciseChange = useCallback((exercise: IExerciseWorkoutCreate, index: number) => {
     const updatedExercises = [...exercises]
     updatedExercises[index] = exercise
     onExercisesChange(updatedExercises)
-  }
+  }, [exercises, onExercisesChange])
+
+  // Memoize exercise statistics
+  const exerciseStats = useMemo(() => ({
+    count: exercises.length,
+    pluralText: exercises.length !== 1 ? 's' : '',
+    hasExercises: exercises.length > 0,
+  }), [exercises.length])
 
   return (
     <div className="space-y-6">
@@ -65,16 +73,16 @@ export function ExerciseList({ exercises, onExercisesChange, workoutId }: Exerci
         <div>
           <h2 className="text-xl font-bold">Exercises</h2>
           <p className="text-sm text-muted-foreground">
-            {exercises.length} exercise{exercises.length !== 1 ? 's' : ''} added
+            {exerciseStats.count} exercise{exerciseStats.pluralText} added
           </p>
         </div>
       </div>
 
-      {exercises.length > 0 ? (
+      {exerciseStats.hasExercises ? (
         <div className="space-y-4">
           {exercises.map((exercise, index) => (
             <ExerciseListItem
-              key={index}
+              key={exercise.exerciseId ? `${exercise.exerciseId}-${index}` : `empty-${index}`}
               exercise={exercise}
               index={index}
               onExerciseChange={onExerciseChange}
@@ -108,5 +116,5 @@ export function ExerciseList({ exercises, onExercisesChange, workoutId }: Exerci
       </Button>
     </div>
   )
-}
+})
 

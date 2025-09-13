@@ -1,6 +1,6 @@
 "use client"
 import type React from "react"
-import { useEffect, useState } from "react"
+import { memo, useCallback, useEffect, useMemo, useState } from "react"
 
 import { Copy, Info, Pencil, PlusCircle, X } from "lucide-react"
 
@@ -30,7 +30,7 @@ interface ExerciseListItemProps {
   onAddExercise: (index: number, exerciseId: string) => void
 }
 
-export function ExerciseListItem({
+export const ExerciseListItem = memo(function ExerciseListItem({
   exercise,
   index,
   workoutId,
@@ -71,18 +71,18 @@ export function ExerciseListItem({
     fetchExerciseData()
   }, [exercise.exerciseId, workoutId])
 
-  const handleExerciseSelect = async (exerciseId: string) => {
+  const handleExerciseSelect = useCallback(async (exerciseId: string) => {
     console.log("Selected exercise ID:", exerciseId)
     // Let the parent component know about the change
     onAddExercise(index, exerciseId)
-  }
+  }, [onAddExercise, index])
 
-  const handleNoteChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleNoteChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const note = e.target.value
     onExerciseChange({ ...exercise, note }, index)
-  }
+  }, [exercise, index, onExerciseChange])
 
-  const handleAddSet = () => {
+  const handleAddSet = useCallback(() => {
     // For mobile, open the dialog with a new set
     if (window.innerWidth < 768) {
       // Create a temporary set for the dialog
@@ -96,44 +96,48 @@ export function ExerciseListItem({
         index: exercise.sets?.length || 0,
         note: "",
       }
-      exercise.sets = [...(exercise.sets || []), newSet]
-      onExerciseChange(exercise, index)
+      const updatedExercise = { ...exercise, sets: [...(exercise.sets || []), newSet] }
+      onExerciseChange(updatedExercise, index)
     }
-  }
+  }, [exercise, index, onExerciseChange])
 
-  const handleEditSet = (setIndex: number) => {
+  const handleEditSet = useCallback((setIndex: number) => {
     setCurrentSetIndex(setIndex)
     setIsDialogOpen(true)
-  }
+  }, [])
 
-  const handleSetChange = (setIndex: number, updatedSet: IExerciseSetCreate) => {
-    exercise.sets = exercise.sets?.map((set, i) => (i === setIndex ? updatedSet : set))
-    onExerciseChange(exercise, index)
-  }
+  const handleSetChange = useCallback((setIndex: number, updatedSet: IExerciseSetCreate) => {
+    const updatedSets = exercise.sets?.map((set, i) => (i === setIndex ? updatedSet : set))
+    const updatedExercise = { ...exercise, sets: updatedSets }
+    onExerciseChange(updatedExercise, index)
+  }, [exercise, index, onExerciseChange])
 
-  const handleDialogSave = (updatedSet: IExerciseSetCreate) => {
+  const handleDialogSave = useCallback((updatedSet: IExerciseSetCreate) => {
+    let updatedSets: IExerciseSetCreate[]
+
     if (currentSetIndex === null) {
       // Adding a new set
       const newSet = {
         ...updatedSet,
         index: exercise.sets?.length || 0,
       }
-      exercise.sets = [...(exercise.sets || []), newSet]
+      updatedSets = [...(exercise.sets || []), newSet]
     } else {
       // Updating an existing set
-      exercise.sets = exercise.sets?.map((set, i) => (i === currentSetIndex ? updatedSet : set))
+      updatedSets = exercise.sets?.map((set, i) => (i === currentSetIndex ? updatedSet : set)) || []
     }
 
     // Update indices to ensure they're sequential
-    exercise.sets?.forEach((set, i) => {
+    updatedSets.forEach((set, i) => {
       set.index = i
     })
 
-    onExerciseChange(exercise, index)
+    const updatedExercise = { ...exercise, sets: updatedSets }
+    onExerciseChange(updatedExercise, index)
     setIsDialogOpen(false)
-  }
+  }, [currentSetIndex, exercise, index, onExerciseChange])
 
-  const handleCopySet = (setIndex: number) => {
+  const handleCopySet = useCallback((setIndex: number) => {
     const setToCopy = exercise.sets?.[setIndex]
 
     if (setToCopy) {
@@ -143,36 +147,51 @@ export function ExerciseListItem({
       }
 
       // Add the new set at the end
-      exercise.sets = [...(exercise.sets || []), newSet]
+      const updatedSets = [...(exercise.sets || []), newSet]
 
       // Update indices
-      exercise.sets.forEach((set, i) => {
+      updatedSets.forEach((set, i) => {
         set.index = i
       })
 
-      onExerciseChange(exercise, index)
+      const updatedExercise = { ...exercise, sets: updatedSets }
+      onExerciseChange(updatedExercise, index)
     }
-  }
+  }, [exercise, index, onExerciseChange])
 
-  const handleRemoveSet = (setIndex: number) => {
-    exercise.sets = exercise.sets?.filter((_, i) => i !== setIndex)
+  const handleRemoveSet = useCallback((setIndex: number) => {
+    const updatedSets = exercise.sets?.filter((_, i) => i !== setIndex) || []
 
     // Update indices
-    exercise.sets?.forEach((set, i) => {
+    updatedSets.forEach((set, i) => {
       set.index = i
     })
 
-    onExerciseChange(exercise, index)
-  }
+    const updatedExercise = { ...exercise, sets: updatedSets }
+    onExerciseChange(updatedExercise, index)
+  }, [exercise, index, onExerciseChange])
 
-  // Get the exercise type for the sets
-  const exerciseLogType = selectedExercise?.exerciseLogType || ExerciseLogType.WeightAndReps
+  // Get the exercise type for the sets - memoized for performance
+  const exerciseLogType = useMemo(() =>
+    selectedExercise?.exerciseLogType || ExerciseLogType.WeightAndReps,
+    [selectedExercise?.exerciseLogType]
+  )
 
-  // Get the current set for the dialog
-  const currentSet =
+  // Get the current set for the dialog - memoized for performance
+  const currentSet = useMemo(() =>
     currentSetIndex !== null && exercise.sets
       ? exercise.sets[currentSetIndex]
-      : { index: exercise.sets?.length || 0, note: "" }
+      : { index: exercise.sets?.length || 0, note: "" },
+    [currentSetIndex, exercise.sets]
+  )
+
+  // Memoize exercise display properties
+  const exerciseDisplayProps = useMemo(() => ({
+    hasDescription: Boolean(selectedExercise?.description),
+    description: selectedExercise?.description,
+    hasSets: Boolean(exercise.sets?.length),
+    setsCount: exercise.sets?.length || 0,
+  }), [selectedExercise?.description, exercise.sets?.length])
 
   return (
     <Card className="border-0 border-b-1 rounded-none p-0 pb-4 bg-gradient-to-br from-card to-card/80 overflow-hidden">
@@ -202,9 +221,9 @@ export function ExerciseListItem({
           />
         </div>
 
-        {selectedExercise?.description && (
+        {exerciseDisplayProps.hasDescription && (
           <div className="p-3 bg-muted/50 rounded-lg border-l-4 border-primary/20">
-            <p className="text-sm text-muted-foreground">{selectedExercise.description}</p>
+            <p className="text-sm text-muted-foreground">{exerciseDisplayProps.description}</p>
           </div>
         )}
 
@@ -360,5 +379,5 @@ export function ExerciseListItem({
       />
     </Card >
   )
-}
+})
 

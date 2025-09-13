@@ -1,3 +1,4 @@
+import { memo, useCallback, useMemo } from 'react';
 import { Button } from '../ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
@@ -12,14 +13,15 @@ interface PaginationProps {
     onPageSizeChange: (event: string) => void;
 }
 
-export function Pagination({
+export const Pagination = memo(function Pagination({
     currentPage,
     totalPages,
     onPageChange,
     pageSize = DEFAULT_PAGE_SIZE,
     onPageSizeChange
 }: PaginationProps) {
-    const getPageNumbers = () => {
+    // Memoize page numbers calculation
+    const pageNumbers = useMemo(() => {
         const delta = 2;
         const range = [];
         for (let i = 0; i < totalPages; i++) {
@@ -32,7 +34,22 @@ export function Pagination({
             }
         }
         return range;
-    };
+    }, [currentPage, totalPages]);
+
+    // Memoize navigation handlers
+    const handlePrevious = useCallback(() => {
+        onPageChange(currentPage - 1);
+    }, [currentPage, onPageChange]);
+
+    const handleNext = useCallback(() => {
+        onPageChange(currentPage + 1);
+    }, [currentPage, onPageChange]);
+
+    // Memoize navigation state
+    const navigationState = useMemo(() => ({
+        canGoPrevious: currentPage > 0,
+        canGoNext: currentPage < totalPages - 1,
+    }), [currentPage, totalPages]);
 
     return (
         <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -40,11 +57,11 @@ export function Pagination({
             <div className="flex justify-center gap-2">
                 <Button
                     variant="outline"
-                    onClick={() => onPageChange(currentPage - 1)}
-                    disabled={currentPage === 0}>
+                    onClick={handlePrevious}
+                    disabled={!navigationState.canGoPrevious}>
                     Previous
                 </Button>
-                {getPageNumbers().map((page, index, array) => {
+                {pageNumbers.map((page, index, array) => {
                     if (index > 0 && array[index - 1] !== page - 1) {
                         return [
                             <span key={`ellipsis-${page}`} className="px-4 py-2">...</span>,
@@ -67,8 +84,8 @@ export function Pagination({
                 })}
                 <Button
                     variant="outline"
-                    onClick={() => onPageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages - 1}>
+                    onClick={handleNext}
+                    disabled={!navigationState.canGoNext}>
                     Next
                 </Button>
             </div>
@@ -93,4 +110,4 @@ export function Pagination({
             </div>
         </div>
     );
-} 
+}) 

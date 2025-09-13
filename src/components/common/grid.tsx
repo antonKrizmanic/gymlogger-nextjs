@@ -1,13 +1,32 @@
-import { ReactNode } from 'react';
+import { ReactNode, memo, useMemo } from 'react';
 
 interface GridProps<T> {
     items: T[];
     renderItem: (item: T) => ReactNode;
     isLoading?: boolean;
     emptyMessage?: string;
+    keyExtractor?: (item: T, index: number) => string;
 }
 
-export function Grid<T>({ items, renderItem, isLoading, emptyMessage = 'No items found' }: GridProps<T>) {
+export const Grid = memo(function Grid<T>({
+    items,
+    renderItem,
+    isLoading,
+    emptyMessage = 'No items found',
+    keyExtractor
+}: GridProps<T>) {
+    // Memoize rendered items to prevent unnecessary re-renders
+    const renderedItems = useMemo(() => {
+        return items.map((item, index) => {
+            const key = keyExtractor ? keyExtractor(item, index) : index;
+            return (
+                <div key={key}>
+                    {renderItem(item)}
+                </div>
+            );
+        });
+    }, [items, renderItem, keyExtractor]);
+
     if (isLoading) {
         return (
             <div className="flex justify-center items-center min-h-[400px]">
@@ -26,11 +45,7 @@ export function Grid<T>({ items, renderItem, isLoading, emptyMessage = 'No items
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {items.map((item, index) => (
-                <div key={index}>
-                    {renderItem(item)}
-                </div>
-            ))}
+            {renderedItems}
         </div>
     );
-} 
+}) 
