@@ -105,8 +105,8 @@ importers:
         specifier: 2.15.4
         version: 2.15.4(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       resend:
-        specifier: 4.7.0
-        version: 4.7.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+        specifier: 4.8.0
+        version: 4.8.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       sonner:
         specifier: 2.0.7
         version: 2.0.7(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -3185,8 +3185,8 @@ packages:
     resolution: {integrity: sha512-dYqgNSZbDwkaJ2ceRd9ojCGjBq+mOm9LmtXnAnEGyHhN/5R7iDW2TRw3h+o/jCFxus3P2LfWIIiwowAjANm7IA==}
     engines: {node: '>= 0.4'}
 
-  resend@4.7.0:
-    resolution: {integrity: sha512-30IbXGBUbmDweQH2IlO53XOXX7ndjYV9xFZ8IEBiWqefqQ/qmTsgrX0Ab6MUnmobJXbpdReVv+iXGRQPubQL5Q==}
+  resend@4.8.0:
+    resolution: {integrity: sha512-R8eBOFQDO6dzRTDmaMEdpqrkmgSjPpVXt4nGfWsZdYOet0kqra0xgbvTES6HmCriZEXbmGk3e0DiGIaLFTFSHA==}
     engines: {node: '>=18'}
 
   resolve-from@4.0.0:
@@ -6676,7 +6676,7 @@ snapshots:
       gopd: 1.2.0
       set-function-name: 2.0.2
 
-  resend@4.7.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
+  resend@4.8.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
     dependencies:
       '@react-email/render': 1.1.2(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
     transitivePeerDependencies:
