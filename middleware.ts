@@ -1,16 +1,21 @@
-import { auth } from "@/src/lib/auth";
-import {
-  DEFAULT_LOGIN_REDIRECT,
-  apiAuthPrefix,
-  authRoutes,
-  publicRoutes
-} from "@/src/routes";
+import { cookies } from "next/headers";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-export default auth(async function middleware(req: NextRequest) {
+// Define your routes
+const publicRoutes = ["/", "/auth/new-verification"];
+const authRoutes = ["/auth/register", "/auth/login", "/auth/error"];
+const apiAuthPrefix = "/api/auth";
+const DEFAULT_LOGIN_REDIRECT = "/dashboard";
+
+export default async function middleware(req: NextRequest) {
   const { nextUrl } = req;
-  const isLoggedIn = !!(await auth());
+
+  // Decrypt session cookie with NEXTAUTH_SECRET
+  const cookieStore = await cookies();
+  const token = cookieStore.get('__Secure-authjs.session-token')?.value;
+  const isLoggedIn = !!token;
+  console.log('token', token);
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
@@ -21,7 +26,9 @@ export default auth(async function middleware(req: NextRequest) {
 
   if (isAuthRoute) {
     if (isLoggedIn) {
-      return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl.origin));
+      return NextResponse.redirect(
+        new URL(DEFAULT_LOGIN_REDIRECT, nextUrl.origin)
+      );
     }
     return NextResponse.next();
   }
@@ -31,9 +38,9 @@ export default auth(async function middleware(req: NextRequest) {
   }
 
   return NextResponse.next();
-});
+}
 
-// Optionally, don't invoke Middleware on some paths
+// Run middleware for all routes except static files and _next
 export const config = {
   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 };
