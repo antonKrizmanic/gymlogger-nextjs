@@ -27,7 +27,7 @@
     ],
     "dependencyDashboard": true,
     "baseBranches": [
-        "main"
+        "stage"
     ],
     "minimumReleaseAge": "5 days",
     "prHourlyLimit": 6,

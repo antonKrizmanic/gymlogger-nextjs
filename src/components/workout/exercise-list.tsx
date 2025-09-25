@@ -28,7 +28,7 @@ export const ExerciseList = memo(function ExerciseList({ exercises, onExercisesC
     })
 
     onExercisesChange(updatedExercises)
-  }, [exercises.length, onExercisesChange])
+  }, [exercises, onExercisesChange])
 
   const handleRemoveExercise = useCallback((index: number) => {
     const updatedExercises = exercises.filter((_, i) => i !== index)

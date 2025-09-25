@@ -2,7 +2,7 @@ import { Container } from '@/src/components/common/container';
 import { Badge } from '@/src/components/ui/badge';
 import { Button } from '@/src/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
-import DeleteWorkoutButton from '@/src/components/workout/delete-workout-button';
+import { WorkoutDeleteButton } from '@/src/components/workout/workout-delete-button';
 import { WorkoutExerciseList } from '@/src/components/workout/workout-exercise-list';
 import { getWorkout } from '@/src/data/workout';
 import { format } from 'date-fns';
@@ -104,7 +104,7 @@ export default async function WorkoutDetailPage(props: { params: Promise<{ id: s
                                     Edit Workout
                                 </Link>
                             </Button>
-                            <DeleteWorkoutButton workout={workout} />
+                            <WorkoutDeleteButton workout={workout} />
                         </div>
                     </div>
                 </div>

@@ -3,10 +3,9 @@
 import { ExerciseApiService } from '@/src/api/services/exercise-api-service';
 import { IExercise } from '@/src/models/domain/exercise';
 import { ExerciseLogType } from '@/src/types/enums';
-import { Activity, Clock, Repeat, Weight } from 'lucide-react';
+import { Activity, Clock, Eye, Pencil, Repeat, Weight } from 'lucide-react';
 import { DeleteButton } from '../common/delete-button';
-import { DetailButton } from '../common/detail-button';
-import { EditButton } from '../common/edit-button';
+import { IconLinkButton } from '../common/icon-link-button';
 import { Badge } from '../ui/badge';
 import {
     Card,
@@ -77,10 +76,10 @@ export function ExerciseCard({ exercise, onDelete }: ExerciseCardProps) {
 
             <CardFooter className="pt-4 gap-2">
                 <div className="flex-1">
-                    <DetailButton href={`/exercises/${exercise.id}`} />
+                    <IconLinkButton href={`/exercises/${exercise.id}`} icon={<Eye />} aria-label="View exercise" />
                 </div>
                 <div className="flex-1">
-                    <EditButton href={`/exercises/${exercise.id}/edit`} />
+                    <IconLinkButton href={`/exercises/${exercise.id}/edit`} icon={<Pencil />} aria-label="Edit exercise" />
                 </div>
                 <div className="flex-1">
                     <DeleteButton

@@ -13,7 +13,7 @@ import {
   LineChart,
   ResponsiveContainer,
   Tooltip,
-  TooltipProps,
+  TooltipContentProps,
   XAxis,
   YAxis
 } from 'recharts';
@@ -135,7 +135,7 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
   };
 
   // Custom tooltip component
-  const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
+  const CustomTooltip = ({ active, payload, label }: TooltipContentProps<ValueType, NameType>) => {
     if (active && payload && payload.length) {
       const metricInfo = getMetricInfo();
       return (
@@ -267,7 +267,7 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
                   fontSize={12}
                   fontWeight={500}
                 />
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={CustomTooltip} />
                 <Line
                   type="monotone"
                   dataKey={metric}
@@ -311,7 +311,7 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
                   fontSize={12}
                   fontWeight={500}
                 />
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={CustomTooltip} />
                 <Bar
                   dataKey={metric}
                   fill={`url(#barGradient-${metric})`}

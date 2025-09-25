@@ -9,7 +9,7 @@ import { format } from 'date-fns';
 import { BarChart3, Repeat, TrendingUp, Weight } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
-import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from 'recharts';
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, TooltipContentProps, XAxis, YAxis } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 
 interface ExerciseProgressProps {
@@ -208,7 +208,7 @@ export function ExerciseProgress({ exerciseId }: ExerciseProgressProps) {
 	const CurrentMetricIcon = currentMetricInfo.icon;
 
 	// Custom tooltip component
-	const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
+	const CustomTooltip = ({ active, payload, label }: TooltipContentProps<ValueType, NameType>) => {
 		if (active && payload && payload.length) {
 			return (
 				<div className="bg-card border border-border shadow-xl rounded-lg p-4">
@@ -304,7 +304,7 @@ export function ExerciseProgress({ exerciseId }: ExerciseProgressProps) {
 								fontSize={12}
 								fontWeight={500}
 							/>
-							<Tooltip content={<CustomTooltip />} />
+							<Tooltip content={CustomTooltip} />
 							<Line
 								type="monotone"
 								dataKey={metric}
