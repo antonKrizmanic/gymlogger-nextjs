@@ -1,8 +1,8 @@
 'use client';
-import { Button } from "@/src/components/ui/button"
 import { ConfirmationModal } from "@/src/components/common/confirmation-modal";
-import { useState } from "react";
+import { Button } from "@/src/components/ui/button";
 import { Trash } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 interface DeleteButtonProps {
@@ -14,7 +14,7 @@ interface DeleteButtonProps {
 
 export function DeleteButton({ entityName, entityType, onDelete, deleteAction }: DeleteButtonProps) {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);    
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const handleDelete = () => {
         setIsDeleteModalOpen(true);
