@@ -1,5 +1,5 @@
 import { Container } from "@/src/components/common/container";
-import DeleteExerciseButton from "@/src/components/exercise/delete-exercise-button";
+import { ExerciseDeleteButton } from "@/src/components/exercise/exercise-delete-button";
 import { ExerciseTabs } from "@/src/components/exercise/exercise-tabs";
 import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
@@ -109,7 +109,7 @@ export default async function ExerciseDetailPage(props: { params: Promise<{ id: 
                                     Edit Exercise
                                 </Link>
                             </Button>
-                            <DeleteExerciseButton exercise={exercise} />
+                            <ExerciseDeleteButton exercise={exercise} />
                         </div>
                     </div>
                 </div>

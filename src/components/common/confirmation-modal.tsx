@@ -1,6 +1,8 @@
 'use client';
 
 import { cn } from '@/src/lib/utils';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Button } from '../ui/button';
 
 interface ConfirmationModalProps {
@@ -14,26 +16,32 @@ interface ConfirmationModalProps {
     cancelText?: string;
 }
 
-export function ConfirmationModal({ 
-    isOpen, 
-    title, 
-    message, 
-    onConfirm, 
+export function ConfirmationModal({
+    isOpen,
+    title,
+    message,
+    onConfirm,
     onCancel,
     isLoading = false,
     confirmText = 'Delete',
     cancelText = 'Cancel'
 }: ConfirmationModalProps) {
-    if (!isOpen) return null;
+    const [mounted, setMounted] = useState(false);
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!isOpen || !mounted) return null;
+
+    const modalContent = (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center">
             {/* Backdrop */}
             <div className="fixed inset-0 bg-black/50" onClick={onCancel} />
-            
+
             {/* Modal */}
             <div className={cn(
-                'relative z-50 w-full max-w-md p-6 rounded-lg',
+                'relative z-[9999] w-full max-w-md p-6 rounded-lg',
                 'bg-white dark:bg-slate-800',
                 'shadow-xl'
             )}>
@@ -47,19 +55,19 @@ export function ConfirmationModal({
                     <Button
                         onClick={onCancel}
                         variant="outline"
-                        disabled={isLoading}                        
+                        disabled={isLoading}
                     >
                         {cancelText}
                     </Button>
                     <Button
-                        onClick={onConfirm}                        
+                        onClick={onConfirm}
                         className={cn(
                             'px-4 py-2 rounded-lg',
                             'bg-red-500',
                             'text-white',
                             'hover:bg-red-600',
                             'transition-colors',
-                            'disabled:opacity-50 disabled:cursor-not-allowed',                            
+                            'disabled:opacity-50 disabled:cursor-not-allowed',
                         )}
                     >
                         {isLoading && (
@@ -71,4 +79,6 @@ export function ConfirmationModal({
             </div>
         </div>
     );
+
+    return createPortal(modalContent, document.body);
 } 
