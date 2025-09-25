@@ -1,6 +1,4 @@
 "use client"
-import { useSession } from "next-auth/react"
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -10,8 +8,9 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu"
-import { signOut } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import Link from "next/link"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 
 export default function UserAvatar() {
     const { data: session } = useSession()
@@ -31,7 +30,7 @@ export default function UserAvatar() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Avatar className="hover:cursor-pointer hover:opacity-80 transition-opacity duration-200 ease-in-out">
+                <Avatar className="hover:cursor-pointer hover:opacity-80 transition-opacity duration-200 ease-in-out rounded-lg">
                     <AvatarImage src={user?.image || ''} />
                     <AvatarFallback className="text-white bg-slate-500">{getInitials(user?.name || '')}</AvatarFallback>
                 </Avatar>
