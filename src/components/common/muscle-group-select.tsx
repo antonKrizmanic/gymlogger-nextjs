@@ -1,7 +1,7 @@
 "use client"
 
 import { MuscleGroupApiService } from "@/src/api/services/muscle-group-api-service"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select"
+import { IconSelect } from "@/src/components/ui/icon-input"
 import type { IMuscleGroup } from "@/src/models/domain/muscle-group"
 import { Target } from "lucide-react"
 import { memo, useCallback, useEffect, useMemo, useState } from "react"
@@ -63,29 +63,21 @@ export const MuscleGroupSelect = memo(function MuscleGroupSelect({
     return selectedMuscleGroup
   }, [selectedMuscleGroup, showAllOption, showMessageOption, ALL_GROUPS_ID, SELECT_MESSAGE_ID])
 
+  // Convert groups to IconSelect format
+  const selectOptions = groups.map((group) => ({
+    value: group.id,
+    label: group.name || 'Unknown Group'
+  }))
+
   return (
-    <div className="space-y-2">
-      <label htmlFor="muscleGroup" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-        Muscle Group
-      </label>
-      <Select value={selectValue} onValueChange={handleValueChange}>
-        <SelectTrigger className="w-full h-10">
-          <SelectValue placeholder={showMessageOption ? "Select Muscle Group" : "All Muscle Groups"} />
-        </SelectTrigger>
-        <SelectContent>
-          {groups.map((group) => (
-            <SelectItem key={group.id} value={group.id}>
-              <div className="flex items-center space-x-2">
-                {group.id !== ALL_GROUPS_ID && group.id !== SELECT_MESSAGE_ID && (
-                  <Target className="h-4 w-4" />
-                )}
-                <span>{group.name}</span>
-              </div>
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
+    <IconSelect
+      icon={Target}
+      label="Muscle Group"
+      placeholder={showMessageOption ? "Select Muscle Group" : "All Muscle Groups"}
+      value={selectValue}
+      onValueChange={handleValueChange}
+      options={selectOptions}
+    />
   )
 })
 

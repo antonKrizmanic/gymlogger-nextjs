@@ -1,7 +1,9 @@
+import { ProfileEditForm } from "@/src/components/auth/profile-edit-form";
 import UserDeleteDialog from "@/src/components/auth/user-delete-dialog";
 import { Container } from "@/src/components/common/container";
 import UserAvatar from "@/src/components/navigation/user-avatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card";
+import { getUserByEmail } from "@/src/data/user";
 import { auth } from "@/src/lib/auth";
 import { AlertTriangle, Mail, Shield, User } from "lucide-react";
 import { SessionProvider } from "next-auth/react";
@@ -10,6 +12,9 @@ import { SessionProvider } from "next-auth/react";
 export default async function ProfilePage() {
 	const session = await auth();
 	const user = session?.user;
+
+	// Get full user data to access weight and height
+	const fullUserData = user?.email ? await getUserByEmail(user.email) : null;
 
 	return (
 		<Container>
@@ -28,7 +33,7 @@ export default async function ProfilePage() {
 				</div>
 			</div>
 
-			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-4xl mx-auto">
+			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
 				{/* Personal Information Card */}
 				<Card className="border-2 shadow-xl">
 					<CardHeader className="pb-4">
@@ -63,6 +68,12 @@ export default async function ProfilePage() {
 						</div>
 					</CardContent>
 				</Card>
+
+				{/* Physical Information Card */}
+				<ProfileEditForm
+					initialWeight={fullUserData?.weight ? Number(fullUserData.weight) : null}
+					initialHeight={fullUserData?.height ? Number(fullUserData.height) : null}
+				/>
 
 				{/* Account Management Card */}
 				<Card className="border-2 shadow-xl">

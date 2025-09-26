@@ -9,9 +9,10 @@ import { ExerciseSets } from './exercise-sets';
 
 interface WorkoutExerciseListProps {
     exercises: IExerciseWorkout[];
+    userWeight?: number;
 }
 
-export function WorkoutExerciseList({ exercises }: WorkoutExerciseListProps) {
+export function WorkoutExerciseList({ exercises, userWeight }: WorkoutExerciseListProps) {
     // Helper function for log type info
     const getLogTypeInfo = (logType: ExerciseLogType) => {
         switch (logType) {
@@ -21,6 +22,12 @@ export function WorkoutExerciseList({ exercises }: WorkoutExerciseListProps) {
                 return { label: 'Time Only', icon: Clock, variant: 'secondary' as const };
             case ExerciseLogType.RepsOnly:
                 return { label: 'Reps Only', icon: Repeat, variant: 'outline' as const };
+            case ExerciseLogType.BodyWeight:
+                return { label: 'Body Weight', icon: Activity, variant: 'secondary' as const };
+            case ExerciseLogType.BodyWeightWithAdditionalWeight:
+                return { label: 'Body Weight + Additional', icon: Weight, variant: 'default' as const };
+            case ExerciseLogType.BodyWeightWithAssistance:
+                return { label: 'Body Weight with Assistance', icon: Weight, variant: 'secondary' as const };
             default:
                 return { label: 'Unknown', icon: Activity, variant: 'outline' as const };
         }
@@ -72,6 +79,13 @@ export function WorkoutExerciseList({ exercises }: WorkoutExerciseListProps) {
                                             <LogTypeIcon className="h-3 w-3" />
                                             {logTypeInfo.label}
                                         </Badge>
+                                        {/* Show bodyweight badge for bodyweight exercises */}
+                                        {userWeight && (exercise.exerciseLogType === ExerciseLogType.BodyWeight || exercise.exerciseLogType === ExerciseLogType.BodyWeightWithAdditionalWeight || exercise.exerciseLogType === ExerciseLogType.BodyWeightWithAssistance) && (
+                                            <Badge variant="outline" className="text-xs flex items-center gap-1">
+                                                <Weight className="h-3 w-3" />
+                                                Bodyweight: {userWeight}kg
+                                            </Badge>
+                                        )}
                                     </div>
                                     {exercise.exerciseDescription && (
                                         <CardDescription className="text-sm text-muted-foreground leading-relaxed">

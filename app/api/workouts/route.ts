@@ -51,11 +51,50 @@ export async function POST(request: Request) {
 
         const data = await request.json();
 
+        // Get the current user's weight for bodyweight calculations
+        const userWeight = (loggedInUser as any)?.weight ? Number((loggedInUser as any).weight) : null;
+
+        // Get exercises from database to check their log types
+        const exerciseIds = data.exercises.map((exercise: any) => exercise.exerciseId);
+        const exercisesData = await prisma.exercise.findMany({
+            where: { id: { in: exerciseIds } },
+            select: { id: true, exerciseLogType: true }
+        });
+
+        const exerciseTypesMap = exercisesData.reduce((acc: any, exercise: any) => {
+            acc[exercise.id] = exercise.exerciseLogType;
+            return acc;
+        }, {});
+
         // Calculate total reps, weight, and sets
         const exercises = data.exercises.map((exercise: any) => {
+            const exerciseLogType = exerciseTypesMap[exercise.exerciseId];
+            let totalWeight = 0;
+
+            exercise.sets.forEach((set: any) => {
+                if (exerciseLogType === 4) { // BodyWeight
+                    // For pure bodyweight exercises, use user's weight
+                    const bodyWeight = userWeight || 0;
+                    totalWeight += bodyWeight * (set.reps || 0);
+                } else if (exerciseLogType === 5) { // BodyWeightWithAdditionalWeight
+                    // For bodyweight exercises with additional weight, add user's weight to the additional weight
+                    const bodyWeight = userWeight || 0;
+                    const additionalWeight = set.weight || 0;
+                    totalWeight += (bodyWeight + additionalWeight) * (set.reps || 0);
+                } else if (exerciseLogType === 6) { // BodyWeightWithAssistance
+                    // For assisted bodyweight exercises, subtract assistance weight from user's body weight
+                    const bodyWeight = userWeight || 0;
+                    const assistanceWeight = set.weight || 0;
+                    totalWeight += (bodyWeight - assistanceWeight) * (set.reps || 0);
+                } else {
+                    // For regular weight exercises
+                    totalWeight += ((set.weight || 0) * (set.reps || 0));
+                }
+            });
+
             const totalReps = exercise.sets.reduce((acc: number, set: any) => acc + (set.reps || 0), 0);
-            const totalWeight = exercise.sets.reduce((acc: number, set: any) => acc + ((set.weight || 0) * (set.reps || 0)), 0);
             const totalSets = exercise.sets.length;
+
             return {
                 ...exercise,
                 totalReps,
@@ -63,7 +102,7 @@ export async function POST(request: Request) {
                 totalSets
             };
         });
-        const exerciseIds = exercises.map((exercise: any) => exercise.exerciseId);
+
         const exercisesInDb = await prisma.exercise.findMany({
             select: {
                 id: true,
@@ -107,6 +146,7 @@ export async function POST(request: Request) {
                 totalReps: totalReps,
                 totalWeight: totalWeight,
                 totalSets: totalSets,
+                userWeight: userWeight, // Store user's weight at workout time for historical accuracy
                 date: new Date(data.date),
                 createdAt: new Date(),
                 updatedAt: new Date(),

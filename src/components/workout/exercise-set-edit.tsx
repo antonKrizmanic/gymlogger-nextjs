@@ -3,10 +3,10 @@
 import type React from "react"
 
 import { Button } from "@/src/components/ui/button"
-import { Input } from "@/src/components/ui/input"
+import { IconInput } from "@/src/components/ui/icon-input"
 import type { IExerciseSetCreate } from "@/src/models/domain/workout"
 import { ExerciseLogType } from "@/src/types/enums"
-import { Copy, X } from "lucide-react"
+import { Clock, Copy, Hash, StickyNote, Weight, X } from "lucide-react"
 
 interface ExerciseSetEditProps {
   set: IExerciseSetCreate
@@ -47,21 +47,86 @@ export function ExerciseSetEdit({ set, index, exerciseType, onSetChange, onCopy,
       {exerciseType === ExerciseLogType.WeightAndReps && (
         <>
           <div className="flex-1">
-            <Input
+            <IconInput
+              icon={Hash}
+              label="Reps"
               type="number"
-              placeholder="Reps"
+              placeholder="0"
               value={set.reps || ""}
               onChange={handleRepsChange}
-              className="h-10 border-2"
             />
           </div>
           <div className="flex-1">
-            <Input
+            <IconInput
+              icon={Weight}
+              label="Weight (kg)"
               type="number"
-              placeholder="Weight (kg)"
+              placeholder="0"
               value={set.weight || ""}
               onChange={handleWeightChange}
-              className="h-10 border-2"
+            />
+          </div>
+        </>
+      )}
+
+      {exerciseType === ExerciseLogType.BodyWeight && (
+        <div className="flex-1">
+          <IconInput
+            icon={Hash}
+            label="Reps"
+            type="number"
+            placeholder="0"
+            value={set.reps || ""}
+            onChange={handleRepsChange}
+          />
+        </div>
+      )}
+
+      {exerciseType === ExerciseLogType.BodyWeightWithAdditionalWeight && (
+        <>
+          <div className="flex-1">
+            <IconInput
+              icon={Hash}
+              label="Reps"
+              type="number"
+              placeholder="0"
+              value={set.reps || ""}
+              onChange={handleRepsChange}
+            />
+          </div>
+          <div className="flex-1">
+            <IconInput
+              icon={Weight}
+              label="Additional Weight (kg)"
+              type="number"
+              placeholder="0"
+              value={set.weight || ""}
+              onChange={handleWeightChange}
+            />
+          </div>
+        </>
+      )}
+
+      {exerciseType === ExerciseLogType.BodyWeightWithAssistance && (
+        <>
+          <div className="flex-1">
+            <IconInput
+              icon={Hash}
+              label="Reps"
+              type="number"
+              placeholder="0"
+              value={set.reps || ""}
+              onChange={handleRepsChange}
+            />
+          </div>
+          <div className="flex-1">
+            <IconInput
+              icon={Weight}
+              label="Assistance Weight (kg)"
+              type="number"
+              placeholder="0"
+              value={set.weight || ""}
+              onChange={handleWeightChange}
             />
           </div>
         </>
@@ -69,34 +134,37 @@ export function ExerciseSetEdit({ set, index, exerciseType, onSetChange, onCopy,
 
       {exerciseType === ExerciseLogType.RepsOnly && (
         <div className="flex-1">
-          <Input
+          <IconInput
+            icon={Hash}
+            label="Reps"
             type="number"
-            placeholder="Reps"
+            placeholder="0"
             value={set.reps || ""}
             onChange={handleRepsChange}
-            className="h-10 border-2"
           />
         </div>
       )}
 
       {exerciseType === ExerciseLogType.TimeOnly && (
         <div className="flex-1">
-          <Input
+          <IconInput
+            icon={Clock}
+            label="Time (seconds)"
             type="number"
-            placeholder="Time (seconds)"
+            placeholder="0"
             value={set.time || ""}
             onChange={handleTimeChange}
-            className="h-10 border-2"
           />
         </div>
       )}
 
       <div className="flex-1">
-        <Input
-          placeholder="Set notes..."
+        <IconInput
+          icon={StickyNote}
+          label="Set notes"
+          placeholder="Add notes for this set..."
           value={set.note || ""}
           onChange={handleNoteChange}
-          className="h-10 border-2"
         />
       </div>
 

@@ -159,6 +159,36 @@ export function ExerciseProgress({ exerciseId }: ExerciseProgressProps) {
 				{ value: 'totalSets', label: 'Total Sets', icon: BarChart3 }
 			];
 		}
+		// For bodyweight exercises, show weight metrics (since bodyweight is included)
+		else if (exerciseType === ExerciseLogType.BodyWeight) {
+			return [
+				{ value: 'maxWeight', label: 'Max Weight (with Bodyweight)', icon: Weight },
+				{ value: 'totalWeight', label: 'Total Weight (with Bodyweight)', icon: Weight },
+				{ value: 'maxReps', label: 'Max Reps', icon: Repeat },
+				{ value: 'totalReps', label: 'Total Reps', icon: Repeat },
+				{ value: 'totalSets', label: 'Total Sets', icon: BarChart3 }
+			];
+		}
+		// For bodyweight with additional weight, show weight metrics
+		else if (exerciseType === ExerciseLogType.BodyWeightWithAdditionalWeight) {
+			return [
+				{ value: 'maxWeight', label: 'Max Weight (with Bodyweight)', icon: Weight },
+				{ value: 'totalWeight', label: 'Total Weight (with Bodyweight)', icon: Weight },
+				{ value: 'maxReps', label: 'Max Reps', icon: Repeat },
+				{ value: 'totalReps', label: 'Total Reps', icon: Repeat },
+				{ value: 'totalSets', label: 'Total Sets', icon: BarChart3 }
+			];
+		}
+		// For bodyweight with assistance, show weight metrics (assistance is subtracted)
+		else if (exerciseType === ExerciseLogType.BodyWeightWithAssistance) {
+			return [
+				{ value: 'maxWeight', label: 'Max Weight (Bodyweight - Assistance)', icon: Weight },
+				{ value: 'totalWeight', label: 'Total Weight (Bodyweight - Assistance)', icon: Weight },
+				{ value: 'maxReps', label: 'Max Reps', icon: Repeat },
+				{ value: 'totalReps', label: 'Total Reps', icon: Repeat },
+				{ value: 'totalSets', label: 'Total Sets', icon: BarChart3 }
+			];
+		}
 		// For reps only, don't show weight metrics
 		else if (exerciseType === ExerciseLogType.RepsOnly) {
 			return [

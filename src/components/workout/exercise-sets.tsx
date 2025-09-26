@@ -43,6 +43,24 @@ export function ExerciseSets({ exercise }: ExerciseSetsProps) {
               </>
             )}
 
+            {exerciseType === ExerciseLogType.BodyWeight && (
+              <TableHead className="text-muted-foreground font-semibold">Reps</TableHead>
+            )}
+
+            {exerciseType === ExerciseLogType.BodyWeightWithAdditionalWeight && (
+              <>
+                <TableHead className="text-muted-foreground font-semibold">Reps</TableHead>
+                <TableHead className="text-muted-foreground font-semibold">Additional Weight</TableHead>
+              </>
+            )}
+
+            {exerciseType === ExerciseLogType.BodyWeightWithAssistance && (
+              <>
+                <TableHead className="text-muted-foreground font-semibold">Reps</TableHead>
+                <TableHead className="text-muted-foreground font-semibold">Assistance Weight</TableHead>
+              </>
+            )}
+
             {exerciseType === ExerciseLogType.RepsOnly && (
               <TableHead className="text-muted-foreground font-semibold">Reps</TableHead>
             )}

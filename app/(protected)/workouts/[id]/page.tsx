@@ -159,7 +159,7 @@ export default async function WorkoutDetailPage(props: { params: Promise<{ id: s
                 </Card>
 
                 {/* Exercise List */}
-                <WorkoutExerciseList exercises={workout.exercises} />
+                <WorkoutExerciseList exercises={workout.exercises} userWeight={workout.userWeight} />
             </Container>
         </div>
     );
