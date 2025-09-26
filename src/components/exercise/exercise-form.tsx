@@ -1,13 +1,12 @@
 "use client"
 
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/src/components/ui/form"
-import { Input } from "@/src/components/ui/input"
-import { Textarea } from "@/src/components/ui/textarea"
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/src/components/ui/form"
+import { IconInput, IconTextarea } from "@/src/components/ui/icon-input"
 import type { IExerciseCreate } from "@/src/models/domain/exercise"
 import { ExerciseSchema } from "@/src/schemas/index"
 import { ExerciseLogType } from "@/src/types/enums"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Loader2 } from "lucide-react"
+import { Loader2, StickyNote, Target } from "lucide-react"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
@@ -63,9 +62,13 @@ export function ExerciseForm({ title, exercise, isLoading, onSubmit, cancelHref 
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name *</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <IconInput
+                      icon={Target}
+                      label="Name *"
+                      placeholder="Exercise name"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -116,9 +119,13 @@ export function ExerciseForm({ title, exercise, isLoading, onSubmit, cancelHref 
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea {...field} />
+                    <IconTextarea
+                      icon={StickyNote}
+                      label="Description"
+                      placeholder="Exercise description (optional)"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

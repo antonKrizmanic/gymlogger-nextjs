@@ -6,6 +6,11 @@ export const LoginSchema = z.object({
   password: z.string().min(6),
 })
 
+export const ProfileUpdateSchema = z.object({
+  weight: z.number().positive().optional(),
+  height: z.number().positive().optional(),
+})
+
 export const RegisterSchema = z.object({
   name: z.string().min(1, { message: "Full name is required" }),
   email: z.string().email(),

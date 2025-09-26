@@ -3,10 +3,10 @@
 import type React from "react"
 
 import { Button } from "@/src/components/ui/button"
-import { Input } from "@/src/components/ui/input"
-import { Label } from "@/src/components/ui/label"
+import { IconInput } from "@/src/components/ui/icon-input"
 import type { IExerciseSetCreate } from "@/src/models/domain/workout"
 import { ExerciseLogType } from "@/src/types/enums"
+import { Clock, Hash, StickyNote, Weight } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from "../ui/drawer"
 
@@ -117,90 +117,149 @@ function SetForm({ exerciseType, localSet, handleWeightChange, handleRepsChange,
   return (
     <div className="grid gap-6 px-6 py-4">
       {exerciseType === ExerciseLogType.WeightAndReps && (
-        <>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="reps" className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                Repetitions
-              </Label>
-              <Input
-                id="reps"
-                name="reps"
-                type="number"
-                inputMode="numeric"
-                value={localSet.reps || ""}
-                onChange={handleRepsChange}
-                className="h-12 border-2 text-lg"
-                placeholder="0"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="weight" className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                Weight (kg)
-              </Label>
-              <Input
-                id="weight"
-                name="weight"
-                type="number"
-                value={localSet.weight || ""}
-                onChange={handleWeightChange}
-                className="h-12 border-2 text-lg"
-                placeholder="0"
-              />
-            </div>
-          </div>
-        </>
-      )}
-
-      {exerciseType === ExerciseLogType.RepsOnly && (
-        <div className="space-y-2">
-          <Label htmlFor="reps" className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-            Repetitions
-          </Label>
-          <Input
+        <div className="grid grid-cols-1 gap-4">
+          <IconInput
+            icon={Hash}
+            label="Repetitions"
             id="reps"
             name="reps"
             type="number"
             inputMode="numeric"
             value={localSet.reps || ""}
             onChange={handleRepsChange}
-            className="h-12 border-2 text-lg"
+            placeholder="0"
+          />
+          <IconInput
+            icon={Weight}
+            label="Weight (kg)"
+            id="weight"
+            name="weight"
+            type="number"
+            value={localSet.weight || ""}
+            onChange={handleWeightChange}
             placeholder="0"
           />
         </div>
+      )}
+
+      {exerciseType === ExerciseLogType.BodyWeight && (
+        <>
+          <IconInput
+            icon={Hash}
+            label="Repetitions"
+            id="reps"
+            name="reps"
+            type="number"
+            inputMode="numeric"
+            value={localSet.reps || ""}
+            onChange={handleRepsChange}
+            placeholder="0"
+          />
+          <p className="text-sm text-muted-foreground">
+            Note: Body weight will be automatically calculated and added to total weight.
+          </p>
+        </>
+      )}
+
+      {exerciseType === ExerciseLogType.BodyWeightWithAdditionalWeight && (
+        <>
+          <div className="grid grid-cols-1 gap-4">
+            <IconInput
+              icon={Hash}
+              label="Repetitions"
+              id="reps"
+              name="reps"
+              type="number"
+              inputMode="numeric"
+              value={localSet.reps || ""}
+              onChange={handleRepsChange}
+              placeholder="0"
+            />
+            <IconInput
+              icon={Weight}
+              label="Additional Weight (kg)"
+              id="weight"
+              name="weight"
+              type="number"
+              value={localSet.weight || ""}
+              onChange={handleWeightChange}
+              placeholder="0"
+            />
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Note: Your body weight will be added to the additional weight for total weight calculation.
+          </p>
+        </>
+      )}
+
+      {exerciseType === ExerciseLogType.BodyWeightWithAssistance && (
+        <>
+          <div className="grid grid-cols-1 gap-4">
+            <IconInput
+              icon={Hash}
+              label="Repetitions"
+              id="reps"
+              name="reps"
+              type="number"
+              inputMode="numeric"
+              value={localSet.reps || ""}
+              onChange={handleRepsChange}
+              placeholder="0"
+            />
+            <IconInput
+              icon={Weight}
+              label="Assistance Weight (kg)"
+              id="weight"
+              name="weight"
+              type="number"
+              value={localSet.weight || ""}
+              onChange={handleWeightChange}
+              placeholder="0"
+            />
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Note: Assistance weight will be subtracted from your body weight for total weight calculation.
+          </p>
+        </>
+      )}
+
+      {exerciseType === ExerciseLogType.RepsOnly && (
+        <IconInput
+          icon={Hash}
+          label="Repetitions"
+          id="reps"
+          name="reps"
+          type="number"
+          inputMode="numeric"
+          value={localSet.reps || ""}
+          onChange={handleRepsChange}
+          placeholder="0"
+        />
       )}
 
       {exerciseType === ExerciseLogType.TimeOnly && (
-        <div className="space-y-2">
-          <Label htmlFor="time" className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-            Time (seconds)
-          </Label>
-          <Input
-            id="time"
-            name="time"
-            type="number"
-            inputMode="numeric"
-            value={localSet.time || ""}
-            onChange={handleTimeChange}
-            className="h-12 border-2 text-lg"
-            placeholder="0"
-          />
-        </div>
+        <IconInput
+          icon={Clock}
+          label="Time (seconds)"
+          id="time"
+          name="time"
+          type="number"
+          inputMode="numeric"
+          value={localSet.time || ""}
+          onChange={handleTimeChange}
+          placeholder="0"
+        />
       )}
 
-      <div className="space-y-2">
-        <Label htmlFor="note" className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-          Set Notes
-        </Label>
-        <Input
-          id="note"
-          name="note"
-          value={localSet.note || ""}
-          onChange={handleNoteChange}
-          className="h-12 border-2"
-          placeholder="Add notes for this set..."
-        />
-      </div>
+      <IconInput
+        icon={StickyNote}
+        label="Set Notes"
+        id="note"
+        name="note"
+        value={localSet.note || ""}
+        onChange={handleNoteChange}
+        placeholder="Add notes for this set..."
+      />
     </div>
   )
 }

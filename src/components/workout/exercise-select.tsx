@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import type { IExercise } from "@/src/models/domain/exercise"
 import { ExerciseApiService } from "@/src/api/services/exercise-api-service"
-import { Label } from "@/src/components/ui/label"
-import { ResponsiveCombobox } from "../form/responsive-combobox"
+import { IconSelect } from "@/src/components/ui/icon-input"
+import type { IExercise } from "@/src/models/domain/exercise"
+import { Target } from "lucide-react"
+import { useEffect, useState } from "react"
 
 interface ExerciseSelectProps {
   selectedExerciseId?: string
@@ -22,12 +22,12 @@ export function ExerciseSelect({
   label = "Exercise",
   placeholder = "Search exercises...",
   className,
-}: ExerciseSelectProps) {  
-  const [exercises, setExercises] = useState<IExercise[]>([])  
+}: ExerciseSelectProps) {
+  const [exercises, setExercises] = useState<IExercise[]>([])
 
   useEffect(() => {
     const fetchExercises = async () => {
-      try {        
+      try {
         const service = new ExerciseApiService()
         const response = await service.getAllExercises()
 
@@ -39,31 +39,22 @@ export function ExerciseSelect({
     fetchExercises()
   }, [])
 
-  const selectedExercise = exercises.find((exercise) => exercise.id === selectedExerciseId)
+  // Convert exercises to IconSelect format
+  const selectOptions = exercises.map((exercise) => ({
+    value: exercise.id,
+    label: exercise.name,
+  }))
 
   return (
-    <div className={className}>
-      {label && (
-        <Label htmlFor="exercise-select" className="mb-2 block">
-          {label} {required && <span className="text-destructive">*</span>}
-        </Label>
-      )}
-      <ResponsiveCombobox
-        items={exercises.map((exercise) => ({
-          value: exercise.id,
-          label: exercise.name,
-        }))}
-        placeholder={placeholder}
-        emptyMessage="No exercise found."
-        filterPlaceholder="Search exercises..."
-        value={selectedExercise ? { value: selectedExercise.id, label: selectedExercise.name } : null}
-        onValueChange={(item) => {
-          if (item) {
-            console.log("Selected exercise:", item)
-            onExerciseSelect(item.value)
-          }
-        }}/>      
-    </div>
+    <IconSelect
+      icon={Target}
+      label={`${label} ${required ? '*' : ''}`}
+      placeholder={placeholder}
+      value={selectedExerciseId}
+      onValueChange={onExerciseSelect}
+      options={selectOptions}
+      className={className}
+    />
   )
 }
 

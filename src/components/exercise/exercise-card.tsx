@@ -29,6 +29,12 @@ const getLogTypeInfo = (logType: ExerciseLogType) => {
             return { label: 'Time Only', icon: Clock, variant: 'secondary' as const };
         case ExerciseLogType.RepsOnly:
             return { label: 'Reps Only', icon: Repeat, variant: 'outline' as const };
+        case ExerciseLogType.BodyWeight:
+            return { label: 'Body Weight', icon: Activity, variant: 'secondary' as const };
+        case ExerciseLogType.BodyWeightWithAdditionalWeight:
+            return { label: 'Body Weight + Additional', icon: Weight, variant: 'default' as const };
+        case ExerciseLogType.BodyWeightWithAssistance:
+            return { label: 'Body Weight with Assistance', icon: Weight, variant: 'secondary' as const };
         default:
             return { label: 'Unknown', icon: Activity, variant: 'outline' as const };
     }

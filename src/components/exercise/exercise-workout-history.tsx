@@ -26,6 +26,18 @@ const getLogTypeInfo = (logType: ExerciseLogType) => {
 				icon: <Weight className="h-3 w-3" />,
 				variant: 'default' as const
 			};
+		case ExerciseLogType.BodyWeight:
+			return {
+				label: 'Body Weight',
+				icon: <Activity className="h-3 w-3" />,
+				variant: 'secondary' as const
+			};
+		case ExerciseLogType.BodyWeightWithAdditionalWeight:
+			return {
+				label: 'Body Weight + Additional',
+				icon: <Weight className="h-3 w-3" />,
+				variant: 'default' as const
+			};
 		case ExerciseLogType.RepsOnly:
 			return {
 				label: 'Reps Only',
@@ -37,6 +49,12 @@ const getLogTypeInfo = (logType: ExerciseLogType) => {
 				label: 'Time Only',
 				icon: <Clock className="h-3 w-3" />,
 				variant: 'outline' as const
+			};
+		case ExerciseLogType.BodyWeightWithAssistance:
+			return {
+				label: 'Body Weight with Assistance',
+				icon: <Weight className="h-3 w-3" />,
+				variant: 'secondary' as const
 			};
 		default:
 			return {
@@ -187,6 +205,24 @@ export function ExerciseWorkoutHistory({ exerciseId }: ExerciseWorkoutHistoryPro
 												</>
 											)}
 
+											{workout.exerciseLogType === ExerciseLogType.BodyWeight && (
+												<TableHead className="text-muted-foreground font-semibold">Reps</TableHead>
+											)}
+
+											{workout.exerciseLogType === ExerciseLogType.BodyWeightWithAdditionalWeight && (
+												<>
+													<TableHead className="text-muted-foreground font-semibold">Reps</TableHead>
+													<TableHead className="text-muted-foreground font-semibold">Additional Weight</TableHead>
+												</>
+											)}
+
+											{workout.exerciseLogType === ExerciseLogType.BodyWeightWithAssistance && (
+												<>
+													<TableHead className="text-muted-foreground font-semibold">Reps</TableHead>
+													<TableHead className="text-muted-foreground font-semibold">Assistance Weight</TableHead>
+												</>
+											)}
+
 											{workout.exerciseLogType === ExerciseLogType.RepsOnly && (
 												<TableHead className="text-muted-foreground font-semibold">Reps</TableHead>
 											)}
@@ -207,6 +243,24 @@ export function ExerciseWorkoutHistory({ exerciseId }: ExerciseWorkoutHistoryPro
 													<>
 														<TableCell className="font-medium">{set.reps}</TableCell>
 														<TableCell className="font-medium">{set.weight} kg</TableCell>
+													</>
+												)}
+
+												{workout.exerciseLogType === ExerciseLogType.BodyWeight && (
+													<TableCell className="font-medium">{set.reps}</TableCell>
+												)}
+
+												{workout.exerciseLogType === ExerciseLogType.BodyWeightWithAdditionalWeight && (
+													<>
+														<TableCell className="font-medium">{set.reps}</TableCell>
+														<TableCell className="font-medium">{set.weight} kg additional</TableCell>
+													</>
+												)}
+
+												{workout.exerciseLogType === ExerciseLogType.BodyWeightWithAssistance && (
+													<>
+														<TableCell className="font-medium">{set.reps}</TableCell>
+														<TableCell className="font-medium">{set.weight} kg assistance</TableCell>
 													</>
 												)}
 

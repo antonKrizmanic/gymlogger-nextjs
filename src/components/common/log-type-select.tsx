@@ -1,7 +1,8 @@
 "use client"
 
+import { IconSelect } from "@/src/components/ui/icon-input"
 import { ExerciseLogType } from "@/src/types/enums"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select"
+import { Activity } from "lucide-react"
 
 interface LogTypeSelectProps {
   selectedLogType: ExerciseLogType
@@ -11,9 +12,12 @@ interface LogTypeSelectProps {
 }
 
 const logTypeOptions = [
-  { value: ExerciseLogType.WeightAndReps, label: "Weight and Reps" },
-  { value: ExerciseLogType.TimeOnly, label: "Time Only" },
-  { value: ExerciseLogType.RepsOnly, label: "Reps Only" },
+  { value: ExerciseLogType.WeightAndReps.toString(), label: "Weight and Reps" },
+  { value: ExerciseLogType.TimeOnly.toString(), label: "Time Only" },
+  { value: ExerciseLogType.RepsOnly.toString(), label: "Reps Only" },
+  { value: ExerciseLogType.BodyWeight.toString(), label: "Body Weight" },
+  { value: ExerciseLogType.BodyWeightWithAdditionalWeight.toString(), label: "Body Weight + Additional" },
+  { value: ExerciseLogType.BodyWeightWithAssistance.toString(), label: "Body Weight with Assistance" },
 ]
 
 export function LogTypeSelect({
@@ -23,32 +27,28 @@ export function LogTypeSelect({
   showAllOption = true,
 }: LogTypeSelectProps) {
   const options = showAllOption
-    ? [{ value: ExerciseLogType.Unknown, label: "All Log Types" }, ...logTypeOptions]
+    ? [{ value: ExerciseLogType.Unknown.toString(), label: "All Log Types" }, ...logTypeOptions]
     : logTypeOptions
 
-  // Convert enum value to string for shadcn Select
+  // Convert enum value to string for IconSelect
   const handleValueChange = (value: string) => {
     onLogTypeChange(Number(value) as ExerciseLogType)
   }
 
+  // Convert selected enum to string for IconSelect
+  const selectValue = selectedLogType === ExerciseLogType.Unknown && showAllOption
+    ? ExerciseLogType.Unknown.toString()
+    : selectedLogType.toString()
+
   return (
-    <div className="space-y-2">
-      <label htmlFor="logType" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-        Log Type {required && "*"}
-      </label>
-      <Select value={selectedLogType.toString()} onValueChange={handleValueChange} required={required}>
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select log type" />
-        </SelectTrigger>
-        <SelectContent>
-          {options.map((option) => (
-            <SelectItem key={option.value} value={option.value.toString()}>
-              {option.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
+    <IconSelect
+      icon={Activity}
+      label={`Log Type ${required ? '*' : ''}`}
+      placeholder="Select log type"
+      value={selectValue}
+      onValueChange={handleValueChange}
+      options={options}
+    />
   )
 }
 

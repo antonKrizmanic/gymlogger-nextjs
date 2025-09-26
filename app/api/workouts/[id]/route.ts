@@ -1,14 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/src/lib/prisma';
-import { v4 as uuidv4 } from 'uuid';
 import { getLoggedInUser } from '@/src/data/loggedInUser';
+import { prisma } from '@/src/lib/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
 
     const loggedInUser = await getLoggedInUser();
     if (!loggedInUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-      
+
     try {
         const { id } = params;
 
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
                                 name: true,
                                 description: true,
                                 exerciseLogType: true,
-                                belongsToUserId: true,                                
+                                belongsToUserId: true,
                                 muscleGroupId: true,
                                 muscleGroup: {
                                     select: {
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
                 belongsToUserId: loggedInUser.id
             }
         });
-        
+
         if (!workout) {
             return NextResponse.json(
                 { message: 'Workout not found' },
@@ -96,13 +96,13 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
                 totalSets: ew.totalSets,
                 exerciseId: ew.exercise.id,
                 exerciseName: ew.exercise.name,
-                exerciseLogType: ew.exercise.exerciseLogType,                
-                sets: ew.exerciseSets.map(set => ({                    
+                exerciseLogType: ew.exercise.exerciseLogType,
+                sets: ew.exerciseSets.map(set => ({
                     id: set.id,
                     index: set.index,
                     time: set.time,
                     weight: set.weight,
-                    reps: set.reps,  
+                    reps: set.reps,
                     note: set.note
                 }))
             }))
@@ -132,11 +132,50 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
             return NextResponse.json({ error: 'Invalid GUID format' }, { status: 400 });
         }
 
+        // Get the current user's weight for bodyweight calculations
+        const userWeight = (loggedInUser as any)?.weight ? Number((loggedInUser as any).weight) : null;
+
+        // Get exercises from database to check their log types
+        const exerciseIds = body.exercises.map((exercise: any) => exercise.exerciseId);
+        const exercisesData = await prisma.exercise.findMany({
+            where: { id: { in: exerciseIds } },
+            select: { id: true, exerciseLogType: true }
+        });
+
+        const exerciseTypesMap = exercisesData.reduce((acc: any, exercise: any) => {
+            acc[exercise.id] = exercise.exerciseLogType;
+            return acc;
+        }, {});
+
         // Calculate total reps, weight, and sets
         const exercises = body.exercises.map((exercise: any) => {
+            const exerciseLogType = exerciseTypesMap[exercise.exerciseId];
+            let totalWeight = 0;
+
+            exercise.sets.forEach((set: any) => {
+                if (exerciseLogType === 4) { // BodyWeight
+                    // For pure bodyweight exercises, use user's weight
+                    const bodyWeight = userWeight || 0;
+                    totalWeight += bodyWeight * (set.reps || 0);
+                } else if (exerciseLogType === 5) { // BodyWeightWithAdditionalWeight
+                    // For bodyweight exercises with additional weight, add user's weight to the additional weight
+                    const bodyWeight = userWeight || 0;
+                    const additionalWeight = set.weight || 0;
+                    totalWeight += (bodyWeight + additionalWeight) * (set.reps || 0);
+                } else if (exerciseLogType === 6) { // BodyWeightWithAssistance
+                    // For assisted bodyweight exercises, subtract assistance weight from user's body weight
+                    const bodyWeight = userWeight || 0;
+                    const assistanceWeight = set.weight || 0;
+                    totalWeight += (bodyWeight - assistanceWeight) * (set.reps || 0);
+                } else {
+                    // For regular weight exercises
+                    totalWeight += ((set.weight || 0) * (set.reps || 0));
+                }
+            });
+
             const totalReps = exercise.sets.reduce((acc: number, set: any) => acc + (set.reps || 0), 0);
-            const totalWeight = exercise.sets.reduce((acc: number, set: any) => acc + ((set.weight || 0) * (set.reps || 0)), 0);
             const totalSets = exercise.sets.length;
+
             return {
                 ...exercise,
                 totalReps,
@@ -163,8 +202,8 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
                 exerciseWorkouts: {
                     deleteMany: {}, // Delete existing exercise workouts
                     create: exercises.map((exercise: any) => ({
-                        id:uuidv4(),
-                        exerciseId: exercise.exerciseId,                        
+                        id: uuidv4(),
+                        exerciseId: exercise.exerciseId,
                         index: exercise.index,
                         note: exercise.note,
                         totalReps: exercise.totalReps,
@@ -175,7 +214,7 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
                         belongsToUserId: loggedInUser.id,
                         exerciseSets: {
                             create: exercise.sets.map((set: any) => ({
-                                id:uuidv4(),
+                                id: uuidv4(),
                                 index: set.index,
                                 time: set.time,
                                 weight: set.weight,

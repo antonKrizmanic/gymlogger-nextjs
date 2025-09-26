@@ -2,7 +2,7 @@
 import type React from "react"
 import { memo, useCallback, useEffect, useMemo, useState } from "react"
 
-import { Copy, Info, Pencil, PlusCircle, X } from "lucide-react"
+import { ChevronDown, ChevronUp, Copy, Info, MessageSquare, Pencil, PlusCircle, StickyNote, X } from "lucide-react"
 
 import { ExerciseApiService } from "@/src/api/services/exercise-api-service"
 import { ExerciseApiWorkoutService } from "@/src/api/services/exercise-workout-api-service"
@@ -13,9 +13,8 @@ import { ExerciseLogType } from "@/src/types/enums"
 import { Button } from "@/src/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/src/components/ui/collapsible"
-import { Label } from "@/src/components/ui/label"
+import { IconTextarea } from "@/src/components/ui/icon-input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/components/ui/table"
-import { Textarea } from "@/src/components/ui/textarea"
 import { ExerciseSelect } from "./exercise-select"
 import { ExerciseSetDrawer } from "./exercise-set-drawer"
 import { ExerciseSetEdit } from "./exercise-set-edit"
@@ -43,6 +42,8 @@ export const ExerciseListItem = memo(function ExerciseListItem({
   const [isLastWorkoutOpen, setIsLastWorkoutOpen] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [currentSetIndex, setCurrentSetIndex] = useState<number | null>(null)
+  const [isNotesExpanded, setIsNotesExpanded] = useState(false)
+  const [isEditingNotes, setIsEditingNotes] = useState(false)
 
   useEffect(() => {
     const fetchExerciseData = async () => {
@@ -71,6 +72,8 @@ export const ExerciseListItem = memo(function ExerciseListItem({
     fetchExerciseData()
   }, [exercise.exerciseId, workoutId])
 
+  // Don't auto-expand notes - let user decide
+
   const handleExerciseSelect = useCallback(async (exerciseId: string) => {
     console.log("Selected exercise ID:", exerciseId)
     // Let the parent component know about the change
@@ -80,6 +83,30 @@ export const ExerciseListItem = memo(function ExerciseListItem({
   const handleNoteChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const note = e.target.value
     onExerciseChange({ ...exercise, note }, index)
+  }, [exercise, index, onExerciseChange])
+
+  const handleToggleNotes = useCallback(() => {
+    setIsNotesExpanded(!isNotesExpanded)
+  }, [isNotesExpanded])
+
+  const handleEditNotes = useCallback(() => {
+    setIsEditingNotes(true)
+    setIsNotesExpanded(true)
+  }, [isEditingNotes, isNotesExpanded])
+
+  const handleSaveNotes = useCallback(() => {
+    setIsEditingNotes(false)
+    // Always collapse after saving
+    setIsNotesExpanded(false)
+  }, [])
+
+  const handleCancelNotes = useCallback(() => {
+    // Reset to original value (before editing started)
+    const originalExercise = { ...exercise, note: exercise.note || '' }
+    onExerciseChange(originalExercise, index)
+    setIsEditingNotes(false)
+    // Always collapse after canceling
+    setIsNotesExpanded(false)
   }, [exercise, index, onExerciseChange])
 
   const handleAddSet = useCallback(() => {
@@ -229,16 +256,91 @@ export const ExerciseListItem = memo(function ExerciseListItem({
 
         {/* Notes field */}
         <div className="space-y-2">
-          <Label htmlFor={`note-${index}`} className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-            Exercise Notes
-          </Label>
-          <Textarea
-            id={`note-${index}`}
-            value={exercise.note || ""}
-            onChange={handleNoteChange}
-            className="border-2 min-h-[60px]"
-            placeholder="Add notes for this exercise..."
-          />
+          {/* Collapsed state - show when not expanded */}
+          {!isNotesExpanded && (
+            <div className="border border-dashed border-muted-foreground/30 rounded-lg p-3 bg-muted/10 hover:bg-muted/20 transition-colors cursor-pointer"
+              style={{ pointerEvents: 'auto' }}
+              onClick={handleToggleNotes}>
+              {exercise.note?.trim() ? (
+                // Show preview when there's a note
+                <div className="flex items-start justify-between">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center space-x-2 mb-1">
+                      <StickyNote className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm font-medium text-muted-foreground">Exercise Notes</span>
+                    </div>
+                    <p className="text-sm text-foreground line-clamp-2 break-words">
+                      {exercise.note}
+                    </p>
+                  </div>
+                  <div className="flex items-center space-x-2 opacity-60 hover:opacity-100 transition-opacity">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleEditNotes()
+                      }}
+                      className="h-6 px-2 text-xs"
+                    >
+                      Edit
+                    </Button>
+                    {isNotesExpanded ? (
+                      <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </div>
+                </div>
+              ) : (
+                // Show "Add Note" when no note exists
+                <div className="flex items-center justify-center space-x-2 py-2">
+                  <MessageSquare className="h-3 w-3 text-muted-foreground" />
+                  <span className="text-xs text-muted-foreground">Add exercise notes</span>
+                  <ChevronDown className="h-3 w-3 text-muted-foreground" />
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Expanded state - show when expanded */}
+          {isNotesExpanded && (
+            <div className="border border-muted-foreground/20 rounded-lg p-4 bg-muted/10">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <StickyNote className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium text-muted-foreground">Exercise Notes</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleCancelNotes}
+                    className="h-8 px-3 text-sm font-medium"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="default"
+                    size="sm"
+                    onClick={handleSaveNotes}
+                    className="h-8 px-3 text-sm font-medium bg-primary hover:bg-primary/90"
+                  >
+                    Save
+                  </Button>
+                </div>
+              </div>
+              <IconTextarea
+                icon={StickyNote}
+                value={exercise.note || ""}
+                onChange={handleNoteChange}
+                placeholder="Add notes for this exercise..."
+              />
+            </div>
+          )}
         </div>
 
         {lastExercise && (
@@ -293,6 +395,24 @@ export const ExerciseListItem = memo(function ExerciseListItem({
                           </>
                         )}
 
+                        {exerciseLogType === ExerciseLogType.BodyWeight && (
+                          <TableHead className="text-gray-500 dark:text-white">Reps</TableHead>
+                        )}
+
+                        {exerciseLogType === ExerciseLogType.BodyWeightWithAdditionalWeight && (
+                          <>
+                            <TableHead className="text-gray-500 dark:text-white">Reps</TableHead>
+                            <TableHead className="text-gray-500 dark:text-white">Extra Kg</TableHead>
+                          </>
+                        )}
+
+                        {exerciseLogType === ExerciseLogType.BodyWeightWithAssistance && (
+                          <>
+                            <TableHead className="text-gray-500 dark:text-white">Reps</TableHead>
+                            <TableHead className="text-gray-500 dark:text-white">Assistance Kg</TableHead>
+                          </>
+                        )}
+
                         {exerciseLogType === ExerciseLogType.RepsOnly && <TableHead className="text-gray-500 dark:text-white">Reps</TableHead>}
 
                         {exerciseLogType === ExerciseLogType.TimeOnly && <TableHead className="text-gray-500 dark:text-white">Time</TableHead>}
@@ -306,6 +426,24 @@ export const ExerciseListItem = memo(function ExerciseListItem({
                           <TableCell>{setIndex + 1}</TableCell>
 
                           {exerciseLogType === ExerciseLogType.WeightAndReps && (
+                            <>
+                              <TableCell>{set.reps || "-"}</TableCell>
+                              <TableCell>{set.weight || "-"}</TableCell>
+                            </>
+                          )}
+
+                          {exerciseLogType === ExerciseLogType.BodyWeight && (
+                            <TableCell>{set.reps || "-"}</TableCell>
+                          )}
+
+                          {exerciseLogType === ExerciseLogType.BodyWeightWithAdditionalWeight && (
+                            <>
+                              <TableCell>{set.reps || "-"}</TableCell>
+                              <TableCell>{set.weight || "-"}</TableCell>
+                            </>
+                          )}
+
+                          {exerciseLogType === ExerciseLogType.BodyWeightWithAssistance && (
                             <>
                               <TableCell>{set.reps || "-"}</TableCell>
                               <TableCell>{set.weight || "-"}</TableCell>

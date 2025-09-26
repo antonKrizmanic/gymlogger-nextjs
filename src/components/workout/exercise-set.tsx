@@ -1,6 +1,6 @@
+import { TableCell, TableRow } from "@/src/components/ui/table"
 import type { IExerciseSet } from "@/src/models/domain/workout"
 import { ExerciseLogType } from "@/src/types/enums"
-import { TableCell, TableRow } from "@/src/components/ui/table"
 
 interface ExerciseSetProps {
   set: IExerciseSet
@@ -16,6 +16,24 @@ export function ExerciseSet({ set, exerciseType }: ExerciseSetProps) {
         <>
           <TableCell>{set.reps}</TableCell>
           <TableCell>{set.weight} kg</TableCell>
+        </>
+      )}
+
+      {exerciseType === ExerciseLogType.BodyWeight && (
+        <TableCell>{set.reps}</TableCell>
+      )}
+
+      {exerciseType === ExerciseLogType.BodyWeightWithAdditionalWeight && (
+        <>
+          <TableCell>{set.reps}</TableCell>
+          <TableCell>{set.weight} kg additional</TableCell>
+        </>
+      )}
+
+      {exerciseType === ExerciseLogType.BodyWeightWithAssistance && (
+        <>
+          <TableCell>{set.reps}</TableCell>
+          <TableCell>{set.weight} kg assistance</TableCell>
         </>
       )}
 

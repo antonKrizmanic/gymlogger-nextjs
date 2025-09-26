@@ -1,6 +1,6 @@
 import { ExerciseLogType } from "@/src/types/enums";
 
-export interface IWorkout extends IWorkoutSimple {    
+export interface IWorkout extends IWorkoutSimple {
     exercises: IExerciseWorkout[];
 }
 
@@ -14,6 +14,7 @@ export interface IWorkoutSimple {
     totalWeight?: number;
     totalReps?: number;
     totalSets?: number;
+    userWeight?: number; // User's weight at workout time for historical accuracy
 }
 
 export interface IWorkoutCreate {
@@ -61,7 +62,7 @@ export interface IExerciseWorkoutCreate {
     index: number;
     note?: string;
     sets?: IExerciseSetCreate[];
-} 
+}
 
 
 
@@ -76,6 +77,7 @@ export const mapWorkoutToIWorkout = (workout: any): IWorkout => {
         totalWeight: Number(workout.totalWeight),
         totalReps: Number(workout.totalReps),
         totalSets: Number(workout.totalSets),
+        userWeight: workout.userWeight ? Number(workout.userWeight) : undefined,
         exercises: workout.exerciseWorkouts?.map((exercise: any) => ({
             exerciseId: exercise.exerciseId,
             exerciseName: exercise.exercise?.name,

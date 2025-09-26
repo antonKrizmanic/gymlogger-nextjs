@@ -19,6 +19,9 @@ export function ExerciseDeleteButton({ exercise }: ExerciseDeleteButtonProps) {
             entityName={exercise.name}
             entityType="Exercise"
             deleteAction={deleteAction}
+            className="px-6 py-3 text-lg font-semibold w-auto"
+            size="lg"
+            text="Delete Exercise"
         />
     );
 }
