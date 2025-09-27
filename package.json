@@ -1,6 +1,6 @@
 {
   "name": "gymlogger-next",
-  "version": "0.41.1",
+  "version": "0.42.0",
   "private": true,
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
