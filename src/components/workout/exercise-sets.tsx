@@ -114,7 +114,7 @@ export function ExerciseSets({ exercise }: ExerciseSetsProps) {
       <div className="md:hidden space-y-3">
         {exercise.sets.map((set) => (
           <div key={set.id ?? set.index} className="rounded-lg border p-3 bg-card">
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between">
               <span className="text-sm font-semibold">Set {(set.index ?? 0) + 1}</span>
               <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
                 {exerciseType === ExerciseLogType.WeightAndReps && (

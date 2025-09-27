@@ -1,6 +1,5 @@
 "use client"
 
-import { Button } from "@/src/components/ui/button"
 import {
   Command,
   CommandEmpty,
@@ -12,6 +11,7 @@ import {
 import { Drawer, DrawerContent, DrawerTrigger } from "@/src/components/ui/drawer"
 import { Popover, PopoverContent, PopoverTrigger } from "@/src/components/ui/popover"
 import { useMediaQuery } from "@/src/hooks/use-media-query"
+import { ChevronDown, type LucideIcon } from "lucide-react"
 import * as React from "react"
 
 export type ComboboxItem = {
@@ -28,6 +28,9 @@ interface ResponsiveComboboxProps {
   value?: ComboboxItem | null
   defaultValue?: ComboboxItem | null
   onValueChange?: (item: ComboboxItem | null) => void
+  icon?: LucideIcon
+  label?: string
+  className?: string
 }
 
 export const ResponsiveCombobox = ({
@@ -38,6 +41,9 @@ export const ResponsiveCombobox = ({
   value,
   defaultValue,
   onValueChange,
+  icon: Icon,
+  label,
+  className,
 }: ResponsiveComboboxProps) => {
   const [open, setOpen] = React.useState(false)
   const isDesktop = useMediaQuery("(min-width: 768px)")
@@ -61,13 +67,34 @@ export const ResponsiveCombobox = ({
     setOpen(false)
   }
 
+  const TriggerContent = (
+    <div className={`flex items-center space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 ${open ? 'border-primary/50 bg-muted/40 shadow-sm' : ''} ${label ? '' : 'py-3'} cursor-pointer ${className || ''}`}>
+      {Icon && (
+        <div className="p-2 bg-primary/10 rounded-lg">
+          <Icon className="h-5 w-5 text-primary" />
+        </div>
+      )}
+      <div className="flex-1 flex items-center justify-between">
+        <div className="flex-1">
+          {label && (
+            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+              {label}
+            </p>
+          )}
+          <div className={`text-lg font-semibold bg-transparent border-none outline-none w-full ${label ? 'mt-1' : ''} ${!selectedItem ? 'text-muted-foreground' : 'text-foreground'}`}>
+            {selectedItem ? selectedItem.label : placeholder}
+          </div>
+        </div>
+        <ChevronDown className={`h-5 w-5 text-muted-foreground transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+      </div>
+    </div>
+  )
+
   if (isDesktop) {
     return (
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button variant="outline" className="w-full justify-start">
-            {selectedItem ? selectedItem.label : placeholder}
-          </Button>
+          {TriggerContent}
         </PopoverTrigger>
         <PopoverContent className="w-full p-0" align="start">
           <ItemList
@@ -85,9 +112,7 @@ export const ResponsiveCombobox = ({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button variant="outline" className="w-full justify-start">
-          {selectedItem ? selectedItem.label : placeholder}
-        </Button>
+        {TriggerContent}
       </DrawerTrigger>
       <DrawerContent>
         <div className="mt-4 border-t">

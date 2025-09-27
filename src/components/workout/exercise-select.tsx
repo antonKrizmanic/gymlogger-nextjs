@@ -1,7 +1,7 @@
 "use client"
 
 import { ExerciseApiService } from "@/src/api/services/exercise-api-service"
-import { IconSelect } from "@/src/components/ui/icon-input"
+import { ResponsiveCombobox, type ComboboxItem } from "@/src/components/form/responsive-combobox"
 import type { IExercise } from "@/src/models/domain/exercise"
 import { Target } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -39,20 +39,24 @@ export function ExerciseSelect({
     fetchExercises()
   }, [])
 
-  // Convert exercises to IconSelect format
-  const selectOptions = exercises.map((exercise) => ({
+  // Convert exercises to combobox items
+  const selectOptions: ComboboxItem[] = exercises.map((exercise) => ({
     value: exercise.id,
     label: exercise.name,
   }))
 
+  const selectedItem = selectOptions.find(o => o.value === selectedExerciseId) || null
+
   return (
-    <IconSelect
+    <ResponsiveCombobox
       icon={Target}
       label={`${label} ${required ? '*' : ''}`}
       placeholder={placeholder}
-      value={selectedExerciseId}
-      onValueChange={onExerciseSelect}
-      options={selectOptions}
+      emptyMessage="No exercises found"
+      filterPlaceholder="Search exercises..."
+      value={selectedItem}
+      onValueChange={(item) => onExerciseSelect(item?.value || "")}
+      items={selectOptions}
       className={className}
     />
   )
