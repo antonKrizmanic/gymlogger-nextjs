@@ -2,8 +2,9 @@ import { ProfileEditForm } from "@/src/components/auth/profile-edit-form";
 import UserDeleteDialog from "@/src/components/auth/user-delete-dialog";
 import { Container } from "@/src/components/common/container";
 import UserAvatar from "@/src/components/navigation/user-avatar";
+import { WeightHistoryChart } from "@/src/components/profile/weight-history-chart";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card";
-import { getUserByEmail } from "@/src/data/user";
+import { getUserByEmail, getUserWeights } from "@/src/data/user";
 import { auth } from "@/src/lib/auth";
 import { AlertTriangle, Mail, Shield, User } from "lucide-react";
 import { SessionProvider } from "next-auth/react";
@@ -15,6 +16,7 @@ export default async function ProfilePage() {
 
 	// Get full user data to access weight and height
 	const fullUserData = user?.email ? await getUserByEmail(user.email) : null;
+	const weightHistory = fullUserData?.id ? await getUserWeights(fullUserData.id, 365) : [];
 
 	return (
 		<Container>
@@ -105,6 +107,11 @@ export default async function ProfilePage() {
 						</div>
 					</CardContent>
 				</Card>
+
+				{/* Weight History Chart */}
+				<div className="lg:col-span-3">
+					<WeightHistoryChart data={weightHistory as any} />
+				</div>
 			</div>
 		</Container>
 	);

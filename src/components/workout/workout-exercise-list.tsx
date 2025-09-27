@@ -1,7 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { IExerciseWorkout } from '@/src/models/domain/workout';
 import { ExerciseLogType } from '@/src/types/enums';
-import { Activity, ArrowRightIcon, Clock, Repeat, Target, Weight } from 'lucide-react';
+import { getLogTypeInfo } from '@/src/utils/get-log-type-info';
+import { Activity, ArrowRightIcon, Target, Weight } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
@@ -13,26 +14,6 @@ interface WorkoutExerciseListProps {
 }
 
 export function WorkoutExerciseList({ exercises, userWeight }: WorkoutExerciseListProps) {
-    // Helper function for log type info
-    const getLogTypeInfo = (logType: ExerciseLogType) => {
-        switch (logType) {
-            case ExerciseLogType.WeightAndReps:
-                return { label: 'Weight & Reps', icon: Weight, variant: 'default' as const };
-            case ExerciseLogType.TimeOnly:
-                return { label: 'Time Only', icon: Clock, variant: 'secondary' as const };
-            case ExerciseLogType.RepsOnly:
-                return { label: 'Reps Only', icon: Repeat, variant: 'outline' as const };
-            case ExerciseLogType.BodyWeight:
-                return { label: 'Body Weight', icon: Activity, variant: 'secondary' as const };
-            case ExerciseLogType.BodyWeightWithAdditionalWeight:
-                return { label: 'Body Weight + Additional', icon: Weight, variant: 'default' as const };
-            case ExerciseLogType.BodyWeightWithAssistance:
-                return { label: 'Body Weight with Assistance', icon: Weight, variant: 'secondary' as const };
-            default:
-                return { label: 'Unknown', icon: Activity, variant: 'outline' as const };
-        }
-    };
-
     if (!exercises || exercises.length === 0) {
         return (
             <Card className="border-0 shadow-lg">
@@ -71,7 +52,7 @@ export function WorkoutExerciseList({ exercises, userWeight }: WorkoutExerciseLi
                         <CardHeader className="pb-4">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                 <div className="space-y-3">
-                                    <div className="flex items-center gap-3">
+                                    <div className="flex flex-wrap items-center gap-3">
                                         <CardTitle className="text-xl font-bold text-foreground">
                                             {exercise.exerciseName || 'Untitled Exercise'}
                                         </CardTitle>

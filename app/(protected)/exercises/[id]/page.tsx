@@ -5,29 +5,9 @@ import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { getExercise } from "@/src/data/exercise";
-import { ExerciseLogType } from "@/src/types/enums";
-import { Activity, Clock, MoveLeft, Pencil, Repeat, Target, Weight } from "lucide-react";
+import { getLogTypeInfo } from "@/src/utils/get-log-type-info";
+import { Activity, MoveLeft, Pencil, Target } from "lucide-react";
 import Link from "next/link";
-
-// Function to convert ExerciseLogType enum to user-friendly text with icon
-const getLogTypeInfo = (logType: ExerciseLogType) => {
-    switch (logType) {
-        case ExerciseLogType.WeightAndReps:
-            return { label: 'Weight & Reps', icon: Weight, variant: 'default' as const };
-        case ExerciseLogType.TimeOnly:
-            return { label: 'Time Only', icon: Clock, variant: 'secondary' as const };
-        case ExerciseLogType.RepsOnly:
-            return { label: 'Reps Only', icon: Repeat, variant: 'outline' as const };
-        case ExerciseLogType.BodyWeight:
-            return { label: 'Body Weight', icon: Activity, variant: 'secondary' as const };
-        case ExerciseLogType.BodyWeightWithAdditionalWeight:
-            return { label: 'Body Weight + Additional', icon: Weight, variant: 'default' as const };
-        case ExerciseLogType.BodyWeightWithAssistance:
-            return { label: 'Body Weight with Assistance', icon: Weight, variant: 'secondary' as const };
-        default:
-            return { label: 'Unknown', icon: Activity, variant: 'outline' as const };
-    }
-};
 
 export default async function ExerciseDetailPage(props: { params: Promise<{ id: string }> }) {
     const params = await props.params;

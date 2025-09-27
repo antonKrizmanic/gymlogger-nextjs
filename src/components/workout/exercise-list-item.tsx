@@ -1,8 +1,7 @@
 "use client"
-import type React from "react"
 import { memo, useCallback, useEffect, useMemo, useState } from "react"
 
-import { ChevronDown, ChevronUp, Copy, Info, MessageSquare, Pencil, PlusCircle, StickyNote, X } from "lucide-react"
+import { Copy, Info, Pencil, PlusCircle, StickyNote, X } from "lucide-react"
 
 import { ExerciseApiService } from "@/src/api/services/exercise-api-service"
 import { ExerciseApiWorkoutService } from "@/src/api/services/exercise-workout-api-service"
@@ -13,7 +12,8 @@ import { ExerciseLogType } from "@/src/types/enums"
 import { Button } from "@/src/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/src/components/ui/collapsible"
-import { IconTextarea } from "@/src/components/ui/icon-input"
+// IconTextarea no longer used here; CollapsibleNote handles input
+import { CollapsibleNote } from "@/src/components/common/collapsible-note"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/components/ui/table"
 import { ExerciseSelect } from "./exercise-select"
 import { ExerciseSetDrawer } from "./exercise-set-drawer"
@@ -42,8 +42,7 @@ export const ExerciseListItem = memo(function ExerciseListItem({
   const [isLastWorkoutOpen, setIsLastWorkoutOpen] = useState(false)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [currentSetIndex, setCurrentSetIndex] = useState<number | null>(null)
-  const [isNotesExpanded, setIsNotesExpanded] = useState(false)
-  const [isEditingNotes, setIsEditingNotes] = useState(false)
+  // CollapsibleNote manages notes UI state internally
 
   useEffect(() => {
     const fetchExerciseData = async () => {
@@ -80,34 +79,11 @@ export const ExerciseListItem = memo(function ExerciseListItem({
     onAddExercise(index, exerciseId)
   }, [onAddExercise, index])
 
-  const handleNoteChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const note = e.target.value
-    onExerciseChange({ ...exercise, note }, index)
+  const handleNoteValueChange = useCallback((value: string) => {
+    onExerciseChange({ ...exercise, note: value }, index)
   }, [exercise, index, onExerciseChange])
 
-  const handleToggleNotes = useCallback(() => {
-    setIsNotesExpanded(!isNotesExpanded)
-  }, [isNotesExpanded])
-
-  const handleEditNotes = useCallback(() => {
-    setIsEditingNotes(true)
-    setIsNotesExpanded(true)
-  }, [isEditingNotes, isNotesExpanded])
-
-  const handleSaveNotes = useCallback(() => {
-    setIsEditingNotes(false)
-    // Always collapse after saving
-    setIsNotesExpanded(false)
-  }, [])
-
-  const handleCancelNotes = useCallback(() => {
-    // Reset to original value (before editing started)
-    const originalExercise = { ...exercise, note: exercise.note || '' }
-    onExerciseChange(originalExercise, index)
-    setIsEditingNotes(false)
-    // Always collapse after canceling
-    setIsNotesExpanded(false)
-  }, [exercise, index, onExerciseChange])
+  // Legacy note handlers removed in favor of CollapsibleNote
 
   const handleAddSet = useCallback(() => {
     // For mobile, open the dialog with a new set
@@ -255,93 +231,13 @@ export const ExerciseListItem = memo(function ExerciseListItem({
         )}
 
         {/* Notes field */}
-        <div className="space-y-2">
-          {/* Collapsed state - show when not expanded */}
-          {!isNotesExpanded && (
-            <div className="border border-dashed border-muted-foreground/30 rounded-lg p-3 bg-muted/10 hover:bg-muted/20 transition-colors cursor-pointer"
-              style={{ pointerEvents: 'auto' }}
-              onClick={handleToggleNotes}>
-              {exercise.note?.trim() ? (
-                // Show preview when there's a note
-                <div className="flex items-start justify-between">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <StickyNote className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm font-medium text-muted-foreground">Exercise Notes</span>
-                    </div>
-                    <p className="text-sm text-foreground line-clamp-2 break-words">
-                      {exercise.note}
-                    </p>
-                  </div>
-                  <div className="flex items-center space-x-2 opacity-60 hover:opacity-100 transition-opacity">
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleEditNotes()
-                      }}
-                      className="h-6 px-2 text-xs"
-                    >
-                      Edit
-                    </Button>
-                    {isNotesExpanded ? (
-                      <ChevronUp className="h-4 w-4 text-muted-foreground" />
-                    ) : (
-                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                    )}
-                  </div>
-                </div>
-              ) : (
-                // Show "Add Note" when no note exists
-                <div className="flex items-center justify-center space-x-2 py-2">
-                  <MessageSquare className="h-3 w-3 text-muted-foreground" />
-                  <span className="text-xs text-muted-foreground">Add exercise notes</span>
-                  <ChevronDown className="h-3 w-3 text-muted-foreground" />
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Expanded state - show when expanded */}
-          {isNotesExpanded && (
-            <div className="border border-muted-foreground/20 rounded-lg p-4 bg-muted/10">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-2">
-                  <StickyNote className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium text-muted-foreground">Exercise Notes</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleCancelNotes}
-                    className="h-8 px-3 text-sm font-medium"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="default"
-                    size="sm"
-                    onClick={handleSaveNotes}
-                    className="h-8 px-3 text-sm font-medium bg-primary hover:bg-primary/90"
-                  >
-                    Save
-                  </Button>
-                </div>
-              </div>
-              <IconTextarea
-                icon={StickyNote}
-                value={exercise.note || ""}
-                onChange={handleNoteChange}
-                placeholder="Add notes for this exercise..."
-              />
-            </div>
-          )}
-        </div>
+        <CollapsibleNote
+          label="Exercise Notes"
+          value={exercise.note || ""}
+          onChange={handleNoteValueChange}
+          icon={StickyNote}
+          placeholder="Add notes for this exercise..."
+        />
 
         {lastExercise && (
           <Collapsible open={isLastWorkoutOpen} onOpenChange={setIsLastWorkoutOpen} className="border rounded-md p-2">
