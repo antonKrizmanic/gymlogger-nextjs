@@ -2,68 +2,18 @@
 
 import { ExerciseApiWorkoutService } from '@/src/api/services/exercise-workout-api-service';
 import { Pagination } from '@/src/components/common/pagination';
-import { Badge } from '@/src/components/ui/badge';
 import { Button } from '@/src/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/src/components/ui/table';
+import { ExerciseSets } from '@/src/components/workout/exercise-sets';
 import { IExerciseWorkout } from '@/src/models/domain/workout';
-import { ExerciseLogType } from '@/src/types/enums';
 import { format } from 'date-fns';
-import { Activity, ArrowRightIcon, CalendarIcon, Clock, Dumbbell, Repeat, Weight } from 'lucide-react';
+import { Activity, ArrowRightIcon, CalendarIcon, Dumbbell } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 interface ExerciseWorkoutHistoryProps {
 	exerciseId: string;
 }
-
-// Helper function to get log type information
-const getLogTypeInfo = (logType: ExerciseLogType) => {
-	switch (logType) {
-		case ExerciseLogType.WeightAndReps:
-			return {
-				label: 'Weight & Reps',
-				icon: <Weight className="h-3 w-3" />,
-				variant: 'default' as const
-			};
-		case ExerciseLogType.BodyWeight:
-			return {
-				label: 'Body Weight',
-				icon: <Activity className="h-3 w-3" />,
-				variant: 'secondary' as const
-			};
-		case ExerciseLogType.BodyWeightWithAdditionalWeight:
-			return {
-				label: 'Body Weight + Additional',
-				icon: <Weight className="h-3 w-3" />,
-				variant: 'default' as const
-			};
-		case ExerciseLogType.RepsOnly:
-			return {
-				label: 'Reps Only',
-				icon: <Repeat className="h-3 w-3" />,
-				variant: 'secondary' as const
-			};
-		case ExerciseLogType.TimeOnly:
-			return {
-				label: 'Time Only',
-				icon: <Clock className="h-3 w-3" />,
-				variant: 'outline' as const
-			};
-		case ExerciseLogType.BodyWeightWithAssistance:
-			return {
-				label: 'Body Weight with Assistance',
-				icon: <Weight className="h-3 w-3" />,
-				variant: 'secondary' as const
-			};
-		default:
-			return {
-				label: 'Unknown',
-				icon: <Activity className="h-3 w-3" />,
-				variant: 'secondary' as const
-			};
-	}
-};
 
 export function ExerciseWorkoutHistory({ exerciseId }: ExerciseWorkoutHistoryProps) {
 	const [isLoading, setIsLoading] = useState(true);
@@ -151,8 +101,6 @@ export function ExerciseWorkoutHistory({ exerciseId }: ExerciseWorkoutHistoryPro
 			</div>
 
 			{exerciseWorkouts.map((workout) => {
-				const workoutLogTypeInfo = getLogTypeInfo(workout.exerciseLogType);
-
 				return (
 					<Card key={workout.workoutId} className="border-2 shadow-lg bg-gradient-to-br from-card to-card/80">
 						<CardHeader className="pb-4">
@@ -162,13 +110,6 @@ export function ExerciseWorkoutHistory({ exerciseId }: ExerciseWorkoutHistoryPro
 										<CardTitle className="text-xl font-bold">
 											{workout.workoutName || 'Untitled Workout'}
 										</CardTitle>
-										<Badge
-											variant={workoutLogTypeInfo.variant}
-											className="flex items-center space-x-1"
-										>
-											{workoutLogTypeInfo.icon}
-											<span className="text-xs">{workoutLogTypeInfo.label}</span>
-										</Badge>
 									</div>
 									<CardDescription className="flex items-center space-x-2">
 										<CalendarIcon className="h-4 w-4" />
@@ -179,7 +120,7 @@ export function ExerciseWorkoutHistory({ exerciseId }: ExerciseWorkoutHistoryPro
 								</div>
 								<Button asChild variant="outline" size="sm">
 									<Link href={`/workouts/${workout.workoutId}`}>
-										View Details <ArrowRightIcon className="h-4 w-4 ml-2" />
+										View workout <ArrowRightIcon className="h-4 w-4 ml-2" />
 									</Link>
 								</Button>
 							</div>
@@ -192,92 +133,7 @@ export function ExerciseWorkoutHistory({ exerciseId }: ExerciseWorkoutHistoryPro
 								</div>
 							)}
 
-							<div className="overflow-x-auto">
-								<Table>
-									<TableHeader>
-										<TableRow className="border-muted hover:bg-transparent">
-											<TableHead className="w-[60px] text-muted-foreground font-semibold">Set</TableHead>
-
-											{workout.exerciseLogType === ExerciseLogType.WeightAndReps && (
-												<>
-													<TableHead className="text-muted-foreground font-semibold">Reps</TableHead>
-													<TableHead className="text-muted-foreground font-semibold">Weight</TableHead>
-												</>
-											)}
-
-											{workout.exerciseLogType === ExerciseLogType.BodyWeight && (
-												<TableHead className="text-muted-foreground font-semibold">Reps</TableHead>
-											)}
-
-											{workout.exerciseLogType === ExerciseLogType.BodyWeightWithAdditionalWeight && (
-												<>
-													<TableHead className="text-muted-foreground font-semibold">Reps</TableHead>
-													<TableHead className="text-muted-foreground font-semibold">Additional Weight</TableHead>
-												</>
-											)}
-
-											{workout.exerciseLogType === ExerciseLogType.BodyWeightWithAssistance && (
-												<>
-													<TableHead className="text-muted-foreground font-semibold">Reps</TableHead>
-													<TableHead className="text-muted-foreground font-semibold">Assistance Weight</TableHead>
-												</>
-											)}
-
-											{workout.exerciseLogType === ExerciseLogType.RepsOnly && (
-												<TableHead className="text-muted-foreground font-semibold">Reps</TableHead>
-											)}
-
-											{workout.exerciseLogType === ExerciseLogType.TimeOnly && (
-												<TableHead className="text-muted-foreground font-semibold">Time</TableHead>
-											)}
-
-											<TableHead className="text-muted-foreground font-semibold">Notes</TableHead>
-										</TableRow>
-									</TableHeader>
-									<TableBody>
-										{workout.sets?.map((set) => (
-											<TableRow key={set.id} className="border-muted hover:bg-muted/30">
-												<TableCell className="font-bold text-primary">{set.index + 1}</TableCell>
-
-												{workout.exerciseLogType === ExerciseLogType.WeightAndReps && (
-													<>
-														<TableCell className="font-medium">{set.reps}</TableCell>
-														<TableCell className="font-medium">{set.weight} kg</TableCell>
-													</>
-												)}
-
-												{workout.exerciseLogType === ExerciseLogType.BodyWeight && (
-													<TableCell className="font-medium">{set.reps}</TableCell>
-												)}
-
-												{workout.exerciseLogType === ExerciseLogType.BodyWeightWithAdditionalWeight && (
-													<>
-														<TableCell className="font-medium">{set.reps}</TableCell>
-														<TableCell className="font-medium">{set.weight} kg additional</TableCell>
-													</>
-												)}
-
-												{workout.exerciseLogType === ExerciseLogType.BodyWeightWithAssistance && (
-													<>
-														<TableCell className="font-medium">{set.reps}</TableCell>
-														<TableCell className="font-medium">{set.weight} kg assistance</TableCell>
-													</>
-												)}
-
-												{workout.exerciseLogType === ExerciseLogType.RepsOnly && (
-													<TableCell className="font-medium">{set.reps}</TableCell>
-												)}
-
-												{workout.exerciseLogType === ExerciseLogType.TimeOnly && (
-													<TableCell className="font-medium">{set.time}s</TableCell>
-												)}
-
-												<TableCell className="text-muted-foreground text-sm">{set.note || "-"}</TableCell>
-											</TableRow>
-										))}
-									</TableBody>
-								</Table>
-							</div>
+							<ExerciseSets exercise={workout} />
 
 							{/* Summary Footer */}
 							{(workout.totalSets || workout.totalReps || (workout.totalWeight && workout.totalWeight > 0)) && (

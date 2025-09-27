@@ -6,11 +6,11 @@ import { BarChart3, Dumbbell, Target, TrendingUp } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useState } from 'react';
 import {
+  Area,
+  AreaChart,
   Bar,
   BarChart,
   CartesianGrid,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   TooltipContentProps,
@@ -245,7 +245,7 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
         <div className="h-80 mt-4">
           <ResponsiveContainer width="100%" height="100%">
             {chartType === 'line' ? (
-              <LineChart
+              <AreaChart
                 data={formattedData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
               >
@@ -268,7 +268,7 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
                   fontWeight={500}
                 />
                 <Tooltip content={CustomTooltip} />
-                <Line
+                <Area
                   type="monotone"
                   dataKey={metric}
                   stroke={getChartColors()}
@@ -287,7 +287,7 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
                     strokeWidth: 1
                   }}
                 />
-              </LineChart>
+              </AreaChart>
             ) : (
               <BarChart
                 data={formattedData}

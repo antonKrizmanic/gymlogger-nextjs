@@ -3,6 +3,7 @@
 import { ExerciseApiService } from '@/src/api/services/exercise-api-service';
 import { IExercise } from '@/src/models/domain/exercise';
 import { ExerciseLogType } from '@/src/types/enums';
+import { getLogTypeInfo } from '@/src/utils/get-log-type-info';
 import { Activity, Clock, Eye, Pencil, Repeat, Weight } from 'lucide-react';
 import { DeleteButton } from '../common/delete-button';
 import { IconLinkButton } from '../common/icon-link-button';
@@ -20,25 +21,7 @@ interface ExerciseCardProps {
     onDelete: () => void;
 }
 
-// Function to convert ExerciseLogType enum to user-friendly text with icon
-const getLogTypeInfo = (logType: ExerciseLogType) => {
-    switch (logType) {
-        case ExerciseLogType.WeightAndReps:
-            return { label: 'Weight & Reps', icon: Weight, variant: 'default' as const };
-        case ExerciseLogType.TimeOnly:
-            return { label: 'Time Only', icon: Clock, variant: 'secondary' as const };
-        case ExerciseLogType.RepsOnly:
-            return { label: 'Reps Only', icon: Repeat, variant: 'outline' as const };
-        case ExerciseLogType.BodyWeight:
-            return { label: 'Body Weight', icon: Activity, variant: 'secondary' as const };
-        case ExerciseLogType.BodyWeightWithAdditionalWeight:
-            return { label: 'Body Weight + Additional', icon: Weight, variant: 'default' as const };
-        case ExerciseLogType.BodyWeightWithAssistance:
-            return { label: 'Body Weight with Assistance', icon: Weight, variant: 'secondary' as const };
-        default:
-            return { label: 'Unknown', icon: Activity, variant: 'outline' as const };
-    }
-};
+// Using shared helper getLogTypeInfo
 
 export function ExerciseCard({ exercise, onDelete }: ExerciseCardProps) {
     const deleteAction = async () => {

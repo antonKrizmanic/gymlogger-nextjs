@@ -14,3 +14,17 @@ export const getUserById = async (id: string) => {
     catch { return null; }
 };
 
+export const getUserWeights = async (userId: string, limit: number = 180) => {
+    try {
+        const items = await prisma.userWeight.findMany({
+            where: { userId },
+            orderBy: { createdAt: 'asc' },
+            take: limit,
+            select: { id: true, weight: true, createdAt: true }
+        });
+        return items;
+    } catch {
+        return [];
+    }
+}
+

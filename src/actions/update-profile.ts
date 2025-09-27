@@ -29,12 +29,35 @@ export const updateProfile = async (values: z.infer<typeof ProfileUpdateSchema>)
     const { weight, height } = validatedFields.data;
 
     try {
-        await prisma.user.update({
-            where: { id: currentUser.id },
-            data: {
-                weight: weight !== undefined ? weight : null,
-                height: height !== undefined ? height : null,
-            },
+        await prisma.$transaction(async (tx) => {
+            // Update user profile
+            await tx.user.update({
+                where: { id: currentUser.id },
+                data: {
+                    weight: weight !== undefined ? weight : null,
+                    height: height !== undefined ? height : null,
+                },
+            });
+
+            // Log weight to history if provided
+            if (weight !== undefined && !Number.isNaN(weight)) {
+                // Optional: avoid duplicate consecutive entries with same value
+                const lastEntry = await tx.userWeight.findFirst({
+                    where: { userId: currentUser.id },
+                    orderBy: { createdAt: 'desc' },
+                    select: { weight: true }
+                });
+
+                const lastWeightNumber = lastEntry ? Number(lastEntry.weight) : undefined;
+                if (lastWeightNumber === undefined || Math.abs(lastWeightNumber - weight) > 1e-9) {
+                    await tx.userWeight.create({
+                        data: {
+                            userId: currentUser.id,
+                            weight: weight,
+                        },
+                    });
+                }
+            }
         });
 
         return { success: "Profile updated successfully" };

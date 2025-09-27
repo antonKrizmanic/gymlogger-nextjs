@@ -5,6 +5,7 @@ import { Button } from "@/src/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { IconInput } from "@/src/components/ui/icon-input";
 import { Check, Edit3, Ruler, Weight } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -14,6 +15,7 @@ interface ProfileEditFormProps {
 }
 
 export function ProfileEditForm({ initialWeight, initialHeight }: ProfileEditFormProps) {
+    const router = useRouter();
     const [weight, setWeight] = useState(initialWeight?.toString() || "");
     const [height, setHeight] = useState(initialHeight?.toString() || "");
     const [isPending, startTransition] = useTransition();
@@ -34,6 +36,7 @@ export function ProfileEditForm({ initialWeight, initialHeight }: ProfileEditFor
             } else {
                 toast.success(result?.success || "Profile updated successfully");
                 setIsEditing(false);
+                router.refresh();
             }
         });
     };

@@ -15,7 +15,7 @@ export default async function middleware(req: NextRequest) {
   const cookieStore = await cookies();
   const token = cookieStore.get('__Secure-authjs.session-token')?.value;
   const isLoggedIn = !!token;
-  console.log('token', token);
+
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
