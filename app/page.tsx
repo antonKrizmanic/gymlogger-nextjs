@@ -44,8 +44,6 @@ export default function IndexPage() {
         "Track unlimited workouts and exercises",
         "Visual progress charts and analytics",
         "Mobile-responsive design for gym use",
-        "Secure data backup and synchronization",
-        "Customizable workout templates",
         "Exercise history and personal records"
     ];
 
