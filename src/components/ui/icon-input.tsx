@@ -49,12 +49,15 @@ interface IconDatePickerProps {
     isInModal?: boolean;
 }
 
-export function IconInput({
-    icon: Icon,
-    label,
-    className,
-    ...props
-}: IconInputProps) {
+export const IconInput = React.forwardRef<HTMLInputElement, IconInputProps>(function IconInput(
+    {
+        icon: Icon,
+        label,
+        className,
+        ...props
+    },
+    ref
+) {
     const hasLabel = Boolean(label);
 
     return (
@@ -69,13 +72,16 @@ export function IconInput({
                     </p>
                 )}
                 <input
+                    ref={ref}
                     {...props}
                     className={`text-lg font-semibold bg-transparent border-none outline-none w-full placeholder:text-muted-foreground/60 transition-colors duration-200 focus:text-primary ${hasLabel ? 'mt-1' : ''} ${className || ''}`}
                 />
             </div>
         </div>
     );
-}
+});
+
+IconInput.displayName = "IconInput";
 
 export function IconSelect({
     icon: Icon,
