@@ -135,7 +135,7 @@ export function ExerciseSetDrawer({
 interface SetFormProps {
   exerciseType: ExerciseLogType,
   localSet: IExerciseSetCreate,
-  firstFieldRef: React.RefObject<HTMLInputElement>,
+  firstFieldRef: React.MutableRefObject<HTMLInputElement | null>,
   handleWeightChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
   handleRepsChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
   handleTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
