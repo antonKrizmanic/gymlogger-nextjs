@@ -35,33 +35,7 @@ export function ExerciseSetDrawer({
   // Update local state when the set prop changes
   useEffect(() => {
     setLocalSet(set)
-  }, [set])
-
-  useEffect(() => {
-    if (!open) {
-      return
-    }
-
-    const focusFirstField = () => {
-      const input = firstFieldRef.current
-      if (!input) {
-        return
-      }
-      try {
-        input.focus({ preventScroll: true })
-      } catch {
-        input.focus()
-      }
-    }
-
-    const frame = window.requestAnimationFrame(focusFirstField)
-    const timeout = window.setTimeout(focusFirstField, 120)
-
-    return () => {
-      window.cancelAnimationFrame(frame)
-      window.clearTimeout(timeout)
-    }
-  }, [open, exerciseType])
+  }, [set])  
 
   const handleWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const weight = e.target.value ? Number(e.target.value) : undefined
@@ -90,14 +64,10 @@ export function ExerciseSetDrawer({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="border-t-2 border-primary/20">
-        <DrawerHeader className="text-center space-y-2">
-          <div className="w-12 h-1 bg-muted-foreground/20 rounded-full mx-auto" />
+        <DrawerHeader className="text-center space-y-2">          
           <DrawerTitle className="text-xl font-bold">
             {isNew ? "Add New Set" : `Edit Set ${index + 1}`}
-          </DrawerTitle>
-          <p className="text-sm text-muted-foreground">
-            {isNew ? "Add a new set to your exercise" : "Modify the values for this set"}
-          </p>
+          </DrawerTitle>          
         </DrawerHeader>
         <SetForm
           exerciseType={exerciseType}

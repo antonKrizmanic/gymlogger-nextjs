@@ -240,7 +240,7 @@ export const ExerciseListItem = memo(function ExerciseListItem({
         />
 
         {lastExercise && (
-          <Collapsible open={isLastWorkoutOpen} onOpenChange={setIsLastWorkoutOpen} className="border rounded-md p-2">
+          <Collapsible open={isLastWorkoutOpen} onOpenChange={setIsLastWorkoutOpen} className="p-2">
             <CollapsibleTrigger asChild>
               <Button variant="ghost" className="flex w-full justify-between p-2">
                 <span className="text-sm font-medium">Last workout</span>
