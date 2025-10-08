@@ -1,14 +1,7 @@
 import { ThemeProvider } from "@/src/components/theme-provider";
 import type { Metadata, Viewport } from "next";
-import { Poppins } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-poppins"
-});
 
 export const metadata: Metadata = {
   title: "GymNotebook - Your Fitness Journey Starts Here",
@@ -39,7 +32,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${poppins.variable} font-sans antialiased`}>
+      <body className="font-sans antialiased">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

@@ -22,6 +22,8 @@
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
+  --font-poppins: "Poppins", "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+
   --font-tracking-tightest: -0.04em;
   --font-tracking-tighter: -0.02em;
   --font-tracking-tight: -0.01em;
@@ -396,7 +398,10 @@ body {
   }
 
   .motion-card {
-    @apply motion-base will-change-transform;
+    transition-property: transform, color, background-color, border-color, box-shadow, opacity;
+    transition-duration: var(--motion-duration-medium);
+    transition-timing-function: var(--motion-ease-standard);
+    will-change: transform;
   }
 
   .motion-card:hover {

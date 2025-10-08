@@ -37,7 +37,7 @@ const controlStyles: Record<ControlSize, { wrapper: string; gap: string; iconBox
   },
 };
 
-interface IconInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface IconInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> {
   icon: LucideIcon;
   label?: string;
   placeholder?: string;
