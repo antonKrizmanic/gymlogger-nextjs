@@ -36,13 +36,13 @@ export default function WorkoutsPage() {
                 {/* Hero Section */}
                 <div className="space-y-6 pb-8">
                     <div className="space-y-4">
-                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground flex items-center">
-                            <div className="p-3 bg-primary/10 rounded-xl mr-4">
+                        <h1 className="type-display-sm lg:type-display-md text-foreground flex items-center gap-4">
+                            <div className="p-3 bg-primary/10 rounded-xl">
                                 <Dumbbell className="h-8 w-8 text-primary" />
                             </div>
                             Your Workouts
                         </h1>
-                        <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl">
+                        <p className="type-body-lg text-muted-foreground max-w-2xl">
                             Track your fitness journey with detailed workout logs. Monitor your progress
                             and achieve your goals one session at a time.
                         </p>
@@ -71,10 +71,10 @@ export default function WorkoutsPage() {
                 </div>
 
                 {/* Workouts List */}
-                <Card className="border-0 shadow-lg">
+                <Card className="border-0">
                     <CardHeader>
-                        <CardTitle className="text-xl font-bold text-foreground flex items-center">
-                            <Calendar className="mr-2 h-6 w-6 text-primary" />
+                        <CardTitle className="flex items-center gap-2 text-foreground">
+                            <Calendar className="h-6 w-6 text-primary" />
                             Workout History
                         </CardTitle>
                     </CardHeader>

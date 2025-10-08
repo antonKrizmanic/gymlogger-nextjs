@@ -11,19 +11,19 @@ interface LatestWorkoutCardProps {
 export function LatestWorkoutCard({ workout }: LatestWorkoutCardProps) {
     return (
         <div className="mb-8">
-            <h2 className="text-2xl font-bold text-foreground mb-4 flex items-center">
-                <Trophy className="mr-2 h-6 w-6 text-primary" />
+            <h2 className="type-heading-lg text-foreground mb-4 flex items-center gap-2">
+                <Trophy className="h-6 w-6 text-primary" />
                 Latest Achievement
             </h2>
-            <Card className="border-0 shadow-lg bg-gradient-to-r from-primary/5 to-primary/10">
+            <Card className="border-0 bg-gradient-to-r from-primary/5 to-primary/10">
                 <CardHeader className="pb-4">
                     <div className="flex items-center justify-between">
                         <div>
-                            <CardTitle className="text-xl font-bold text-foreground">
+                            <CardTitle className="type-heading-sm text-foreground">
                                 {workout.name}
                             </CardTitle>
-                            <CardDescription className="text-muted-foreground flex items-center mt-2">
-                                <Clock className="mr-1 h-4 w-4" />
+                            <CardDescription className="type-body-sm text-muted-foreground flex items-center mt-2 gap-1">
+                                <Clock className="h-4 w-4" />
                                 {formatDate(workout.date)}
                             </CardDescription>
                         </div>
@@ -68,8 +68,8 @@ interface MetricProps {
 function Metric({ label, value }: MetricProps) {
     return (
         <div className="bg-background/50 rounded-lg p-3">
-            <p className="text-2xl font-bold text-primary">{formatNumber(value)}</p>
-            <p className="text-sm text-muted-foreground">{label}</p>
+            <p className="type-heading-md text-primary">{formatNumber(value)}</p>
+            <p className="type-body-sm text-muted-foreground">{label}</p>
         </div>
     );
 }

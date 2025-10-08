@@ -139,17 +139,17 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
     if (active && payload && payload.length) {
       const metricInfo = getMetricInfo();
       return (
-        <div className="bg-card border border-border shadow-xl rounded-lg p-4">
-          <p className="font-semibold text-muted-foreground mb-2">{label}</p>
+        <div className="bg-card border border-border shadow-card-hover rounded-lg p-4">
+          <p className="type-body-sm text-muted-foreground font-semibold mb-2">{label}</p>
           <div className="flex items-center space-x-2">
             <div
               className="w-3 h-3 rounded-full"
               style={{ backgroundColor: payload[0].color }}
             />
-            <span className="text-sm text-muted-foreground">
+            <span className="type-body-sm text-muted-foreground">
               {metricInfo.label}:
             </span>
-            <span className="text-sm font-bold text-muted-foreground">
+            <span className="type-body-sm font-semibold text-muted-foreground">
               {payload[0].value}
               {metric === 'weight' ? ' kg' : ''}
             </span>
@@ -163,7 +163,7 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
   const metricInfo = getMetricInfo();
 
   return (
-    <Card className="border-0 shadow-lg">
+    <Card className="border-0">
       <CardHeader className="pb-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
           <div className="flex items-center space-x-3">
@@ -171,10 +171,10 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
               {metricInfo.icon}
             </div>
             <div>
-              <CardTitle className="text-xl font-bold text-foreground">
+              <CardTitle className="type-heading-sm text-foreground">
                 {metricInfo.label}
               </CardTitle>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="type-body-sm text-muted-foreground mt-1">
                 {metricInfo.description}
               </p>
             </div>
@@ -182,7 +182,7 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
 
           <div className="flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-3">
             <div className="space-y-1 flex-1 sm:flex-none">
-              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              <label className="type-label text-muted-foreground">
                 Metric
               </label>
               <Select value={metric} onValueChange={(value) => setMetric(value as ChartMetric)}>

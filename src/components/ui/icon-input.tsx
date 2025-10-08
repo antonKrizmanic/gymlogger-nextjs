@@ -61,20 +61,20 @@ export const IconInput = React.forwardRef<HTMLInputElement, IconInputProps>(func
     const hasLabel = Boolean(label);
 
     return (
-        <div className={`flex items-center space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 focus-within:border-primary/50 focus-within:bg-muted/40 focus-within:shadow-sm ${hasLabel ? '' : 'py-3'}`}>
+        <div className={`flex items-center space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 focus-within:border-primary/50 focus-within:bg-muted/40 focus-within:shadow-card-hover ${hasLabel ? '' : 'py-3'}`}>
             <div className="p-2 bg-primary/10 rounded-lg">
                 <Icon className="h-5 w-5 text-primary" />
             </div>
             <div className="flex-1">
                 {hasLabel && (
-                    <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                    <p className="type-label text-muted-foreground">
                         {label}
                     </p>
                 )}
                 <input
                     ref={ref}
                     {...props}
-                    className={`text-lg font-semibold bg-transparent border-none outline-none w-full placeholder:text-muted-foreground/60 transition-colors duration-200 focus:text-primary ${hasLabel ? 'mt-1' : ''} ${className || ''}`}
+                    className={`type-body-lg font-semibold bg-transparent border-none outline-none w-full placeholder:text-muted-foreground/60 transition-colors duration-200 focus:text-primary ${hasLabel ? 'mt-1' : ''} ${className || ''}`}
                 />
             </div>
         </div>
@@ -172,7 +172,7 @@ export function IconSelect({
 
     return (
         <div className="relative w-full" ref={containerRef}>
-            <div className={`flex items-center space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 ${isOpen ? 'border-primary/50 bg-muted/40 shadow-sm' : ''} ${hasLabel ? '' : 'py-3'} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
+            <div className={`flex items-center space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 ${isOpen ? 'border-primary/50 bg-muted/40 shadow-card-hover' : ''} ${hasLabel ? '' : 'py-3'} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
                 <div className="p-2 bg-primary/10 rounded-lg">
                     <Icon className="h-5 w-5 text-primary" />
                 </div>
@@ -181,12 +181,12 @@ export function IconSelect({
                     onClick={handleToggle}
                 >
                     <div className="flex-1">
-                        {hasLabel && (
-                            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                                {label}
-                            </p>
-                        )}
-                        <div className={`text-lg font-semibold bg-transparent border-none outline-none w-full ${hasLabel ? 'mt-1' : ''} ${!selectedOption ? 'text-muted-foreground' : 'text-foreground'}`}>
+                      {hasLabel && (
+                          <p className="type-label text-muted-foreground">
+                              {label}
+                          </p>
+                      )}
+                      <div className={`type-body-lg font-semibold bg-transparent border-none outline-none w-full ${hasLabel ? 'mt-1' : ''} ${!selectedOption ? 'text-muted-foreground' : 'text-foreground'}`}>
                             {selectedOption ? selectedOption.label : placeholder}
                         </div>
                     </div>
@@ -201,7 +201,7 @@ export function IconSelect({
                         onClick={() => setIsOpen(false)}
                     />
                     <div
-                        className="fixed bg-popover border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-auto will-change-transform"
+                        className="fixed bg-popover border border-border rounded-lg shadow-card-hover z-50 max-h-60 overflow-auto will-change-transform"
                         style={{
                             top: dropdownPosition.top,
                             left: dropdownPosition.left,
@@ -244,7 +244,7 @@ export function IconTextarea({
     const hasLabel = Boolean(label);
 
     return (
-        <div className={`flex items-start space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 focus-within:border-primary/50 focus-within:bg-muted/40 focus-within:shadow-sm ${hasLabel ? '' : 'py-3'}`}>
+        <div className={`flex items-start space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 focus-within:border-primary/50 focus-within:bg-muted/40 focus-within:shadow-card-hover ${hasLabel ? '' : 'py-3'}`}>
             <div className="p-2 bg-primary/10 rounded-lg mt-1">
                 <Icon className="h-5 w-5 text-primary" />
             </div>
@@ -389,7 +389,7 @@ export function IconDatePicker({
 
     return (
         <div className="relative">
-            <div className={`flex items-center space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 ${open ? 'border-primary/50 bg-muted/40 shadow-sm' : ''} ${hasLabel ? '' : 'py-3'} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
+            <div className={`flex items-center space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 ${open ? 'border-primary/50 bg-muted/40 shadow-card-hover' : ''} ${hasLabel ? '' : 'py-3'} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
                 <div className="p-2 bg-primary/10 rounded-lg">
                     <Icon className="h-5 w-5 text-primary" />
                 </div>

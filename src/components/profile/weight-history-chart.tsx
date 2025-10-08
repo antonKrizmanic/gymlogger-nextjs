@@ -32,14 +32,14 @@ export function WeightHistoryChart({ data }: WeightHistoryChartProps) {
 
     if (!chartData.length) {
         return (
-            <Card className="border-2 shadow-xl h-full">
+            <Card className="border-2 h-full">
                 <CardHeader className="pb-4">
                     <CardTitle className="flex items-center space-x-3">
-                        <span>Weight History</span>
+                        <span className="type-heading-sm">Weight History</span>
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="text-muted-foreground">No weight entries yet.</div>
+                    <div className="type-body-md text-muted-foreground">No weight entries yet.</div>
                 </CardContent>
             </Card>
         );
@@ -51,15 +51,15 @@ export function WeightHistoryChart({ data }: WeightHistoryChartProps) {
             const rawValue = Number(payload[0].value as number);
             const formattedValue = Number.isFinite(rawValue) ? rawValue.toFixed(2) : (payload[0].value as string);
             return (
-                <div className="bg-card border border-border shadow-xl rounded-lg p-4">
-                    <p className="font-semibold text-muted-foreground mb-2">{label}</p>
+                <div className="bg-card border border-border shadow-card-hover rounded-lg p-4">
+                    <p className="type-body-sm text-muted-foreground font-semibold mb-2">{label}</p>
                     <div className="flex items-center space-x-2">
                         <div
                             className="w-3 h-3 rounded-full"
                             style={{ backgroundColor: payload[0].color as string }}
                         />
-                        <span className="text-sm text-muted-foreground">Weight:</span>
-                        <span className="text-sm font-bold text-muted-foreground">{formattedValue} kg</span>
+                        <span className="type-body-sm text-muted-foreground">Weight:</span>
+                        <span className="type-body-sm font-semibold text-muted-foreground">{formattedValue} kg</span>
                     </div>
                 </div>
             );
@@ -68,10 +68,10 @@ export function WeightHistoryChart({ data }: WeightHistoryChartProps) {
     };
 
     return (
-        <Card className="border-2 shadow-xl h-full">
+        <Card className="border-2 h-full">
             <CardHeader className="pb-4">
                 <CardTitle className="flex items-center space-x-3">
-                    <span>Weight History</span>
+                    <span className="type-heading-sm">Weight History</span>
                 </CardTitle>
             </CardHeader>
             <CardContent>

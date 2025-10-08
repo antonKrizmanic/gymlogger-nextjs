@@ -39,7 +39,7 @@ export function ExerciseSetEdit({ set, index, exerciseType, onSetChange, onCopy,
   }
 
   return (
-    <div className="flex items-center gap-4 p-4 rounded-lg bg-gradient-to-r from-muted/80 to-muted/40 border border-muted-foreground/10 shadow-sm">
+    <div className="flex items-center gap-4 p-4 rounded-lg bg-gradient-to-r from-muted/80 to-muted/40 border border-muted-foreground/10 shadow-card-rest">
       <div className="flex items-center justify-center w-8 h-8 bg-primary/10 rounded-full">
         <span className="text-sm font-bold text-primary">{index + 1}</span>
       </div>

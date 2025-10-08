@@ -1,0 +1,55 @@
+# UI/UX Redesign Implementation Tasks
+
+## Global foundation
+- [x] Audit the existing color palette, decide which brand accents stay, and document any new neutral/accent tokens before implementation.
+- [x] Update global design tokens in `globals.css` for the confirmed color palette, spacing, radii, and elevation tiers.
+- [x] Standardize typography scale and shared variants across headings, subtitles, and body text.
+- [x] Define elevation states (rest, hover, pressed) for buttons and cards, replacing ad-hoc shadow classes.
+
+## Navigation & layout shell
+- [ ] Redesign the `Navbar` component with new layout, condensed icons, and action tray.
+- [ ] Implement a shared page scaffold in `app/(protected)/layout.tsx` featuring header band, breadcrumbs, and quick action slots.
+- [ ] Add a quick-launcher or tertiary sidebar surfaced from the navbar for shortcuts to workouts and exercises.
+
+## Landing page
+- [ ] Replace the hero gradient with a split layout including illustrative panel and structured CTA column.
+- [ ] Rebuild the feature grid with icon badges, stat highlights, and microcopy using updated card tokens.
+- [ ] Introduce testimonial/metrics ribbons leveraging existing data sources above the primary CTA.
+
+## Dashboard
+- [ ] Consolidate hero copy, quick actions, and stats into a unified summary header with filters.
+- [ ] Refactor `StatsGrid` into responsive rows with spark lines and delta indicators aligned to new tokens.
+- [ ] Enhance `LatestWorkoutCard` with timeline chips and contextual action footer.
+- [ ] Expand `WorkoutChartSection` with preset toggles, chart types, and illustrated empty states.
+
+## Workouts list & detail
+- [ ] Build a responsive two-column layout with sticky filter rail for the workouts list page.
+- [ ] Restyle `WorkoutCard` to emphasize key metadata with pill badges and consistent elevation states.
+- [ ] Redesign `WorkoutDetailPage` with timeline banner, stat cards, and accordion exercise sections.
+
+## Workout creation & editing
+- [ ] Organize `WorkoutForm` into step-based sections with sticky progress indicator and helper modals.
+- [ ] Refresh `ExerciseList` and `ExerciseListItem` to use accordions, drag handles, and chip metadata while retaining current interactions.
+- [ ] Align mobile dialogs such as `ExerciseSetDrawer` with desktop styling for spacing, labels, and CTAs.
+
+## Exercises catalog & analytics
+- [ ] Apply workouts layout improvements to the exercises catalog including persistent filters and masonry cards.
+- [ ] Update `ExerciseCard` with new headers, metadata layout, and button styling.
+- [ ] Redesign `ExerciseDetailPage` header, tabs, and analytics charts for consistency with dashboard visuals.
+- [ ] Harmonize `ExerciseWorkoutHistory` and `ExerciseProgress` charts with shared palettes and empty states.
+
+## Profile & account management
+- [ ] Create a two-column profile layout with overview card and editable panels.
+- [ ] Restyle `ProfileEditForm` to adopt the new stepper and CTA patterns.
+- [ ] Rework the danger zone panel for clearer warning hierarchy without changing functionality.
+- [ ] Update `WeightHistoryChart` styling to align with unified analytics theme.
+
+## Authentication experience
+- [ ] Replace `AuthLayout` background with centered panel and decorative illustration or gradient stripe.
+- [ ] Modernize `LoginForm` and `RegisterForm` with stacked inputs, helper text, and validation icons.
+- [ ] Standardize alert components for error and success feedback across authentication flows.
+
+## Reusable components & interactions
+- [ ] Extend shared components (`Grid`, `Pagination`, `SearchBar`) with compact/spacious modes, skeletons, and sticky controls.
+- [ ] Refine `IconInput` and `IconSelect` focus states, placeholders, and dropdown motion for consistency.
+- [ ] Introduce shared animation utilities for hover, focus, and modal transitions across the component library.

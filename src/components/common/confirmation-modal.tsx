@@ -43,12 +43,12 @@ export function ConfirmationModal({
             <div className={cn(
                 'relative z-[9999] w-full max-w-md p-6 rounded-lg',
                 'bg-white dark:bg-slate-800',
-                'shadow-xl'
+                'shadow-overlay'
             )}>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                <h3 className="type-heading-sm text-gray-900 dark:text-white mb-2">
                     {title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-6">
+                <p className="type-body-md text-gray-600 dark:text-gray-300 mb-6">
                     {message}
                 </p>
                 <div className="flex justify-end gap-2">

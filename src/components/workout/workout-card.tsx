@@ -35,16 +35,16 @@ export function WorkoutCard({ workout, onDelete }: WorkoutCardProps) {
     };
 
     return (
-        <Card className="border-2 shadow-lg bg-gradient-to-br from-card to-card/80 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <Card className="border-2 bg-gradient-to-br from-card to-card/80 transition-all duration-300 hover:shadow-card-hover focus-visible:shadow-card-hover active:shadow-card-pressed hover:-translate-y-1">
             <CardHeader className="pb-4">
                 <div className="flex items-start justify-between">
                     <div className="flex-1">
-                        <CardTitle className="text-lg font-bold text-foreground mb-3">
+                        <CardTitle className="type-heading-sm text-foreground mb-3">
                             {workout.name || 'Untitled Workout'}
                         </CardTitle>
                         <div className="flex items-center gap-2 mb-2">
                             <Calendar className="h-4 w-4 text-primary" />
-                            <CardDescription className="text-sm text-muted-foreground">
+                            <CardDescription className="type-body-sm text-muted-foreground">
                                 {formatWorkoutDate(workout.date)}
                             </CardDescription>
                         </div>
@@ -64,26 +64,26 @@ export function WorkoutCard({ workout, onDelete }: WorkoutCardProps) {
                 {/* Workout Stats */}
                 <div className="grid grid-cols-3 gap-4 py-4">
                     <div className="text-center">
-                        <div className="text-2xl font-bold text-primary mb-1">
+                        <div className="type-heading-md text-primary mb-1">
                             {workout.totalSets || 0}
                         </div>
-                        <div className="text-xs text-muted-foreground uppercase tracking-wide">
+                        <div className="type-label text-muted-foreground">
                             Sets
                         </div>
                     </div>
                     <div className="text-center">
-                        <div className="text-2xl font-bold text-primary mb-1">
+                        <div className="type-heading-md text-primary mb-1">
                             {workout.totalReps || 0}
                         </div>
-                        <div className="text-xs text-muted-foreground uppercase tracking-wide">
+                        <div className="type-label text-muted-foreground">
                             Reps
                         </div>
                     </div>
                     <div className="text-center">
-                        <div className="text-2xl font-bold text-primary mb-1">
+                        <div className="type-heading-md text-primary mb-1">
                             {workout.totalWeight || 0}
                         </div>
-                        <div className="text-xs text-muted-foreground uppercase tracking-wide">
+                        <div className="type-label text-muted-foreground">
                             KG
                         </div>
                     </div>
@@ -92,7 +92,7 @@ export function WorkoutCard({ workout, onDelete }: WorkoutCardProps) {
                 {/* Description */}
                 {workout.description && (
                     <div className="pt-2 border-t border-muted">
-                        <p className="text-sm text-muted-foreground leading-relaxed">
+                        <p className="type-body-sm text-muted-foreground">
                             {workout.description}
                         </p>
                     </div>

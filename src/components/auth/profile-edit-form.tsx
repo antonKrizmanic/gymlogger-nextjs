@@ -50,14 +50,14 @@ export function ProfileEditForm({ initialWeight, initialHeight }: ProfileEditFor
     };
 
     return (
-        <Card className="border-2 shadow-xl">
+        <Card className="border-2">
             <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center space-x-3">
+                    <CardTitle className="flex items-center gap-3">
                         <div className="p-2 bg-primary/10 rounded-lg">
                             <Weight className="h-5 w-5 text-primary" />
                         </div>
-                        <span>Physical Information</span>
+                        <span className="type-heading-sm">Physical Information</span>
                     </CardTitle>
                     <Button
                         variant="ghost"

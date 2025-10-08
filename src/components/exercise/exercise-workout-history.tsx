@@ -50,37 +50,37 @@ export function ExerciseWorkoutHistory({ exerciseId }: ExerciseWorkoutHistoryPro
 		setCurrentPage(0);
 	};
 
-	if (isLoading) {
-		return (
-			<Card className="border-2 shadow-lg">
-				<CardContent className="p-8">
-					<div className="flex flex-col items-center justify-center space-y-4">
-						<div className="p-3 bg-primary/10 rounded-full">
-							<Dumbbell className="h-6 w-6 text-primary animate-pulse" />
-						</div>
-						<p className="text-muted-foreground">Loading workout history...</p>
-					</div>
-				</CardContent>
-			</Card>
-		);
-	}
+        if (isLoading) {
+                return (
+                        <Card className="border-2">
+                                <CardContent className="p-8">
+                                        <div className="flex flex-col items-center justify-center space-y-4">
+                                                <div className="p-3 bg-primary/10 rounded-full">
+                                                        <Dumbbell className="h-6 w-6 text-primary animate-pulse" />
+                                                </div>
+                                                <p className="type-body-md text-muted-foreground">Loading workout history...</p>
+                                        </div>
+                                </CardContent>
+                        </Card>
+                );
+        }
 
-	if (exerciseWorkouts.length === 0) {
-		return (
-			<Card className="border-2 shadow-lg">
-				<CardContent className="p-8">
-					<div className="flex flex-col items-center justify-center space-y-4">
-						<div className="p-4 bg-muted/50 rounded-full">
-							<Dumbbell className="h-8 w-8 text-muted-foreground" />
-						</div>
-						<div className="text-center space-y-2">
-							<h3 className="text-lg font-semibold">No Workout History</h3>
-							<p className="text-muted-foreground">
-								This exercise hasn&apos;t been performed in any workouts yet.
-							</p>
-						</div>
-					</div>
-				</CardContent>
+        if (exerciseWorkouts.length === 0) {
+                return (
+                        <Card className="border-2">
+                                <CardContent className="p-8">
+                                        <div className="flex flex-col items-center justify-center space-y-4">
+                                                <div className="p-4 bg-muted/50 rounded-full">
+                                                        <Dumbbell className="h-8 w-8 text-muted-foreground" />
+                                                </div>
+                                                <div className="text-center space-y-2">
+                                                        <h3 className="type-heading-sm">No Workout History</h3>
+                                                        <p className="type-body-md text-muted-foreground">
+                                                                This exercise hasn&apos;t been performed in any workouts yet.
+                                                        </p>
+                                                </div>
+                                        </div>
+                                </CardContent>
 			</Card>
 		);
 	}
@@ -88,33 +88,36 @@ export function ExerciseWorkoutHistory({ exerciseId }: ExerciseWorkoutHistoryPro
 	return (
 		<div className="space-y-6">
 			{/* Section Header */}
-			<div className="flex items-center space-x-3">
-				<div className="p-2 bg-primary/10 rounded-lg">
-					<Activity className="h-5 w-5 text-primary" />
-				</div>
-				<div>
-					<h2 className="text-2xl font-bold">Workout History</h2>
-					<p className="text-sm text-muted-foreground">
-						{exerciseWorkouts.length} workout{exerciseWorkouts.length !== 1 ? 's' : ''} found
-					</p>
-				</div>
-			</div>
+                        <div className="flex items-center space-x-3">
+                                <div className="p-2 bg-primary/10 rounded-lg">
+                                        <Activity className="h-5 w-5 text-primary" />
+                                </div>
+                                <div>
+                                        <h2 className="type-heading-lg">Workout History</h2>
+                                        <p className="type-body-sm text-muted-foreground">
+                                                {exerciseWorkouts.length} workout{exerciseWorkouts.length !== 1 ? 's' : ''} found
+                                        </p>
+                                </div>
+                        </div>
 
 			{exerciseWorkouts.map((workout) => {
 				return (
-					<Card key={workout.workoutId} className="border-2 shadow-lg bg-gradient-to-br from-card to-card/80">
-						<CardHeader className="pb-4">
-							<div className="flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-3 sm:space-y-0">
-								<div className="space-y-2">
-									<div className="flex items-center space-x-3">
-										<CardTitle className="text-xl font-bold">
-											{workout.workoutName || 'Untitled Workout'}
-										</CardTitle>
-									</div>
-									<CardDescription className="flex items-center space-x-2">
-										<CalendarIcon className="h-4 w-4" />
-										<span>
-											{workout.workoutDate && format(new Date(workout.workoutDate), 'PPP')}
+                                        <Card
+                                                key={workout.workoutId}
+                                                className="border-2 bg-gradient-to-br from-card to-card/80 transition-all duration-200 hover:shadow-card-hover focus-visible:shadow-card-hover active:shadow-card-pressed"
+                                        >
+                                                <CardHeader className="pb-4">
+                                                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-3 sm:space-y-0">
+                                                                <div className="space-y-2">
+                                                                        <div className="flex items-center space-x-3">
+                                                                                <CardTitle className="type-heading-sm">
+                                                                                        {workout.workoutName || 'Untitled Workout'}
+                                                                                </CardTitle>
+                                                                        </div>
+                                                                        <CardDescription className="type-body-sm flex items-center space-x-2">
+                                                                                <CalendarIcon className="h-4 w-4" />
+                                                                                <span>
+                                                                                        {workout.workoutDate && format(new Date(workout.workoutDate), 'PPP')}
 										</span>
 									</CardDescription>
 								</div>
@@ -128,35 +131,35 @@ export function ExerciseWorkoutHistory({ exerciseId }: ExerciseWorkoutHistoryPro
 
 						<CardContent className="space-y-4">
 							{workout.note && (
-								<div className="p-3 bg-muted/50 rounded-lg">
-									<p className="text-sm text-muted-foreground">{workout.note}</p>
-								</div>
-							)}
+                                                                <div className="p-3 bg-muted/50 rounded-lg">
+                                                                        <p className="type-body-sm text-muted-foreground">{workout.note}</p>
+                                                                </div>
+                                                        )}
 
-							<ExerciseSets exercise={workout} />
+                                                        <ExerciseSets exercise={workout} />
 
 							{/* Summary Footer */}
 							{(workout.totalSets || workout.totalReps || (workout.totalWeight && workout.totalWeight > 0)) && (
-								<div className="flex items-center justify-center space-x-6 pt-4 border-t border-muted">
-									{workout.totalSets && (
-										<div className="flex items-center space-x-2">
-											<div className="w-2 h-2 bg-primary rounded-full"></div>
-											<span className="text-sm font-medium">{workout.totalSets} sets</span>
-										</div>
-									)}
-									{workout.totalReps && (
-										<div className="flex items-center space-x-2">
-											<div className="w-2 h-2 bg-primary rounded-full"></div>
-											<span className="text-sm font-medium">{workout.totalReps} reps</span>
-										</div>
-									)}
-									{workout.totalWeight && workout.totalWeight > 0 && (
-										<div className="flex items-center space-x-2">
-											<div className="w-2 h-2 bg-primary rounded-full"></div>
-											<span className="text-sm font-medium">{workout.totalWeight} kg total</span>
-										</div>
-									)}
-								</div>
+                                                                <div className="flex items-center justify-center space-x-6 pt-4 border-t border-muted">
+                                                                        {workout.totalSets && (
+                                                                                <div className="flex items-center space-x-2">
+                                                                                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                                                                                        <span className="type-body-sm font-medium">{workout.totalSets} sets</span>
+                                                                                </div>
+                                                                        )}
+                                                                        {workout.totalReps && (
+                                                                                <div className="flex items-center space-x-2">
+                                                                                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                                                                                        <span className="type-body-sm font-medium">{workout.totalReps} reps</span>
+                                                                                </div>
+                                                                        )}
+                                                                        {workout.totalWeight && workout.totalWeight > 0 && (
+                                                                                <div className="flex items-center space-x-2">
+                                                                                        <div className="w-2 h-2 bg-primary rounded-full"></div>
+                                                                                        <span className="type-body-sm font-medium">{workout.totalWeight} kg total</span>
+                                                                                </div>
+                                                                        )}
+                                                                </div>
 							)}
 						</CardContent>
 					</Card>

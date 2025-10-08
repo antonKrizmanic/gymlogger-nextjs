@@ -1,0 +1,73 @@
+# UI/UX Redesign · Color Palette Audit
+
+## 1. Current palette snapshot
+The existing tokens in `app/globals.css` center the brand around a teal primary (`#14b8a6` light / `#2dd4bf` dark) supported by light gray neutrals and salmon-toned destructive states. Below is a condensed mapping of the present values.
+
+### Light mode
+| Token | Hex | Notes |
+| --- | --- | --- |
+| `--background` | `#fafbfc` | Very pale blue-tinted gray used for global app background. |
+| `--card` / `--popover` | `#ffffff` | Pure white for elevated surfaces. |
+| `--foreground` / `--card-foreground` | `#1a1d23` | Near-black blue-gray text color. |
+| `--primary` | `#14b8a6` | Core teal accent across CTAs and focus rings. |
+| `--secondary` | `#f1f5f9` | Slate-100; blends with muted background accents. |
+| `--muted` | `#f8fafc` | Extremely light gray-blue for sub-panels. |
+| `--accent` | `#ccfbf1` | Mint tint applied to hover/elevations. |
+| `--destructive` | `#ef4444` | Standard Tailwind red-500. |
+| Border/Input | `#e2e8f0` | Slate-200 lines for outlines/dividers. |
+| Chart palette | `#14b8a6`, `#10b981`, `#f59e0b`, `#ef4444`, `#8b5cf6` | Teal primary with supporting amber, red, and violet. |
+
+### Dark mode
+| Token | Hex | Notes |
+| --- | --- | --- |
+| `--background` | `#0f1419` | Deep desaturated blue-gray. |
+| `--card` / `--popover` | `#1a1f29` | Slightly lighter slate for raised surfaces. |
+| `--foreground` | `#f8fafc` | Very light gray for text. |
+| `--primary` | `#2dd4bf` | Lighter teal to maintain contrast. |
+| `--secondary` / `--muted` | `#1e293b` | Navy-slate used for blocks and chips. |
+| `--accent` | `#0f766e` | Deep teal for hover/elevations. |
+| `--destructive` | `#f87171` | Tailwind red-400 to meet contrast requirements. |
+| Border/Input | `#334155` | Slate-600 for outlines. |
+| Chart palette | `#2dd4bf`, `#34d399`, `#fbbf24`, `#f87171`, `#a78bfa` | Mirrors light palette with brighter saturation. |
+
+## 2. Brand accents to retain
+- **Primary teal stays.** Usage across logo, CTA buttons, focus states, and empty states is cohesive; it remains the anchor color.
+- **Supportive aqua/mint family stays but will be tiered.** We will keep both lighter (`#ccfbf1`) and deeper (`#0f766e`) accents but rename them to fit a structured scale (see Section 3).
+- **Destructive red remains.** It aligns with accessibility standards and existing error semantics; we will only tweak naming if needed.
+- **Chart accents stay but need contrast balancing.** We will retain the five-color chart palette while softening saturation for secondary states to reduce noise in analytics views.
+
+## 3. Proposed neutral & accent token structure
+To resolve inconsistencies between `--muted`, `--secondary`, and `--accent` while preparing for expanded surfaces, we will introduce numbered tiers for neutrals and accents. Values below are the recommended starting points to implement during token updates.
+
+### Neutral surfaces & text
+| Tier | Light Hex | Dark Hex | Intended usage |
+| --- | --- | --- | --- |
+| `surface-0` | `#f7f9fc` | `#0d1116` | Application background and large sections. Slightly cooler than current background for differentiation. |
+| `surface-1` | `#ffffff` | `#151a22` | Cards, popovers, and modals. Maintains clarity while separating from background. |
+| `surface-2` | `#eef2f6` | `#1f2632` | Secondary panels, hover states, filter rails. Replaces current secondary/muted overlap. |
+| `border-subtle` | `#d8e0ea` | `#2a3140` | Hairline dividers and input outlines. Softer contrast to avoid harsh edges. |
+| `text-primary` | `#12161c` | `#f4f7fb` | Default body copy. |
+| `text-secondary` | `#475166` | `#c0c8d6` | Muted labels, metadata. |
+| `text-tertiary` | `#6b7285` | `#8a94a8` | Placeholder, helper text. |
+
+### Accent scale
+| Token | Light Hex | Dark Hex | Usage |
+| --- | --- | --- | --- |
+| `accent-primary` | `#14b8a6` | `#2dd4bf` | Buttons, primary actions, focus rings. |
+| `accent-primary-emphasis` | `#0f766e` | `#5eead4` | Hover/pressed state overlays, important chips. |
+| `accent-primary-soft` | `#c9f7ef` | `#0b4f49` | Background tints for highlights and info alerts. |
+| `accent-amber` | `#f7b84d` | `#facc6b` | Performance metrics, warnings; recalibrated from chart amber to ensure readability. |
+| `accent-lilac` | `#8b5cf6` | `#a78bfa` | Secondary emphasis (analytics toggles, onboarding). |
+| `accent-rose` | `#ef4444` | `#f87171` | Destructive/error states (unchanged hex values). |
+
+## 4. Implementation guidance
+1. **Introduce the new token names** in `app/globals.css` (or theme file) before refactoring components, mapping current tokens to the proposed tiers to avoid regressions.
+2. **Map legacy tokens** (`--secondary`, `--muted`, etc.) to aliases during transition so components using old names continue to function until updated.
+3. **Update Tailwind theme references** (e.g., `border-border`, `bg-muted`) once the new token names exist, aligning utilities with the tiered structure.
+4. **Refresh chart palettes** by reducing opacity on secondary series and leveraging `accent-amber` / `accent-lilac` for supporting lines or bars.
+5. **Document usage in Storybook/MDX** alongside the redesign rollout to provide designers and engineers with swatches and contrast ratios.
+
+## 5. Next steps
+- Socialize the palette document with stakeholders for approval.
+- Once approved, execute the "Update global design tokens" task using the values above.
+- Prepare visual QA checklist to validate contrast (WCAG AA) after tokens are implemented in light and dark modes.

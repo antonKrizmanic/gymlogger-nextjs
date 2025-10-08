@@ -33,13 +33,13 @@ export default function ExercisesPage() {
         {/* Hero Section */}
         <div className="space-y-6 pb-8">
           <div className="space-y-4">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground flex items-center">
-              <div className="p-3 bg-primary/10 rounded-xl mr-4">
+            <h1 className="type-display-sm lg:type-display-md text-foreground flex items-center gap-4">
+              <div className="p-3 bg-primary/10 rounded-xl">
                 <Activity className="h-8 w-8 text-primary" />
               </div>
               Exercise Library
             </h1>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl">
+            <p className="type-body-lg text-muted-foreground max-w-2xl">
               Discover and master new exercises. Build your perfect workout routine with
               our comprehensive exercise database and tracking tools.
             </p>
@@ -67,10 +67,10 @@ export default function ExercisesPage() {
         </div>
 
         {/* Exercises List */}
-        <Card className="border-0 shadow-lg">
+        <Card className="border-0">
           <CardHeader>
-            <CardTitle className="text-xl font-bold text-foreground flex items-center">
-              <Activity className="mr-2 h-6 w-6 text-primary" />
+            <CardTitle className="flex items-center gap-2 text-foreground">
+              <Activity className="h-6 w-6 text-primary" />
               All Exercises
             </CardTitle>
           </CardHeader>

@@ -68,7 +68,7 @@ export const ResponsiveCombobox = ({
   }
 
   const TriggerContent = (
-    <div className={`flex items-center space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 ${open ? 'border-primary/50 bg-muted/40 shadow-sm' : ''} ${label ? '' : 'py-3'} cursor-pointer ${className || ''}`}>
+    <div className={`flex items-center space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 ${open ? 'border-primary/50 bg-muted/40 shadow-card-hover' : ''} ${label ? '' : 'py-3'} cursor-pointer ${className || ''}`}>
       {Icon && (
         <div className="p-2 bg-primary/10 rounded-lg">
           <Icon className="h-5 w-5 text-primary" />
@@ -76,12 +76,12 @@ export const ResponsiveCombobox = ({
       )}
       <div className="flex-1 flex items-center justify-between">
         <div className="flex-1">
-          {label && (
-            <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-              {label}
-            </p>
-          )}
-          <div className={`text-lg font-semibold bg-transparent border-none outline-none w-full ${label ? 'mt-1' : ''} ${!selectedItem ? 'text-muted-foreground' : 'text-foreground'}`}>
+            {label && (
+              <p className="type-label text-muted-foreground">
+                {label}
+              </p>
+            )}
+            <div className={`type-body-lg font-semibold bg-transparent border-none outline-none w-full ${label ? 'mt-1' : ''} ${!selectedItem ? 'text-muted-foreground' : 'text-foreground'}`}>
             {selectedItem ? selectedItem.label : placeholder}
           </div>
         </div>

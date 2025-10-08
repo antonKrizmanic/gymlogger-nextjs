@@ -107,25 +107,28 @@ export default function IndexPage() {
             {/* Features Section */}
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
                 <div className="text-center space-y-4 mb-16">
-                    <h2 className="text-3xl sm:text-4xl font-bold text-foreground">
+                    <h2 className="type-heading-lg sm:type-display-sm text-foreground">
                         Everything You Need to Succeed
                     </h2>
-                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                    <p className="type-body-lg text-muted-foreground max-w-2xl mx-auto">
                         Powerful features designed to help you track, analyze, and optimize your fitness journey.
                     </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {features.map((feature, index) => (
-                        <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                        <Card
+                            key={index}
+                            className="border-0 hover:shadow-card-hover focus-visible:shadow-card-hover active:shadow-card-pressed"
+                        >
                             <CardContent className="p-6 space-y-4">
                                 <div className="flex items-center justify-center w-16 h-16 bg-primary/10 rounded-xl">
                                     {feature.icon}
                                 </div>
-                                <h3 className="text-xl font-semibold text-foreground">
+                                <h3 className="type-heading-sm text-foreground">
                                     {feature.title}
                                 </h3>
-                                <p className="text-muted-foreground leading-relaxed">
+                                <p className="type-body-md text-muted-foreground">
                                     {feature.description}
                                 </p>
                             </CardContent>
@@ -139,10 +142,10 @@ export default function IndexPage() {
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                         <div className="space-y-6">
-                            <h2 className="text-3xl sm:text-4xl font-bold text-foreground">
+                            <h2 className="type-heading-lg sm:type-display-sm text-foreground">
                                 Why Choose GymNotebook?
                             </h2>
-                            <p className="text-lg text-muted-foreground leading-relaxed">
+                            <p className="type-body-lg text-muted-foreground">
                                 Built by fitness enthusiasts for fitness enthusiasts. Our platform combines
                                 simplicity with powerful analytics to give you the insights you need to reach your goals.
                             </p>
@@ -161,14 +164,14 @@ export default function IndexPage() {
 
             {/* CTA Section */}
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-                <div className="text-center space-y-8">
-                    <h2 className="text-3xl sm:text-4xl font-bold text-foreground">
-                        Ready to Start Your Transformation?
-                    </h2>
-                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        Join our community of dedicated fitness enthusiasts and take the first step
-                        towards achieving your goals.
-                    </p>
+                    <div className="text-center space-y-8">
+                        <h2 className="type-heading-lg sm:type-display-sm text-foreground">
+                            Ready to Start Your Transformation?
+                        </h2>
+                        <p className="type-body-lg text-muted-foreground max-w-2xl mx-auto">
+                            Join our community of dedicated fitness enthusiasts and take the first step
+                            towards achieving your goals.
+                        </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Button
                             size="lg"

@@ -223,14 +223,14 @@ export function ExerciseProgress({ exerciseId }: ExerciseProgressProps) {
 					<div className="p-4 bg-muted/50 rounded-full">
 						<TrendingUp className="h-8 w-8 text-muted-foreground" />
 					</div>
-					<div className="space-y-2">
-						<h3 className="text-xl font-semibold text-foreground">No Progress Data</h3>
-						<p className="text-muted-foreground max-w-md">
-							Complete some workouts with this exercise to see your progress charts and analytics.
-						</p>
-					</div>
-				</div>
-			</div>
+                                        <div className="space-y-2">
+                                                <h3 className="type-heading-sm text-foreground">No Progress Data</h3>
+                                                <p className="type-body-md text-muted-foreground max-w-md">
+                                                        Complete some workouts with this exercise to see your progress charts and analytics.
+                                                </p>
+                                        </div>
+                                </div>
+                        </div>
 		);
 	}
 
@@ -241,49 +241,49 @@ export function ExerciseProgress({ exerciseId }: ExerciseProgressProps) {
 	const CustomTooltip = ({ active, payload, label }: TooltipContentProps<ValueType, NameType>) => {
 		if (active && payload && payload.length) {
 			return (
-				<div className="bg-card border border-border shadow-xl rounded-lg p-4">
-					<p className="font-semibold text-muted-foreground mb-2">{label}</p>
-					<div className="flex items-center space-x-2">
-						<div
-							className="w-3 h-3 rounded-full"
-							style={{ backgroundColor: payload[0].color }}
-						/>
-						<span className="text-sm text-muted-foreground">
-							{currentMetricInfo.label}:
-						</span>
-						<span className="text-sm font-bold text-muted-foreground">
-							{payload[0].value}
-							{metric.includes('Weight') ? ' kg' : ''}
-						</span>
-					</div>
-				</div>
+                                <div className="bg-card border border-border shadow-card-hover rounded-lg p-4">
+                                        <p className="type-body-sm text-muted-foreground font-semibold mb-2">{label}</p>
+                                        <div className="flex items-center space-x-2">
+                                                <div
+                                                        className="w-3 h-3 rounded-full"
+                                                        style={{ backgroundColor: payload[0].color }}
+                                                />
+                                                <span className="type-body-sm text-muted-foreground">
+                                                        {currentMetricInfo.label}:
+                                                </span>
+                                                <span className="type-body-sm font-semibold text-muted-foreground">
+                                                        {payload[0].value}
+                                                        {metric.includes('Weight') ? ' kg' : ''}
+                                                </span>
+                                        </div>
+                                </div>
 			);
 		}
 		return null;
 	};
 
-	return (
-		<Card className="border-0 shadow-lg">
-			<CardHeader className="pb-4">
-				<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-					<div className="flex items-center space-x-3">
-						<div className="p-2 bg-primary/10 rounded-lg">
-							<CurrentMetricIcon className="h-4 w-4" />
-						</div>
-						<div>
-							<CardTitle className="text-xl font-bold text-foreground">
-								{currentMetricInfo.label}
-							</CardTitle>
-							<p className="text-sm text-muted-foreground mt-1">
-								{currentMetricInfo.description}
-							</p>
-						</div>
-					</div>
+        return (
+                <Card className="border-0">
+                        <CardHeader className="pb-4">
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+                                        <div className="flex items-center space-x-3">
+                                                <div className="p-2 bg-primary/10 rounded-lg">
+                                                        <CurrentMetricIcon className="h-4 w-4" />
+                                                </div>
+                                                <div>
+                                                        <CardTitle className="type-heading-sm text-foreground">
+                                                                {currentMetricInfo.label}
+                                                        </CardTitle>
+                                                        <p className="type-body-sm text-muted-foreground mt-1">
+                                                                {currentMetricInfo.description}
+                                                        </p>
+                                                </div>
+                                        </div>
 
-					<div className="space-y-1 flex-1 sm:flex-none">
-						<label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-							Metric
-						</label>
+                                        <div className="space-y-1 flex-1 sm:flex-none">
+                                                <label className="type-label text-muted-foreground">
+                                                        Metric
+                                                </label>
 						<Select value={metric} onValueChange={handleMetricChange}>
 							<SelectTrigger className="w-full sm:w-[200px] h-10">
 								<SelectValue />

@@ -19,15 +19,15 @@ export default async function ExerciseDetailPage(props: { params: Promise<{ id: 
             <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-accent/20">
                 <Container>
                     <div className="flex items-center justify-center min-h-[calc(100vh-8rem)]">
-                        <Card className="border-0 shadow-xl max-w-md w-full">
+                        <Card className="border-0 shadow-overlay max-w-md w-full">
                             <CardContent className="text-center py-12">
                                 <div className="flex flex-col items-center space-y-4">
                                     <div className="p-4 bg-destructive/10 rounded-full">
                                         <Activity className="h-8 w-8 text-destructive" />
                                     </div>
                                     <div className="space-y-2">
-                                        <h3 className="text-xl font-semibold text-foreground">Exercise Not Found</h3>
-                                        <p className="text-muted-foreground">
+                                        <h3 className="type-heading-sm text-foreground">Exercise Not Found</h3>
+                                        <p className="type-body-md text-muted-foreground">
                                             The exercise you&apos;re looking for doesn&apos;t exist or has been removed.
                                         </p>
                                     </div>
@@ -65,8 +65,8 @@ export default async function ExerciseDetailPage(props: { params: Promise<{ id: 
 
                         {/* Exercise Title & Badges */}
                         <div className="space-y-4">
-                            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground flex items-center">
-                                <div className="p-3 bg-primary/10 rounded-xl mr-4">
+                            <h1 className="type-display-sm lg:type-display-md text-foreground flex items-center gap-4">
+                                <div className="p-3 bg-primary/10 rounded-xl">
                                     <Activity className="h-8 w-8 text-primary" />
                                 </div>
                                 {exercise.name || 'Unnamed Exercise'}
@@ -75,12 +75,12 @@ export default async function ExerciseDetailPage(props: { params: Promise<{ id: 
                             {/* Badges */}
                             <div className="flex flex-wrap gap-3">
                                 {exercise.muscleGroupName && (
-                                    <Badge variant="secondary" className="text-sm px-3 py-1 flex items-center gap-2">
+                                    <Badge variant="secondary" className="type-body-sm px-3 py-1 flex items-center gap-2">
                                         <Target className="h-4 w-4" />
                                         {exercise.muscleGroupName}
                                     </Badge>
                                 )}
-                                <Badge variant={logTypeInfo.variant} className="text-sm px-3 py-1 flex items-center gap-2">
+                                <Badge variant={logTypeInfo.variant} className="type-body-sm px-3 py-1 flex items-center gap-2">
                                     <LogTypeIcon className="h-4 w-4" />
                                     {logTypeInfo.label}
                                 </Badge>
@@ -102,15 +102,15 @@ export default async function ExerciseDetailPage(props: { params: Promise<{ id: 
 
                 {/* Exercise Details Card */}
                 {exercise.description && (
-                    <Card className="border-0 shadow-lg mb-8">
+                    <Card className="border-0 mb-8">
                         <CardHeader>
-                            <CardTitle className="text-xl font-bold text-foreground flex items-center">
-                                <Activity className="mr-2 h-6 w-6 text-primary" />
+                            <CardTitle className="flex items-center gap-2 text-foreground">
+                                <Activity className="h-6 w-6 text-primary" />
                                 Description
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                            <p className="type-body-md text-muted-foreground whitespace-pre-wrap">
                                 {exercise.description}
                             </p>
                         </CardContent>

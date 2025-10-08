@@ -1,0 +1,14 @@
+# Suggested Implementation Order for UI/UX Redesign
+
+1. **Global foundation** – Confirm the refreshed color palette (keeping core brand accents while evolving neutrals), then update design tokens, typography scale, and elevation tiers so every component can consume the new visual language from the start.
+2. **Reusable components & interactions** – Expand shared components, refine inputs/selects, and introduce shared animation utilities before touching page-level UIs.
+3. **Navigation & layout shell** – Redesign the navbar and shared page scaffolding once the primitives are ready, unlocking consistent framing for protected pages.
+4. **Authentication experience** – Refresh auth layouts and forms early to apply foundation tokens to user entry points without disrupting core app flows.
+5. **Dashboard** – Apply the new shell to the dashboard hero, stats grid, workout chart section, and latest workout card.
+6. **Workouts list & detail** – Implement the responsive two-column layout, card restyling, and detailed timeline/accordion experiences.
+7. **Workout creation & editing** – Rework forms, exercise lists, and mobile drawers to match the updated patterns before moving to parallel catalog flows.
+8. **Exercises catalog & analytics** – Mirror workouts improvements across exercise listing, detail analytics, and shared chart components.
+9. **Profile & account management** – Modernize profile overview, edit forms, danger zone, and weight history chart with the matured component set.
+10. **Landing page** – Close with the marketing/landing experience so it reflects the refined in-app visuals and messaging consistency.
+
+> Each step assumes the previous layers are in place, reducing rework and ensuring shared components are stable before page-level refinements.

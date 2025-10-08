@@ -49,17 +49,17 @@ export function WorkoutForm({ workoutId, title, workout, isLoading, onSubmit, ca
     <div className="space-y-6">
       {/* Hero Section */}
       <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold">{title}</h1>
-        <p className="text-muted-foreground">Create and customize your workout routine</p>
+        <h1 className="type-heading-lg">{title}</h1>
+        <p className="type-body-md text-muted-foreground">Create and customize your workout routine</p>
       </div>
 
-      <Card className="border-2 shadow-xl">
+      <Card className="border-2">
         <CardHeader className="pb-4">
-          <CardTitle className="flex items-center space-x-3">
+          <CardTitle className="flex items-center gap-3">
             <div className="p-2 bg-primary/10 rounded-lg">
               <Dumbbell className="h-5 w-5 text-primary" />
             </div>
-            <span>Workout Details</span>
+            <span className="type-heading-sm">Workout Details</span>
           </CardTitle>
         </CardHeader>
         <CardContent>

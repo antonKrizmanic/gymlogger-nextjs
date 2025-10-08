@@ -14,13 +14,13 @@ interface ExerciseTabsProps {
 export function ExerciseTabs({ exerciseId }: ExerciseTabsProps) {
 	const [, setActiveTab] = useState('history');
 
-	return (
-		<Card className="border-0 shadow-lg">
-			<CardHeader>
-				<CardTitle className="text-xl font-bold text-foreground flex items-center">
-					<BarChart3 className="mr-2 h-6 w-6 text-primary" />
-					Exercise Analytics
-				</CardTitle>
+        return (
+                <Card className="border-0">
+                        <CardHeader>
+                                <CardTitle className="flex items-center gap-2 text-foreground">
+                                        <BarChart3 className="h-6 w-6 text-primary" />
+                                        Exercise Analytics
+                                </CardTitle>
 			</CardHeader>
 			<CardContent>
 				<Tabs defaultValue="history" onValueChange={setActiveTab} className="w-full">

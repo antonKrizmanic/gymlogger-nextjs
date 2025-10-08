@@ -33,20 +33,20 @@ export function ExerciseCard({ exercise, onDelete }: ExerciseCardProps) {
     const LogTypeIcon = logTypeInfo.icon;
 
     return (
-        <Card className="border-2 shadow-lg bg-gradient-to-br from-card to-card/80 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+        <Card className="border-2 bg-gradient-to-br from-card to-card/80 transition-all duration-300 hover:shadow-card-hover focus-visible:shadow-card-hover active:shadow-card-pressed hover:-translate-y-1">
             <CardHeader className="pb-4">
                 <div className="flex items-start justify-between">
                     <div className="flex-1">
-                        <CardTitle className="text-lg font-bold text-foreground mb-2">
+                        <CardTitle className="type-heading-sm text-foreground mb-2">
                             {exercise.name}
                         </CardTitle>
                         <div className="flex flex-wrap gap-2">
                             {exercise.muscleGroupName && (
-                                <Badge variant="secondary" className="text-xs">
+                                <Badge variant="secondary" className="type-body-sm">
                                     {exercise.muscleGroupName}
                                 </Badge>
                             )}
-                            <Badge variant={logTypeInfo.variant} className="text-xs flex items-center gap-1">
+                            <Badge variant={logTypeInfo.variant} className="type-body-sm flex items-center gap-1">
                                 <LogTypeIcon className="h-3 w-3" />
                                 {logTypeInfo.label}
                             </Badge>
@@ -57,7 +57,7 @@ export function ExerciseCard({ exercise, onDelete }: ExerciseCardProps) {
 
             {exercise.description && (
                 <CardContent>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p className="type-body-sm text-muted-foreground">
                         {exercise.description}
                     </p>
                 </CardContent>

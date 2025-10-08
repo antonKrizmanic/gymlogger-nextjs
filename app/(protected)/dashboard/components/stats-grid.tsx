@@ -76,14 +76,14 @@ interface StatCardProps {
 
 function StatCard({ icon, title, subtitle, weekly, monthly, yearly, suffix = "" }: StatCardProps) {
     return (
-        <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-card to-card/80">
+        <Card className="border-0 transition-all duration-300 hover:shadow-card-hover focus-visible:shadow-card-hover active:shadow-card-pressed hover:scale-[1.02] bg-gradient-to-br from-card to-card/80">
             <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                         <div className="p-3 bg-primary/10 rounded-xl">{icon}</div>
                         <div>
-                            <CardTitle className="text-lg font-bold">{title}</CardTitle>
-                            <p className="text-xs text-muted-foreground">{subtitle}</p>
+                            <CardTitle className="type-heading-sm text-foreground">{title}</CardTitle>
+                            <p className="type-body-sm text-muted-foreground">{subtitle}</p>
                         </div>
                     </div>
                 </div>
@@ -107,12 +107,16 @@ interface StatMetricProps {
 }
 
 function StatMetric({ label, value, suffix = "", bold = false }: StatMetricProps) {
-    const valueClassName = bold ? "text-lg font-bold" : "text-base font-semibold";
+    const valueClassName = bold
+        ? "type-heading-sm text-foreground"
+        : "type-body-lg text-foreground font-medium";
 
     return (
         <div className="bg-muted/30 rounded-lg p-3 flex justify-between items-center">
-            <span className={`text-sm ${bold ? "font-bold" : "text-muted-foreground"}`}>{label}</span>
-            <span className={`${valueClassName}`}>
+            <span className={`type-body-sm ${bold ? "text-foreground font-semibold" : "text-muted-foreground"}`}>
+                {label}
+            </span>
+            <span className={valueClassName}>
                 {formatNumber(value)}
                 {suffix}
             </span>

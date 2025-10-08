@@ -10,13 +10,13 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+          "bg-primary text-primary-foreground shadow-button-rest hover:bg-primary/90 hover:shadow-button-hover focus-visible:shadow-button-hover active:shadow-button-pressed",
         destructive:
-          "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+          "bg-destructive text-white shadow-button-rest hover:bg-destructive/90 hover:shadow-button-hover focus-visible:ring-destructive/20 focus-visible:shadow-button-hover dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 active:shadow-button-pressed",
         outline:
-          "border bg-white text-gray-700 shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-background dark:border-input dark:text-foreground dark:hover:bg-accent dark:hover:text-accent-foreground",
+          "border bg-white text-gray-700 shadow-button-rest hover:bg-accent hover:text-accent-foreground hover:shadow-button-hover focus-visible:shadow-button-hover dark:bg-background dark:border-input dark:text-foreground dark:hover:bg-accent dark:hover:text-accent-foreground active:shadow-button-pressed",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
+          "bg-secondary text-secondary-foreground shadow-button-rest hover:bg-secondary/80 hover:shadow-button-hover focus-visible:shadow-button-hover active:shadow-button-pressed",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
