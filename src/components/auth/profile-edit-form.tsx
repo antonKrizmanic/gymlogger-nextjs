@@ -2,11 +2,12 @@
 
 import { updateProfile } from "@/src/actions/update-profile";
 import { Button } from "@/src/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { IconInput } from "@/src/components/ui/icon-input";
-import { Check, Edit3, Ruler, Weight } from "lucide-react";
+import { cn } from "@/src/lib/utils";
+import { Check, Edit3, Loader2, Ruler, Weight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 interface ProfileEditFormProps {
@@ -20,6 +21,29 @@ export function ProfileEditForm({ initialWeight, initialHeight }: ProfileEditFor
     const [height, setHeight] = useState(initialHeight?.toString() || "");
     const [isPending, startTransition] = useTransition();
     const [isEditing, setIsEditing] = useState(false);
+
+    const formattedInitialWeight = useMemo(() => initialWeight?.toString() || "", [initialWeight]);
+    const formattedInitialHeight = useMemo(() => initialHeight?.toString() || "", [initialHeight]);
+
+    useEffect(() => {
+        if (!isEditing) {
+            setWeight(formattedInitialWeight);
+            setHeight(formattedInitialHeight);
+        }
+    }, [formattedInitialHeight, formattedInitialWeight, isEditing]);
+
+    const steps = [
+        {
+            title: "Review metrics",
+            description: "Confirm the body data saved to your profile.",
+        },
+        {
+            title: "Update values",
+            description: "Adjust weight or height to keep insights accurate.",
+        },
+    ];
+
+    const activeStep = isEditing ? 2 : 1;
 
     const handleSave = () => {
         const weightValue = weight ? parseFloat(weight) : undefined;
@@ -41,42 +65,68 @@ export function ProfileEditForm({ initialWeight, initialHeight }: ProfileEditFor
         });
     };
 
-    const handleEditToggle = () => {
-        if (isEditing) {
-            handleSave();
-        } else {
-            setIsEditing(true);
-        }
+    const handleCancel = () => {
+        setWeight(formattedInitialWeight);
+        setHeight(formattedInitialHeight);
+        setIsEditing(false);
     };
 
     return (
-        <Card className="border-2">
-            <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-3">
-                        <div className="p-2 bg-primary/10 rounded-lg">
-                            <Weight className="h-5 w-5 text-primary" />
-                        </div>
-                        <span className="type-heading-sm">Physical Information</span>
-                    </CardTitle>
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleEditToggle}
-                        disabled={isPending}
-                        className="p-2 hover:bg-muted/50"
-                    >
-                        {isEditing ? (
-                            <Check className="h-4 w-4" />
-                        ) : (
-                            <Edit3 className="h-4 w-4" />
-                        )}
-                    </Button>
-                </div>
-                <CardDescription>Update your weight and height for bodyweight exercises</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-                <div className="space-y-4">
+        <Card>
+            <form onSubmit={(event) => {
+                event.preventDefault();
+                if (!isEditing) {
+                    setIsEditing(true);
+                    return;
+                }
+                handleSave();
+            }} className="flex flex-col gap-6">
+                <CardHeader className="gap-4">
+                    <div className="space-y-1">
+                        <CardTitle className="flex items-center gap-3">
+                            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                                <Weight className="h-5 w-5" />
+                            </span>
+                            Body metrics
+                        </CardTitle>
+                        <CardDescription>
+                            Keep your measurements current so analytics and training plans stay personalized.
+                        </CardDescription>
+                    </div>
+                    <div className="col-span-full grid gap-3 sm:grid-cols-2">
+                        {steps.map((step, index) => {
+                            const stepNumber = index + 1;
+                            const isActive = stepNumber === activeStep;
+                            const isCompleted = stepNumber < activeStep;
+
+                            return (
+                                <div
+                                    key={step.title}
+                                    className={cn(
+                                        "flex items-start gap-3 rounded-xl border border-border bg-muted/40 px-4 py-3 motion-base transition-all",
+                                        isActive && "border-primary bg-primary/5 shadow-card-hover",
+                                        isCompleted && "border-primary/50 bg-primary/10"
+                                    )}
+                                >
+                                    <span
+                                        className={cn(
+                                            "mt-0.5 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-sm font-semibold text-muted-foreground",
+                                            (isActive || isCompleted) && "border-primary bg-primary text-primary-foreground",
+                                        )}
+                                    >
+                                        {isCompleted ? <Check className="h-4 w-4" /> : `0${stepNumber}`}
+                                    </span>
+                                    <div className="space-y-1">
+                                        <p className="type-label text-muted-foreground">{step.title}</p>
+                                        <p className="type-body-sm text-muted-foreground/80">{step.description}</p>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </CardHeader>
+
+                <CardContent className="space-y-4">
                     <IconInput
                         icon={Weight}
                         label="Weight (kg)"
@@ -99,8 +149,33 @@ export function ProfileEditForm({ initialWeight, initialHeight }: ProfileEditFor
                         placeholder="Enter height in cm"
                         disabled={!isEditing || isPending}
                     />
-                </div>
-            </CardContent>
+                </CardContent>
+
+                <CardFooter className="justify-end gap-3">
+                    {isEditing ? (
+                        <>
+                            <Button type="button" variant="ghost" onClick={handleCancel} disabled={isPending}>
+                                Cancel
+                            </Button>
+                            <Button type="submit" disabled={isPending}>
+                                {isPending ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Saving
+                                    </>
+                                ) : (
+                                    "Save changes"
+                                )}
+                            </Button>
+                        </>
+                    ) : (
+                        <Button type="submit" className="justify-center" disabled={isPending}>
+                            <Edit3 className="mr-2 h-4 w-4" />
+                            Edit metrics
+                        </Button>
+                    )}
+                </CardFooter>
+            </form>
         </Card>
     );
 }
