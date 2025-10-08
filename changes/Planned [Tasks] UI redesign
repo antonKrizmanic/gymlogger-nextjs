@@ -17,10 +17,10 @@
 - [ ] Introduce testimonial/metrics ribbons leveraging existing data sources above the primary CTA.
 
 ## Dashboard
-- [ ] Consolidate hero copy, quick actions, and stats into a unified summary header with filters.
-- [ ] Refactor `StatsGrid` into responsive rows with spark lines and delta indicators aligned to new tokens.
-- [ ] Enhance `LatestWorkoutCard` with timeline chips and contextual action footer.
-- [ ] Expand `WorkoutChartSection` with preset toggles, chart types, and illustrated empty states.
+- [x] Consolidate hero copy, quick actions, and stats into a unified summary header with filters.
+- [x] Refactor `StatsGrid` into responsive rows with spark lines and delta indicators aligned to new tokens.
+- [x] Enhance `LatestWorkoutCard` with timeline chips and contextual action footer.
+- [x] Expand `WorkoutChartSection` with preset toggles, chart types, and illustrated empty states.
 
 ## Workouts list & detail
 - [ ] Build a responsive two-column layout with sticky filter rail for the workouts list page.
