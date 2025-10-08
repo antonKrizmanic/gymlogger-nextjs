@@ -132,6 +132,14 @@
   --radius-full: var(--radius-value-full);
   --radius: var(--radius-value-lg);
 
+  /* Motion tokens */
+  --motion-duration-fast: 120ms;
+  --motion-duration-medium: 180ms;
+  --motion-duration-slow: 260ms;
+  --motion-ease-standard: cubic-bezier(0.2, 0, 0.38, 0.9);
+  --motion-ease-emphasized: cubic-bezier(0.17, 0.67, 0.16, 1);
+  --motion-ease-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+
   /* Elevation */
   --shadow-card-rest: 0 1px 2px rgba(18, 22, 28, 0.08), 0 3px 6px -3px rgba(18, 22, 28, 0.12);
   --shadow-card-hover: 0 20px 40px -24px rgba(18, 22, 28, 0.28), 0 12px 24px -12px rgba(18, 22, 28, 0.18);
@@ -379,5 +387,70 @@ body {
   }
   .shadow-overlay {
     box-shadow: var(--shadow-overlay);
+  }
+
+  .motion-base {
+    transition-property: transform, color, background-color, border-color, box-shadow, opacity;
+    transition-duration: var(--motion-duration-medium);
+    transition-timing-function: var(--motion-ease-standard);
+  }
+
+  .motion-card {
+    @apply motion-base will-change-transform;
+  }
+
+  .motion-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .motion-press:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-card-pressed);
+    transition-duration: var(--motion-duration-fast);
+  }
+
+  .motion-fade-in {
+    animation: motion-fade-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
+  }
+
+  .motion-pop {
+    animation: motion-pop var(--motion-duration-medium) var(--motion-ease-emphasized) both;
+  }
+
+  .motion-overlay {
+    animation: motion-overlay var(--motion-duration-medium) var(--motion-ease-standard) both;
+  }
+}
+
+@keyframes motion-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes motion-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes motion-overlay {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
   }
 }
