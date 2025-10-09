@@ -1,10 +1,14 @@
-import { WorkoutApiService } from '@/src/api/services/workout-api-service';
-import { IWorkoutSimple } from '@/src/models/domain/workout';
-import { format } from 'date-fns';
-import { Calendar, Eye, Pencil, Target } from 'lucide-react';
-import { DeleteButton } from '../common/delete-button';
-import { IconLinkButton } from '../common/icon-link-button';
-import { Badge } from '../ui/badge';
+import Link from "next/link";
+
+import { WorkoutApiService } from "@/src/api/services/workout-api-service";
+import { IWorkoutSimple } from "@/src/models/domain/workout";
+import { cn } from "@/src/lib/utils";
+import { format } from "date-fns";
+import { Calendar, Eye, Pencil, Target } from "lucide-react";
+
+import { DeleteButton } from "../common/delete-button";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
 import {
     Card,
     CardContent,
@@ -12,7 +16,7 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from '../ui/card';
+} from "../ui/card";
 
 interface WorkoutCardProps {
     workout: IWorkoutSimple;
@@ -34,87 +38,107 @@ export function WorkoutCard({ workout, onDelete }: WorkoutCardProps) {
         }
     };
 
+    const metrics = [
+        {
+            label: "Total sets",
+            value: workout.totalSets ?? 0,
+        },
+        {
+            label: "Total reps",
+            value: workout.totalReps ?? 0,
+        },
+        {
+            label: "Volume (kg)",
+            value: workout.totalWeight ?? 0,
+        },
+    ];
+
     return (
-        <Card className="border-2 bg-gradient-to-br from-card to-card/80 transition-all duration-300 hover:shadow-card-hover focus-visible:shadow-card-hover active:shadow-card-pressed hover:-translate-y-1">
-            <CardHeader className="pb-4">
-                <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                        <CardTitle className="type-heading-sm text-foreground mb-3">
-                            {workout.name || 'Untitled Workout'}
+        <Card className="group relative flex h-full flex-col overflow-hidden border border-border/70 bg-card/95 shadow-card-rest transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover focus-within:shadow-card-hover">
+            <span className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/40 via-primary to-primary/40 opacity-0 transition group-hover:opacity-100" aria-hidden="true" />
+            <CardHeader className="space-y-5 pb-0">
+                <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-3">
+                        <CardTitle className="type-heading-sm text-foreground">
+                            {workout.name || "Untitled workout"}
                         </CardTitle>
-                        <div className="flex items-center gap-2 mb-2">
-                            <Calendar className="h-4 w-4 text-primary" />
-                            <CardDescription className="type-body-sm text-muted-foreground">
+                        <div className="flex flex-wrap items-center gap-2">
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-background/80 px-3 py-1 text-xs font-semibold text-muted-foreground">
+                                <Calendar className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                                 {formatWorkoutDate(workout.date)}
-                            </CardDescription>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            {workout.muscleGroupName && (
-                                <Badge variant="secondary" className="text-xs flex items-center gap-1">
-                                    <Target className="h-3 w-3" />
+                            </span>
+                            {workout.muscleGroupName ? (
+                                <Badge variant="outline" className="inline-flex items-center gap-1.5 rounded-full border-border/70 bg-background/70 px-3 py-1 text-xs font-semibold">
+                                    <Target className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                                     {workout.muscleGroupName}
                                 </Badge>
-                            )}
+                            ) : null}
                         </div>
                     </div>
+                    <div className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
+                        Logged
+                    </div>
                 </div>
+
+                {workout.description ? (
+                    <CardDescription className="line-clamp-3 text-muted-foreground">
+                        {workout.description}
+                    </CardDescription>
+                ) : null}
             </CardHeader>
 
-            <CardContent className="space-y-4">
-                {/* Workout Stats */}
-                <div className="grid grid-cols-3 gap-4 py-4">
-                    <div className="text-center">
-                        <div className="type-heading-md text-primary mb-1">
-                            {workout.totalSets || 0}
+            <CardContent className="space-y-5 pt-6">
+                <div className="grid gap-3 sm:grid-cols-3">
+                    {metrics.map((metric) => (
+                        <div
+                            key={metric.label}
+                            className="rounded-2xl border border-border/60 bg-background/80 px-4 py-3 text-center shadow-card-rest"
+                        >
+                            <div className="type-label text-muted-foreground uppercase tracking-wide">{metric.label}</div>
+                            <div className="type-heading-sm text-foreground">
+                                {typeof metric.value === "number" ? metric.value.toLocaleString() : metric.value}
+                            </div>
                         </div>
-                        <div className="type-label text-muted-foreground">
-                            Sets
-                        </div>
-                    </div>
-                    <div className="text-center">
-                        <div className="type-heading-md text-primary mb-1">
-                            {workout.totalReps || 0}
-                        </div>
-                        <div className="type-label text-muted-foreground">
-                            Reps
-                        </div>
-                    </div>
-                    <div className="text-center">
-                        <div className="type-heading-md text-primary mb-1">
-                            {workout.totalWeight || 0}
-                        </div>
-                        <div className="type-label text-muted-foreground">
-                            KG
-                        </div>
-                    </div>
+                    ))}
                 </div>
-
-                {/* Description */}
-                {workout.description && (
-                    <div className="pt-2 border-t border-muted">
-                        <p className="type-body-sm text-muted-foreground">
-                            {workout.description}
-                        </p>
-                    </div>
-                )}
             </CardContent>
 
-            <CardFooter className="pt-4 gap-2">
-                <div className="flex-1">
-                    <IconLinkButton href={`/workouts/${workout.id}`} icon={<Eye />} aria-label="View workout" />
-                </div>
-                <div className="flex-1">
-                    <IconLinkButton href={`/workouts/${workout.id}/edit`} icon={<Pencil />} aria-label="Edit workout" />
-                </div>
-                <div className="flex-1">
-                    <DeleteButton
-                        entityName={workout.name || 'Untitled Workout'}
-                        entityType="Workout"
-                        deleteAction={deleteAction}
-                        onDelete={onDelete}
-                    />
-                </div>
+            <CardFooter className="mt-auto flex flex-wrap items-center gap-2 border-t border-border/60 bg-muted/30 px-6 py-4">
+                <Button
+                    asChild
+                    size="sm"
+                    variant="ghost"
+                    className="flex-1 justify-center rounded-full border border-border/60 bg-background/80 text-foreground hover:bg-background"
+                >
+                    <Link href={`/workouts/${workout.id}`}>
+                        <Eye className="h-4 w-4" aria-hidden="true" />
+                        View
+                    </Link>
+                </Button>
+                <Button
+                    asChild
+                    size="sm"
+                    variant="secondary"
+                    className="flex-1 justify-center rounded-full"
+                >
+                    <Link href={`/workouts/${workout.id}/edit`}>
+                        <Pencil className="h-4 w-4" aria-hidden="true" />
+                        Edit
+                    </Link>
+                </Button>
+                <DeleteButton
+                    entityName={workout.name || "Untitled workout"}
+                    entityType="Workout"
+                    deleteAction={deleteAction}
+                    onDelete={onDelete}
+                    size="sm"
+                    text="Delete"
+                    className={cn(
+                        "flex-1 justify-center rounded-full border border-destructive/30 bg-destructive/10 text-destructive hover:bg-destructive/15",
+                        "focus-visible:ring-destructive/30"
+                    )}
+                />
             </CardFooter>
         </Card>
     );
-} 
+}

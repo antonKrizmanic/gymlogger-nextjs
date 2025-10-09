@@ -7,8 +7,10 @@ import { Pagination } from "@/src/components/common/pagination";
 import { SearchBar } from "@/src/components/common/search-bar";
 import { DatePicker } from "@/src/components/form/date-picker";
 import { WorkoutCard } from "@/src/components/workout/workout-card";
+import { Button } from "@/src/components/ui/button";
 import { IWorkoutRequest } from "@/src/data/workout";
 import { IWorkoutSimple } from "@/src/models/domain/workout";
+import { cn } from "@/src/lib/utils";
 import { IPagingDataResponseDto } from "@/src/types/common";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -17,13 +19,14 @@ const DEFAULT_PAGE_SIZE = 12;
 
 interface WorkoutsIndexProps {
     isFilterOpen: boolean;
+    onFiltersDismiss?: () => void;
 }
 
 function isValidDate(date: any) {
     return date instanceof Date && !isNaN(date.getTime());
 }
 
-export function WorkoutsIndex({ isFilterOpen }: WorkoutsIndexProps) {
+export function WorkoutsIndex({ isFilterOpen, onFiltersDismiss }: WorkoutsIndexProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -117,17 +120,20 @@ export function WorkoutsIndex({ isFilterOpen }: WorkoutsIndexProps) {
     const handleSearch = useCallback((value: string) => {
         setSearchTerm(value);
         updateUrl(0, value, pageSize, selectedMuscleGroup, workoutDate);
-    }, [pageSize, selectedMuscleGroup, workoutDate, updateUrl]);
+        onFiltersDismiss?.();
+    }, [pageSize, selectedMuscleGroup, workoutDate, updateUrl, onFiltersDismiss]);
 
     const handleMuscleGroupChange = useCallback((muscleGroupId: string) => {
         setSelectedMuscleGroup(muscleGroupId);
         updateUrl(0, searchTerm, pageSize, muscleGroupId, workoutDate);
-    }, [searchTerm, pageSize, workoutDate, updateUrl]);
+        onFiltersDismiss?.();
+    }, [searchTerm, pageSize, workoutDate, updateUrl, onFiltersDismiss]);
 
     const handleWorkoutDateChange = useCallback((newValue?: Date | null) => {
         setWorkoutDate(newValue);
         updateUrl(0, searchTerm, pageSize, selectedMuscleGroup, newValue);
-    }, [searchTerm, pageSize, selectedMuscleGroup, updateUrl]);
+        onFiltersDismiss?.();
+    }, [searchTerm, pageSize, selectedMuscleGroup, updateUrl, onFiltersDismiss]);
 
     const handlePageSizeChange = useCallback((newValue: string) => {
         const newSize = Number(newValue);
@@ -140,59 +146,110 @@ export function WorkoutsIndex({ isFilterOpen }: WorkoutsIndexProps) {
     }, [searchTerm, pageSize, selectedMuscleGroup, workoutDate, updateUrl]);
 
     const handleWorkoutDelete = useCallback(() => {
-        // Refresh the current page
         updateUrl(currentPage, searchTerm, pageSize, selectedMuscleGroup, workoutDate);
     }, [currentPage, searchTerm, pageSize, selectedMuscleGroup, workoutDate, updateUrl]);
 
+    const handleResetFilters = useCallback(() => {
+        setSearchTerm("");
+        setSelectedMuscleGroup("");
+        setWorkoutDate(undefined);
+        updateUrl(0, "", pageSize, undefined, undefined);
+        onFiltersDismiss?.();
+    }, [pageSize, updateUrl, onFiltersDismiss]);
+
+    const hasActiveFilters = Boolean(searchTerm || selectedMuscleGroup || workoutDate);
+
     return (
-        <>
-            <div className="mb-8 space-y-4">
-                {/* Filter card */}
-                {isFilterOpen && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4">
-                        <MuscleGroupSelect
-                            selectedMuscleGroup={selectedMuscleGroup}
-                            onMuscleGroupChange={handleMuscleGroupChange}
-                        />
-                        <DatePicker
-                            label="Workout Date"
-                            value={workoutDate || undefined}
-                            onChange={handleWorkoutDateChange}
-                            maxDate={new Date()}
-                            clearable
-                        />
+        <div className="grid gap-8 lg:grid-cols-[minmax(260px,320px)_1fr] lg:items-start">
+            <aside
+                className={cn(
+                    "space-y-6",
+                    "lg:sticky lg:top-28",
+                    isFilterOpen ? "block" : "hidden lg:block"
+                )}
+            >
+                <div className="rounded-3xl border border-border/70 bg-card/95 p-6 shadow-card-rest">
+                    <div className="flex items-center justify-between gap-2">
+                        <p className="type-label text-muted-foreground uppercase tracking-wide">Filter workouts</p>
+                        {hasActiveFilters ? (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 px-3 text-xs font-semibold"
+                                onClick={handleResetFilters}
+                            >
+                                Clear
+                            </Button>
+                        ) : null}
                     </div>
-                )}
 
-                <SearchBar
-                    value={searchTerm}
-                    onChange={handleSearch}
-                    placeholder="Search workouts..."
+                    <div className="space-y-5 pt-5">
+                        <SearchBar
+                            value={searchTerm}
+                            onChange={handleSearch}
+                            placeholder="Search workouts"
+                            density="compact"
+                        />
+
+                        <div className="space-y-2">
+                            <p className="type-label text-muted-foreground uppercase tracking-wide">Muscle focus</p>
+                            <MuscleGroupSelect
+                                selectedMuscleGroup={selectedMuscleGroup}
+                                onMuscleGroupChange={handleMuscleGroupChange}
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <p className="type-label text-muted-foreground uppercase tracking-wide">Workout date</p>
+                            <DatePicker
+                                value={workoutDate || undefined}
+                                onChange={handleWorkoutDateChange}
+                                maxDate={new Date()}
+                                clearable
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="rounded-3xl border border-border/60 bg-background/70 p-5 text-xs text-muted-foreground shadow-card-rest">
+                    Tip: Filters stay sticky on desktop so you can refine your search while scrolling through workouts.
+                </div>
+            </aside>
+
+            <section className="space-y-6">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                    <div className="space-y-1">
+                        <p className="type-label text-muted-foreground uppercase tracking-wide">Results</p>
+                        <h2 className="type-heading-sm text-foreground">
+                            {pagingData.totalItems ?? 0} workout{(pagingData.totalItems ?? 0) === 1 ? "" : "s"}
+                        </h2>
+                    </div>
+                    <div className="type-body-sm text-muted-foreground sm:text-right">
+                        Showing page {currentPage + 1} of {Math.max(totalPages, 1)}
+                    </div>
+                </div>
+
+                <Grid
+                    items={workouts}
+                    renderItem={(workout) => (
+                        <WorkoutCard
+                            key={workout.id}
+                            workout={workout}
+                            onDelete={handleWorkoutDelete}
+                        />
+                    )}
+                    isLoading={isLoading}
+                    emptyMessage="No workouts found"
                 />
-            </div>
 
-            {/* Workout grid */}
-            <Grid
-                items={workouts}
-                renderItem={(workout) => (
-                    <WorkoutCard
-                        key={workout.id}
-                        workout={workout}
-                        onDelete={handleWorkoutDelete}
-                    />
-                )}
-                isLoading={isLoading}
-                emptyMessage="No workouts found"
-            />
-
-            {/* Pagination */}
-            <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-                pageSize={pageSize}
-                onPageSizeChange={handlePageSizeChange}
-            />
-        </>
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                    pageSize={pageSize}
+                    onPageSizeChange={handlePageSizeChange}
+                />
+            </section>
+        </div>
     );
 }

@@ -1,93 +1,65 @@
 "use client";
-import { Container } from '@/src/components/common/container';
-import { Button } from '@/src/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
-import { WorkoutsIndex } from '@/src/views/workout/workouts-index';
-import { Calendar, Dumbbell, Filter, Plus } from 'lucide-react';
-import Link from 'next/link';
-import React, { Suspense, useState } from 'react';
 
-// Create a client component that uses searchParams
-const WorkoutsContent = () => {
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
+import { useState } from "react";
 
-    // Listen for the toggle filter event
-    React.useEffect(() => {
-        const handleToggleFilter = () => {
-            setIsFilterOpen(prev => !prev);
-        };
+import { Container } from "@/src/components/common/container";
+import { Button } from "@/src/components/ui/button";
+import { WorkoutsIndex } from "@/src/views/workout/workouts-index";
+import { Filter, Plus, Sparkles } from "lucide-react";
+import Link from "next/link";
 
-        window.addEventListener('toggleFilter', handleToggleFilter);
-        return () => window.removeEventListener('toggleFilter', handleToggleFilter);
-    }, []);
-
-    return (
-        <WorkoutsIndex
-            isFilterOpen={isFilterOpen}
-        />
-    );
-};
-
-// Main page component with Suspense boundary
 export default function WorkoutsPage() {
-    return (
-        <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-accent/20">
-            <Container>
-                {/* Hero Section */}
-                <div className="space-y-6 pb-8">
-                    <div className="space-y-4">
-                        <h1 className="type-display-sm lg:type-display-md text-foreground flex items-center gap-4">
-                            <div className="p-3 bg-primary/10 rounded-xl">
-                                <Dumbbell className="h-8 w-8 text-primary" />
-                            </div>
-                            Your Workouts
-                        </h1>
-                        <p className="type-body-lg text-muted-foreground max-w-2xl">
-                            Track your fitness journey with detailed workout logs. Monitor your progress
-                            and achieve your goals one session at a time.
-                        </p>
-                    </div>
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <Button asChild size="lg" className="px-6 py-3 text-lg font-semibold">
-                            <Link href='/workouts/create'>
-                                <Plus className="mr-2 h-5 w-5" />
-                                New Workout
-                            </Link>
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="lg"
-                            className="px-6 py-3 text-lg font-semibold"
-                            onClick={() => {
-                                // This will be handled by the WorkoutsContent component
-                                const event = new CustomEvent('toggleFilter');
-                                window.dispatchEvent(event);
-                            }}
-                        >
-                            <Filter className="mr-2 h-5 w-5" />
-                            Filter & Search
-                        </Button>
-                    </div>
-                </div>
+    const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
-                {/* Workouts List */}
-                <Card className="border-0">
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-foreground">
-                            <Calendar className="h-6 w-6 text-primary" />
-                            Workout History
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <Suspense fallback={
-                            <div className="flex items-center justify-center min-h-[400px]">
-                                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10">
+            <Container>
+                <div className="space-y-10 py-10">
+                    <header className="space-y-6">
+                        <div className="flex items-start justify-between gap-6">
+                            <div className="space-y-3">
+                                <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
+                                    <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+                                    Workouts
+                                </div>
+                                <div className="space-y-2">
+                                    <h1 className="type-heading-lg text-foreground">Plan and review your training log</h1>
+                                    <p className="max-w-2xl type-body-sm text-muted-foreground">
+                                        Surface the exact sessions you need by combining search, focus areas, and dates. Every filter updates instantly so you can stay focused on the next workout.
+                                    </p>
+                                </div>
                             </div>
-                        }>
-                            <WorkoutsContent />
-                        </Suspense>
-                    </CardContent>
-                </Card>
+                            <Button asChild size="lg" className="hidden shrink-0 shadow-card-rest lg:inline-flex">
+                                <Link href="/workouts/create">
+                                    <Plus className="mr-2 h-5 w-5" aria-hidden="true" />
+                                    Log workout
+                                </Link>
+                            </Button>
+                        </div>
+                        <div className="flex flex-wrap gap-3 lg:hidden">
+                            <Button asChild size="lg" className="flex-1 shadow-card-rest">
+                                <Link href="/workouts/create">
+                                    <Plus className="mr-2 h-5 w-5" aria-hidden="true" />
+                                    Log workout
+                                </Link>
+                            </Button>
+                            <Button
+                                variant="outline"
+                                size="lg"
+                                className="flex-1"
+                                onClick={() => setIsMobileFiltersOpen((open) => !open)}
+                            >
+                                <Filter className="mr-2 h-5 w-5" aria-hidden="true" />
+                                {isMobileFiltersOpen ? "Hide filters" : "Show filters"}
+                            </Button>
+                        </div>
+                    </header>
+
+                    <WorkoutsIndex
+                        isFilterOpen={isMobileFiltersOpen}
+                        onFiltersDismiss={() => setIsMobileFiltersOpen(false)}
+                    />
+                </div>
             </Container>
         </div>
     );

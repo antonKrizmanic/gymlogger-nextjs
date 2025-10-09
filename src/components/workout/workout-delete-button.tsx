@@ -16,12 +16,12 @@ export function WorkoutDeleteButton({ workout }: WorkoutDeleteButtonProps) {
 
     return (
         <DeleteButton
-            entityName={workout.name || 'Untitled Workout'}
+            entityName={workout.name || "Untitled workout"}
             entityType="Workout"
             deleteAction={deleteAction}
-            className="px-6 py-3 text-lg font-semibold w-auto"
+            className="w-auto rounded-full border border-destructive/30 bg-destructive/10 px-6 py-3 text-sm font-semibold text-destructive hover:bg-destructive/15 focus-visible:ring-destructive/30"
             size="lg"
-            text="Delete Workout"
+            text="Delete workout"
         />
     );
 }

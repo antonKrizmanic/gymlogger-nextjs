@@ -23,9 +23,9 @@
 - [x] Expand `WorkoutChartSection` with preset toggles, chart types, and illustrated empty states.
 
 ## Workouts list & detail
-- [ ] Build a responsive two-column layout with sticky filter rail for the workouts list page.
-- [ ] Restyle `WorkoutCard` to emphasize key metadata with pill badges and consistent elevation states.
-- [ ] Redesign `WorkoutDetailPage` with timeline banner, stat cards, and accordion exercise sections.
+- [x] Build a responsive two-column layout with sticky filter rail for the workouts list page.
+- [x] Restyle `WorkoutCard` to emphasize key metadata with pill badges and consistent elevation states.
+- [x] Redesign `WorkoutDetailPage` with timeline banner, stat cards, and accordion exercise sections.
 
 ## Workout creation & editing
 - [ ] Organize `WorkoutForm` into step-based sections with sticky progress indicator and helper modals.
