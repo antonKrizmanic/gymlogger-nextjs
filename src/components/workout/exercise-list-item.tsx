@@ -16,7 +16,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/src/compo
 import { CollapsibleNote } from "@/src/components/common/collapsible-note"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/components/ui/table"
 import { ExerciseSelect } from "./exercise-select"
-import { ExerciseSetDrawer } from "./exercise-set-drawer"
+import { ExerciseSetSheet } from "./exercise-set-sheet"
 import { ExerciseSetEdit } from "./exercise-set-edit"
 import { ExerciseSets } from "./exercise-sets"
 
@@ -240,7 +240,7 @@ export const ExerciseListItem = memo(function ExerciseListItem({
         />
 
         {lastExercise && (
-          <Collapsible open={isLastWorkoutOpen} onOpenChange={setIsLastWorkoutOpen} className="border rounded-md p-2">
+          <Collapsible open={isLastWorkoutOpen} onOpenChange={setIsLastWorkoutOpen} className="p-2">
             <CollapsibleTrigger asChild>
               <Button variant="ghost" className="flex w-full justify-between p-2">
                 <span className="text-sm font-medium">Last workout</span>
@@ -402,7 +402,7 @@ export const ExerciseListItem = memo(function ExerciseListItem({
       </CardContent>
 
       {/* Dialog for adding/editing sets on mobile */}
-      <ExerciseSetDrawer
+      <ExerciseSetSheet
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
         set={currentSet}

@@ -8,9 +8,9 @@ import type { IExerciseSetCreate } from "@/src/models/domain/workout"
 import { ExerciseLogType } from "@/src/types/enums"
 import { Clock, Hash, StickyNote, Weight } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
-import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from "../ui/drawer"
+import { Sheet, SheetClose, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "../ui/sheet"
 
-interface ExerciseSetDrawerProps {
+interface ExerciseSetSheetProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   set: IExerciseSetCreate
@@ -20,7 +20,7 @@ interface ExerciseSetDrawerProps {
   isNew?: boolean
 }
 
-export function ExerciseSetDrawer({
+export function ExerciseSetSheet({
   open,
   onOpenChange,
   set,
@@ -28,40 +28,13 @@ export function ExerciseSetDrawer({
   exerciseType,
   onSave,
   isNew = false,
-}: ExerciseSetDrawerProps) {
+}: ExerciseSetSheetProps) {
   const [localSet, setLocalSet] = useState<IExerciseSetCreate>(set)
   const firstFieldRef = useRef<HTMLInputElement>(null)
 
-  // Update local state when the set prop changes
   useEffect(() => {
     setLocalSet(set)
   }, [set])
-
-  useEffect(() => {
-    if (!open) {
-      return
-    }
-
-    const focusFirstField = () => {
-      const input = firstFieldRef.current
-      if (!input) {
-        return
-      }
-      try {
-        input.focus({ preventScroll: true })
-      } catch {
-        input.focus()
-      }
-    }
-
-    const frame = window.requestAnimationFrame(focusFirstField)
-    const timeout = window.setTimeout(focusFirstField, 120)
-
-    return () => {
-      window.cancelAnimationFrame(frame)
-      window.clearTimeout(timeout)
-    }
-  }, [open, exerciseType])
 
   const handleWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const weight = e.target.value ? Number(e.target.value) : undefined
@@ -88,17 +61,16 @@ export function ExerciseSetDrawer({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="border-t-2 border-primary/20">
-        <DrawerHeader className="text-center space-y-2">
-          <div className="w-12 h-1 bg-muted-foreground/20 rounded-full mx-auto" />
-          <DrawerTitle className="text-xl font-bold">
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent
+        side="bottom"
+        className="border-t-2 border-primary/20 flex h-screen w-full flex-col overflow-y-auto p-0"
+      >
+        <SheetHeader className="space-y-2 px-6 pt-6 text-center sm:text-center">
+          <SheetTitle className="text-xl font-bold">
             {isNew ? "Add New Set" : `Edit Set ${index + 1}`}
-          </DrawerTitle>
-          <p className="text-sm text-muted-foreground">
-            {isNew ? "Add a new set to your exercise" : "Modify the values for this set"}
-          </p>
-        </DrawerHeader>
+          </SheetTitle>
+        </SheetHeader>
         <SetForm
           exerciseType={exerciseType}
           localSet={localSet}
@@ -106,8 +78,9 @@ export function ExerciseSetDrawer({
           handleWeightChange={handleWeightChange}
           handleRepsChange={handleRepsChange}
           handleTimeChange={handleTimeChange}
-          handleNoteChange={handleNoteChange} />
-        <DrawerFooter className="pt-6 pb-6 space-y-3">
+          handleNoteChange={handleNoteChange}
+        />
+        <SheetFooter className="flex-col gap-3 px-6 pt-6 pb-6 sm:flex-col">
           <Button
             type="button"
             onClick={handleSave}
@@ -115,7 +88,7 @@ export function ExerciseSetDrawer({
           >
             {isNew ? "Add Set" : "Save Changes"}
           </Button>
-          <DrawerClose asChild>
+          <SheetClose asChild>
             <Button
               type="button"
               variant="outline"
@@ -124,22 +97,21 @@ export function ExerciseSetDrawer({
             >
               Cancel
             </Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
-  );
-
+          </SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  )
 }
 
 interface SetFormProps {
-  exerciseType: ExerciseLogType,
-  localSet: IExerciseSetCreate,
-  firstFieldRef: React.MutableRefObject<HTMLInputElement | null>,
-  handleWeightChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-  handleRepsChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-  handleTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-  handleNoteChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+  exerciseType: ExerciseLogType
+  localSet: IExerciseSetCreate
+  firstFieldRef: React.MutableRefObject<HTMLInputElement | null>
+  handleWeightChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  handleRepsChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  handleTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  handleNoteChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 function SetForm({
