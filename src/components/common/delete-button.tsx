@@ -1,9 +1,10 @@
 'use client';
+import { useState } from "react";
+
 import { ConfirmationModal } from "@/src/components/common/confirmation-modal";
 import { Button } from "@/src/components/ui/button";
 import { cn } from "@/src/lib/utils";
 import { Trash } from "lucide-react";
-import { useState } from "react";
 import { toast } from "sonner";
 
 interface DeleteButtonProps {
@@ -14,9 +15,19 @@ interface DeleteButtonProps {
     className?: string;
     size?: "default" | "sm" | "lg";
     text?: string;
+    appearance?: "soft" | "solid";
 }
 
-export function DeleteButton({ entityName, entityType, onDelete, deleteAction, className, size = "default", text }: DeleteButtonProps) {
+export function DeleteButton({
+    entityName,
+    entityType,
+    onDelete,
+    deleteAction,
+    className,
+    size = "default",
+    text,
+    appearance = "soft",
+}: DeleteButtonProps) {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -43,17 +54,27 @@ export function DeleteButton({ entityName, entityType, onDelete, deleteAction, c
         }
     };
 
+    const softAppearanceClasses =
+        "border border-destructive/30 bg-destructive/10 text-destructive hover:bg-destructive/15 focus-visible:ring-destructive/30";
+
     return (
         <>
             <Button
+                type="button"
                 onClick={handleDelete}
                 size={size}
-                className={cn("rounded-1 w-full", className)}
+                disabled={isDeleting}
+                aria-busy={isDeleting}
+                variant={appearance === "solid" ? "destructive" : "ghost"}
+                className={cn(
+                    "motion-base flex w-full items-center justify-center gap-2 rounded-full px-4",
+                    appearance === "soft" && softAppearanceClasses,
+                    className,
+                )}
             >
-                <Trash />
-                {text}
+                <Trash className="h-4 w-4" aria-hidden="true" />
+                <span>{text ?? "Delete"}</span>
             </Button>
-
 
             <ConfirmationModal
                 isOpen={isDeleteModalOpen}

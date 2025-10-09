@@ -106,8 +106,8 @@ export default async function ExerciseDetailPage(props: { params: Promise<{ id: 
                             </div>
                             <div className="flex flex-wrap gap-3">
                                 <Button asChild size="lg" variant="secondary" className="rounded-full">
-                                    <Link href={`/exercises/${exercise.id}/edit`}>
-                                        <Pencil className="mr-2 h-5 w-5" aria-hidden="true" />
+                                    <Link href={`/exercises/${exercise.id}/edit`} className="flex items-center gap-2">
+                                        <Pencil className="h-5 w-5" aria-hidden="true" />
                                         Edit exercise
                                     </Link>
                                 </Button>

@@ -94,10 +94,10 @@ export function ExerciseCard({ exercise, onDelete }: ExerciseCardProps) {
           asChild
           variant="ghost"
           size="sm"
-          className="w-full flex-1 rounded-full border border-border/70 bg-card/80 hover:bg-primary/10 hover:text-primary"
+          className="flex-1 justify-center rounded-full border border-border/60 bg-background/80 text-foreground hover:bg-background/90"
         >
           <Link href={`/exercises/${exercise.id}`}>
-            <Eye className="mr-2 h-4 w-4" aria-hidden="true" />
+            <Eye className="h-4 w-4" aria-hidden="true" />
             View
           </Link>
         </Button>
@@ -105,10 +105,10 @@ export function ExerciseCard({ exercise, onDelete }: ExerciseCardProps) {
           asChild
           variant="secondary"
           size="sm"
-          className="w-full flex-1 rounded-full"
+          className="flex-1 justify-center rounded-full"
         >
           <Link href={`/exercises/${exercise.id}/edit`}>
-            <Pencil className="mr-2 h-4 w-4" aria-hidden="true" />
+            <Pencil className="h-4 w-4" aria-hidden="true" />
             Edit
           </Link>
         </Button>
@@ -119,7 +119,7 @@ export function ExerciseCard({ exercise, onDelete }: ExerciseCardProps) {
           onDelete={onDelete}
           size="sm"
           text="Delete"
-          className="w-full flex-1 rounded-full"
+          className="flex-1"
         />
       </CardFooter>
     </Card>

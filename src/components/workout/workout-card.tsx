@@ -2,7 +2,6 @@ import Link from "next/link";
 
 import { WorkoutApiService } from "@/src/api/services/workout-api-service";
 import { IWorkoutSimple } from "@/src/models/domain/workout";
-import { cn } from "@/src/lib/utils";
 import { format } from "date-fns";
 import { Calendar, Eye, Pencil, Target } from "lucide-react";
 
@@ -108,7 +107,7 @@ export function WorkoutCard({ workout, onDelete }: WorkoutCardProps) {
                     asChild
                     size="sm"
                     variant="ghost"
-                    className="flex-1 justify-center rounded-full border border-border/60 bg-background/80 text-foreground hover:bg-background"
+                    className="flex-1 justify-center rounded-full border border-border/60 bg-background/80 text-foreground hover:bg-background/90"
                 >
                     <Link href={`/workouts/${workout.id}`}>
                         <Eye className="h-4 w-4" aria-hidden="true" />
@@ -133,10 +132,7 @@ export function WorkoutCard({ workout, onDelete }: WorkoutCardProps) {
                     onDelete={onDelete}
                     size="sm"
                     text="Delete"
-                    className={cn(
-                        "flex-1 justify-center rounded-full border border-destructive/30 bg-destructive/10 text-destructive hover:bg-destructive/15",
-                        "focus-visible:ring-destructive/30"
-                    )}
+                    className="flex-1"
                 />
             </CardFooter>
         </Card>

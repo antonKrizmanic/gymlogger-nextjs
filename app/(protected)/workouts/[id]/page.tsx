@@ -6,7 +6,7 @@ import { WorkoutDeleteButton } from "@/src/components/workout/workout-delete-but
 import { WorkoutExerciseList } from "@/src/components/workout/workout-exercise-list";
 import { getWorkout } from "@/src/data/workout";
 import { format } from "date-fns";
-import { Activity, Calendar, Dumbbell, MoveLeft, Notebook, Target } from "lucide-react";
+import { Activity, Calendar, Dumbbell, MoveLeft, Notebook, Pencil, Target } from "lucide-react";
 
 // Force dynamic rendering to prevent caching
 export const dynamic = 'force-dynamic';
@@ -125,7 +125,8 @@ export default async function WorkoutDetailPage(props: { params: Promise<{ id: s
                             </div>
                             <div className="flex flex-wrap gap-3">
                                 <Button asChild size="lg" variant="secondary" className="rounded-full">
-                                    <Link href={`/workouts/${workout.id}/edit`}>
+                                    <Link href={`/workouts/${workout.id}/edit`} className="flex items-center gap-2">
+                                        <Pencil className="h-5 w-5" aria-hidden="true" />
                                         Edit workout
                                     </Link>
                                 </Button>
