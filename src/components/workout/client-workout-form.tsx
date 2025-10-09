@@ -2,9 +2,8 @@
 
 import { WorkoutApiService } from "@/src/api/services/workout-api-service";
 import { IWorkoutCreate, IWorkoutUpdate } from "@/src/models/domain/workout";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/src/components/ui/sheet";
 import { useRouter } from "next/navigation";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { WorkoutForm } from "./workout-form";
 
@@ -67,38 +66,27 @@ export function ClientWorkoutForm({ title, workout, id, cancelHref }: ClientWork
     }
   };
 
-  const handleOpenChange = useCallback(
-    (open: boolean) => {
-      if (!open) {
-        router.push(cancelHref);
-      }
-    },
-    [cancelHref, router],
-  );
-
   return (
-    <Sheet open onOpenChange={handleOpenChange}>
-      <SheetContent side="right" className="flex h-full w-full flex-col gap-0 overflow-hidden border-0 p-0 sm:max-w-3xl lg:max-w-4xl">
-        <div className="border-b border-border px-6 py-5">
-          <SheetHeader className="space-y-2">
-            <SheetTitle>{title}</SheetTitle>
-            <SheetDescription>
-              {id
-                ? "Adjust the details, notes, and exercises for this session."
-                : "Outline the details, notes, and exercises for your upcoming session."}
-            </SheetDescription>
-          </SheetHeader>
-        </div>
-        <div className="flex-1 overflow-y-auto px-6 py-6">
-          <WorkoutForm
-            workoutId={id || null}
-            workout={workoutData}
-            onSubmit={handleSubmit}
-            cancelHref={cancelHref}
-            isLoading={isLoading}
-          />
-        </div>
-      </SheetContent>
-    </Sheet>
+    <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="space-y-3 border-b border-border pb-6">
+        <p className="type-label-sm text-primary/80">{id ? "Edit workout" : "Create workout"}</p>
+        <h1 className="type-heading-xl">{title}</h1>
+        <p className="type-body-md text-muted-foreground">
+          {id
+            ? "Adjust the details, notes, and exercises for this session."
+            : "Outline the details, notes, and exercises for your upcoming session."}
+        </p>
+      </div>
+
+      <div className="pt-8">
+        <WorkoutForm
+          workoutId={id || null}
+          workout={workoutData}
+          onSubmit={handleSubmit}
+          cancelHref={cancelHref}
+          isLoading={isLoading}
+        />
+      </div>
+    </div>
   );
 }

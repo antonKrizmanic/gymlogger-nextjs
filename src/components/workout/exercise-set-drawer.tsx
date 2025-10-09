@@ -10,14 +10,14 @@ import { ExerciseLogType } from "@/src/types/enums"
 import { Clock, Hash, StickyNote, Weight } from "lucide-react"
 
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from "../ui/drawer"
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from "../ui/sheet"
 
 interface ExerciseSetDrawerProps {
   open: boolean
@@ -72,16 +72,21 @@ export function ExerciseSetDrawer({
   const title = isNew ? "Add set" : `Edit set ${index + 1}`
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="border-t border-border bg-card/95">
-        <DrawerHeader className="gap-2 px-6 pt-6 text-left">
-          <DrawerTitle className="type-heading-xs">{title}</DrawerTitle>
-          <DrawerDescription>
-            Capture reps, load, time, and notes exactly as you would on desktop. Changes are applied when you confirm.
-          </DrawerDescription>
-        </DrawerHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent
+        side="right"
+        className="flex h-full w-full flex-col gap-0 border-l border-border bg-card/95 p-0 sm:max-w-lg"
+      >
+        <div className="border-b border-border/60 bg-background/95 px-6 py-6 backdrop-blur">
+          <SheetHeader className="gap-2 text-left">
+            <SheetTitle className="type-heading-sm">{title}</SheetTitle>
+            <SheetDescription>
+              Capture reps, load, time, and notes exactly as you would on desktop. Changes are applied when you confirm.
+            </SheetDescription>
+          </SheetHeader>
+        </div>
 
-        <div className="px-6">
+        <div className="flex-1 overflow-y-auto px-6">
           <SetForm
             exerciseType={exerciseType}
             localSet={localSet}
@@ -93,23 +98,25 @@ export function ExerciseSetDrawer({
           />
         </div>
 
-        <DrawerFooter className="space-y-3 border-t border-border/60 bg-muted/50 px-6 py-5">
-          <Button type="button" onClick={handleSave} className="h-11 gap-2">
-            {isNew ? "Add set" : "Save changes"}
-          </Button>
-          <DrawerClose asChild>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              className="h-11 border-2"
-            >
-              Cancel
+        <div className="border-t border-border/60 bg-muted/50 px-6 py-5">
+          <SheetFooter className="gap-3 sm:gap-4">
+            <Button type="button" onClick={handleSave} className="h-11 gap-2">
+              {isNew ? "Add set" : "Save changes"}
             </Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+            <SheetClose asChild>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                className="h-11 border-2"
+              >
+                Cancel
+              </Button>
+            </SheetClose>
+          </SheetFooter>
+        </div>
+      </SheetContent>
+    </Sheet>
   )
 }
 
