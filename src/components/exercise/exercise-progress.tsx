@@ -1,363 +1,393 @@
 'use client';
 
+import { useEffect, useMemo, useState } from 'react';
+
 import { ExerciseApiWorkoutService } from '@/src/api/services/exercise-workout-api-service';
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select';
 import { IExerciseWorkout } from '@/src/models/domain/workout';
 import { ExerciseLogType } from '@/src/types/enums';
 import { format } from 'date-fns';
-import { BarChart3, Repeat, TrendingUp, Weight } from 'lucide-react';
+import { BarChart3, Repeat, Sparkles, TrendingUp, Weight } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, TooltipContentProps, XAxis, YAxis } from 'recharts';
 import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 
 interface ExerciseProgressProps {
-	exerciseId: string;
+  exerciseId: string;
 }
 
 type ChartDataPoint = {
-	date: string;
-	formattedDate: string;
-	maxWeight?: number;
-	totalWeight?: number;
-	totalReps?: number;
-	maxReps?: number;
-	totalSets?: number;
-}
+  date: string;
+  formattedDate: string;
+  maxWeight?: number;
+  totalWeight?: number;
+  totalReps?: number;
+  maxReps?: number;
+  totalSets?: number;
+};
 
 type MetricType = 'maxWeight' | 'totalWeight' | 'maxReps' | 'totalReps' | 'totalSets';
 
 export function ExerciseProgress({ exerciseId }: ExerciseProgressProps) {
-	const [isLoading, setIsLoading] = useState(true);
-	const [exerciseWorkouts, setExerciseWorkouts] = useState<IExerciseWorkout[]>([]);
-	const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
-	const [metric, setMetric] = useState<MetricType>('maxWeight');
-	const [exerciseType, setExerciseType] = useState<ExerciseLogType>(ExerciseLogType.WeightAndReps);
-	const { resolvedTheme } = useTheme();
-	const isDarkMode = resolvedTheme === 'dark';
+  const [isLoading, setIsLoading] = useState(true);
+  const [exerciseWorkouts, setExerciseWorkouts] = useState<IExerciseWorkout[]>([]);
+  const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
+  const [metric, setMetric] = useState<MetricType>('maxWeight');
+  const [exerciseType, setExerciseType] = useState<ExerciseLogType>(ExerciseLogType.WeightAndReps);
+  const { resolvedTheme } = useTheme();
+  const isDarkMode = resolvedTheme === 'dark';
 
-	// Fetch all exercise workouts for the chart
-	useEffect(() => {
-		const fetchAllExerciseWorkouts = async () => {
-			setIsLoading(true);
-			try {
-				const service = new ExerciseApiWorkoutService();
-				// We need to fetch all records to show proper progress
-				// Using a large page size to get as many records as possible
-				const response = await service.getPaginatedExerciseWorkouts(exerciseId, 0, 100);
+  useEffect(() => {
+    const fetchAllExerciseWorkouts = async () => {
+      setIsLoading(true);
+      try {
+        const service = new ExerciseApiWorkoutService();
+        const response = await service.getPaginatedExerciseWorkouts(exerciseId, 0, 200);
 
-				setExerciseWorkouts(response.items);
+        setExerciseWorkouts(response.items);
 
-				if (response.items.length > 0) {
-					setExerciseType(response.items[0].exerciseLogType);
-				}
-			} catch (error) {
-				console.error('Error fetching exercise workout data for charts:', error);
-			} finally {
-				setIsLoading(false);
-			}
-		};
+        if (response.items.length > 0) {
+          setExerciseType(response.items[0].exerciseLogType);
+        }
+      } catch (error) {
+        console.error('Error fetching exercise workout data for charts:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-		fetchAllExerciseWorkouts();
-	}, [exerciseId]);
+    fetchAllExerciseWorkouts();
+  }, [exerciseId]);
 
-	// Process the data for charts
-	useEffect(() => {
-		if (!exerciseWorkouts.length) return;
+  useEffect(() => {
+    if (!exerciseWorkouts.length) {
+      setChartData([]);
+      return;
+    }
 
-		// Sort workouts by date (oldest first)
-		const sortedWorkouts = [...exerciseWorkouts].sort((a, b) => {
-			return new Date(a.workoutDate || 0).getTime() - new Date(b.workoutDate || 0).getTime();
-		});
+    const sortedWorkouts = [...exerciseWorkouts].sort((a, b) => {
+      return new Date(a.workoutDate || 0).getTime() - new Date(b.workoutDate || 0).getTime();
+    });
 
-		// Create chart data points
-		const data: ChartDataPoint[] = sortedWorkouts.map(workout => {
-			const workoutDate = workout.workoutDate ? new Date(workout.workoutDate) : new Date();
-			const formattedDate = format(workoutDate, 'MMM d, yyyy');
-			const dateStr = format(workoutDate, 'yyyy-MM-dd');
+    const data: ChartDataPoint[] = sortedWorkouts.map(workout => {
+      const workoutDate = workout.workoutDate ? new Date(workout.workoutDate) : new Date();
+      const formattedDate = format(workoutDate, 'MMM d, yyyy');
+      const dateStr = format(workoutDate, 'yyyy-MM-dd');
 
-			// Find max weight from sets
-			let maxWeight = 0;
-			let maxReps = 0;
+      let maxWeight = 0;
+      let maxReps = 0;
 
-			if (workout.sets && workout.sets.length > 0) {
-				workout.sets.forEach(set => {
-					if (set.weight && set.weight > maxWeight) {
-						maxWeight = set.weight;
-					}
-					if (set.reps && set.reps > maxReps) {
-						maxReps = set.reps;
-					}
-				});
-			}
+      if (workout.sets && workout.sets.length > 0) {
+        workout.sets.forEach(set => {
+          if (set.weight && set.weight > maxWeight) {
+            maxWeight = set.weight;
+          }
+          if (set.reps && set.reps > maxReps) {
+            maxReps = set.reps;
+          }
+        });
+      }
 
-			return {
-				date: dateStr,
-				formattedDate,
-				maxWeight,
-				totalWeight: workout.totalWeight || 0,
-				totalReps: workout.totalReps || 0,
-				maxReps,
-				totalSets: workout.totalSets || 0
-			};
-		});
+      return {
+        date: dateStr,
+        formattedDate,
+        maxWeight,
+        totalWeight: workout.totalWeight || 0,
+        totalReps: workout.totalReps || 0,
+        maxReps,
+        totalSets: workout.totalSets || 0,
+      };
+    });
 
-		setChartData(data);
-	}, [exerciseWorkouts]);
+    setChartData(data);
+  }, [exerciseWorkouts]);
 
-	const handleMetricChange = (value: string) => {
-		setMetric(value as MetricType);
-	};
+  const availableMetrics = useMemo(() => getAvailableMetrics(exerciseType), [exerciseType]);
 
-	// Get colors based on theme - using primary color
-	const getChartColors = () => {
-		return isDarkMode ? '#14b8a6' : '#0d9488';  // Primary teal
-	};
+  useEffect(() => {
+    if (!availableMetrics.some(item => item.value === metric)) {
+      setMetric(availableMetrics[0]?.value ?? 'totalSets');
+    }
+  }, [availableMetrics, metric]);
 
+  const currentMetricInfo = getMetricInfo(metric);
+  const CurrentMetricIcon = currentMetricInfo.icon;
 
-	const getMetricInfo = (metricType: MetricType) => {
-		const metricMap = {
-			maxWeight: {
-				label: 'Max Weight (kg)',
-				icon: Weight,
-				description: 'Heaviest single set weight achieved'
-			},
-			totalWeight: {
-				label: 'Total Weight (kg)',
-				icon: Weight,
-				description: 'Total weight lifted in the workout'
-			},
-			maxReps: {
-				label: 'Max Reps',
-				icon: Repeat,
-				description: 'Highest repetitions in a single set'
-			},
-			totalReps: {
-				label: 'Total Reps',
-				icon: Repeat,
-				description: 'Total repetitions across all sets'
-			},
-			totalSets: {
-				label: 'Total Sets',
-				icon: BarChart3,
-				description: 'Number of sets completed'
-			}
-		};
+  const latestValue = chartData.at(-1)?.[metric] ?? 0;
+  const previousValue = chartData.at(-2)?.[metric] ?? 0;
+  const delta = latestValue - previousValue;
 
-		return metricMap[metricType];
-	};
+  const chartColor = 'var(--chart-1)';
+  const gridColor = isDarkMode ? 'rgba(148, 163, 184, 0.25)' : 'rgba(100, 116, 139, 0.2)';
+  const axisColor = isDarkMode ? '#cbd5f5' : '#475569';
 
-	const getAvailableMetrics = () => {
-		// For weight and reps type, show all metrics
-		if (exerciseType === ExerciseLogType.WeightAndReps) {
-			return [
-				{ value: 'maxWeight', label: 'Max Weight', icon: Weight },
-				{ value: 'totalWeight', label: 'Total Weight', icon: Weight },
-				{ value: 'maxReps', label: 'Max Reps', icon: Repeat },
-				{ value: 'totalReps', label: 'Total Reps', icon: Repeat },
-				{ value: 'totalSets', label: 'Total Sets', icon: BarChart3 }
-			];
-		}
-		// For bodyweight exercises, show weight metrics (since bodyweight is included)
-		else if (exerciseType === ExerciseLogType.BodyWeight) {
-			return [
-				{ value: 'maxWeight', label: 'Max Weight (with Bodyweight)', icon: Weight },
-				{ value: 'totalWeight', label: 'Total Weight (with Bodyweight)', icon: Weight },
-				{ value: 'maxReps', label: 'Max Reps', icon: Repeat },
-				{ value: 'totalReps', label: 'Total Reps', icon: Repeat },
-				{ value: 'totalSets', label: 'Total Sets', icon: BarChart3 }
-			];
-		}
-		// For bodyweight with additional weight, show weight metrics
-		else if (exerciseType === ExerciseLogType.BodyWeightWithAdditionalWeight) {
-			return [
-				{ value: 'maxWeight', label: 'Max Weight (with Bodyweight)', icon: Weight },
-				{ value: 'totalWeight', label: 'Total Weight (with Bodyweight)', icon: Weight },
-				{ value: 'maxReps', label: 'Max Reps', icon: Repeat },
-				{ value: 'totalReps', label: 'Total Reps', icon: Repeat },
-				{ value: 'totalSets', label: 'Total Sets', icon: BarChart3 }
-			];
-		}
-		// For bodyweight with assistance, show weight metrics (assistance is subtracted)
-		else if (exerciseType === ExerciseLogType.BodyWeightWithAssistance) {
-			return [
-				{ value: 'maxWeight', label: 'Max Weight (Bodyweight - Assistance)', icon: Weight },
-				{ value: 'totalWeight', label: 'Total Weight (Bodyweight - Assistance)', icon: Weight },
-				{ value: 'maxReps', label: 'Max Reps', icon: Repeat },
-				{ value: 'totalReps', label: 'Total Reps', icon: Repeat },
-				{ value: 'totalSets', label: 'Total Sets', icon: BarChart3 }
-			];
-		}
-		// For reps only, don't show weight metrics
-		else if (exerciseType === ExerciseLogType.RepsOnly) {
-			return [
-				{ value: 'maxReps', label: 'Max Reps', icon: Repeat },
-				{ value: 'totalReps', label: 'Total Reps', icon: Repeat },
-				{ value: 'totalSets', label: 'Total Sets', icon: BarChart3 }
-			];
-		}
-		// For time only, just show sets for now
-		else {
-			return [
-				{ value: 'totalSets', label: 'Total Sets', icon: BarChart3 }
-			];
-		}
-	};
+  if (isLoading) {
+    return (
+      <Card className="border border-border/60 bg-card/80 shadow-none">
+        <CardContent className="flex h-64 flex-col items-center justify-center gap-4 text-muted-foreground">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <Sparkles className="h-6 w-6 animate-spin" aria-hidden="true" />
+          </div>
+          <p className="type-body-sm">Preparing progress charts…</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
-	if (isLoading) {
-		return (
-			<div className="flex items-center justify-center min-h-[300px]">
-				<div className="text-center space-y-4">
-					<div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mx-auto"></div>
-					<p className="text-muted-foreground">Loading progress data...</p>
-				</div>
-			</div>
-		);
-	}
+  if (!chartData.length) {
+    return (
+      <Card className="border border-dashed border-border/70 bg-card/60 shadow-none">
+        <CardContent className="flex flex-col items-center gap-4 py-16 text-center">
+          <TrendingUp className="h-12 w-12 text-primary" aria-hidden="true" />
+          <div className="space-y-2">
+            <h3 className="type-heading-sm text-foreground">No progress data yet</h3>
+            <p className="mx-auto max-w-md type-body-sm text-muted-foreground">
+              Complete a workout with this exercise to unlock visual trends for weight, reps, and volume.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
-	if (exerciseWorkouts.length === 0) {
-		return (
-			<div className="text-center py-12">
-				<div className="flex flex-col items-center space-y-4">
-					<div className="p-4 bg-muted/50 rounded-full">
-						<TrendingUp className="h-8 w-8 text-muted-foreground" />
-					</div>
-                                        <div className="space-y-2">
-                                                <h3 className="type-heading-sm text-foreground">No Progress Data</h3>
-                                                <p className="type-body-md text-muted-foreground max-w-md">
-                                                        Complete some workouts with this exercise to see your progress charts and analytics.
-                                                </p>
-                                        </div>
-                                </div>
-                        </div>
-		);
-	}
+  const CustomTooltip = ({ active, payload, label }: TooltipContentProps<ValueType, NameType>) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="rounded-2xl border border-border/70 bg-card/95 p-4 shadow-card-rest">
+          <p className="type-body-sm font-semibold text-foreground">{label}</p>
+          <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+            <span className="inline-flex h-2 w-2 rounded-full bg-primary" aria-hidden="true" />
+            <span>{currentMetricInfo.label}:</span>
+            <span className="font-semibold text-foreground">{formatMetricValue(payload[0].value as number, metric)}</span>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
 
-	const currentMetricInfo = getMetricInfo(metric);
-	const CurrentMetricIcon = currentMetricInfo.icon;
+  const latestDisplay = formatMetricValue(latestValue, metric);
+  const deltaDisplay = formatDelta(delta, metric);
+  const sessionsDisplay = `${chartData.length} session${chartData.length === 1 ? '' : 's'}`;
 
-	// Custom tooltip component
-	const CustomTooltip = ({ active, payload, label }: TooltipContentProps<ValueType, NameType>) => {
-		if (active && payload && payload.length) {
-			return (
-                                <div className="bg-card border border-border shadow-card-hover rounded-lg p-4">
-                                        <p className="type-body-sm text-muted-foreground font-semibold mb-2">{label}</p>
-                                        <div className="flex items-center space-x-2">
-                                                <div
-                                                        className="w-3 h-3 rounded-full"
-                                                        style={{ backgroundColor: payload[0].color }}
-                                                />
-                                                <span className="type-body-sm text-muted-foreground">
-                                                        {currentMetricInfo.label}:
-                                                </span>
-                                                <span className="type-body-sm font-semibold text-muted-foreground">
-                                                        {payload[0].value}
-                                                        {metric.includes('Weight') ? ' kg' : ''}
-                                                </span>
-                                        </div>
-                                </div>
-			);
-		}
-		return null;
-	};
+  return (
+    <Card className="border border-border/60 bg-card/95 shadow-card-rest">
+      <CardHeader className="space-y-6 border-b border-border/60">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex items-start gap-3">
+            <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <CurrentMetricIcon className="h-6 w-6" aria-hidden="true" />
+            </span>
+            <div className="space-y-2">
+              <CardTitle className="type-heading-sm text-foreground">{currentMetricInfo.label}</CardTitle>
+              <CardDescription className="type-body-sm text-muted-foreground">
+                {currentMetricInfo.description}
+              </CardDescription>
+              <div className="inline-flex items-center gap-2 rounded-full bg-muted/60 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <BarChart3 className="h-3.5 w-3.5" aria-hidden="true" />
+                {sessionsDisplay} tracked
+              </div>
+            </div>
+          </div>
 
-        return (
-                <Card className="border-0">
-                        <CardHeader className="pb-4">
-                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-                                        <div className="flex items-center space-x-3">
-                                                <div className="p-2 bg-primary/10 rounded-lg">
-                                                        <CurrentMetricIcon className="h-4 w-4" />
-                                                </div>
-                                                <div>
-                                                        <CardTitle className="type-heading-sm text-foreground">
-                                                                {currentMetricInfo.label}
-                                                        </CardTitle>
-                                                        <p className="type-body-sm text-muted-foreground mt-1">
-                                                                {currentMetricInfo.description}
-                                                        </p>
-                                                </div>
-                                        </div>
+          <div className="space-y-2">
+            <p className="type-label text-muted-foreground uppercase tracking-wide">Metric</p>
+            <Select value={metric} onValueChange={(value) => setMetric(value as MetricType)}>
+              <SelectTrigger className="w-full min-w-[220px] rounded-full border-border/70 bg-background/80">
+                <SelectValue placeholder="Select metric" />
+              </SelectTrigger>
+              <SelectContent>
+                {availableMetrics.map(option => {
+                  const OptionIcon = option.icon;
+                  return (
+                    <SelectItem key={option.value} value={option.value} className="py-2">
+                      <div className="flex items-center gap-2">
+                        <OptionIcon className="h-4 w-4" aria-hidden="true" />
+                        <span>{option.label}</span>
+                      </div>
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
-                                        <div className="space-y-1 flex-1 sm:flex-none">
-                                                <label className="type-label text-muted-foreground">
-                                                        Metric
-                                                </label>
-						<Select value={metric} onValueChange={handleMetricChange}>
-							<SelectTrigger className="w-full sm:w-[200px] h-10">
-								<SelectValue />
-							</SelectTrigger>
-							<SelectContent>
-								{getAvailableMetrics().map(option => {
-									const OptionIcon = option.icon;
-									return (
-										<SelectItem key={option.value} value={option.value}>
-											<div className="flex items-center space-x-2">
-												<OptionIcon className="h-4 w-4" />
-												<span>{option.label}</span>
-											</div>
-										</SelectItem>
-									);
-								})}
-							</SelectContent>
-						</Select>
-					</div>
-				</div>
-			</CardHeader>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="rounded-3xl border border-border/60 bg-background/70 px-5 py-4">
+            <p className="type-label text-muted-foreground uppercase tracking-wide">Latest value</p>
+            <p className="mt-2 type-heading-sm text-foreground">{latestDisplay}</p>
+            <p className="mt-1 type-body-sm text-muted-foreground">From your most recent workout</p>
+          </div>
+          <div className="rounded-3xl border border-border/60 bg-background/70 px-5 py-4">
+            <p className="type-label text-muted-foreground uppercase tracking-wide">Change vs. prior</p>
+            <p className="mt-2 type-heading-sm text-foreground">{deltaDisplay}</p>
+            <p className="mt-1 type-body-sm text-muted-foreground">Difference from the previous logged session</p>
+          </div>
+          <div className="rounded-3xl border border-border/60 bg-background/70 px-5 py-4">
+            <p className="type-label text-muted-foreground uppercase tracking-wide">Total sessions</p>
+            <p className="mt-2 type-heading-sm text-foreground">{chartData.length.toLocaleString()}</p>
+            <p className="mt-1 type-body-sm text-muted-foreground">Sessions included in this trend line</p>
+          </div>
+        </div>
+      </CardHeader>
 
-			<CardContent>
-				<div className="h-80 mt-4">
-					<ResponsiveContainer width="100%" height="100%">
-						<AreaChart
-							data={chartData}
-							margin={{ top: 20, right: 30, left: 20, bottom: 50 }}
-						>
-							<defs>
-								<linearGradient id={`gradient-${metric}`} x1="0" y1="0" x2="0" y2="1">
-									<stop offset="5%" stopColor={getChartColors()} stopOpacity={0.3} />
-									<stop offset="95%" stopColor={getChartColors()} stopOpacity={0.05} />
-								</linearGradient>
-							</defs>
-							<CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#334155' : '#e2e8f0'} />
-							<XAxis
-								dataKey="formattedDate"
-								angle={-45}
-								textAnchor="end"
-								height={70}
-								stroke={isDarkMode ? '#94a3b8' : '#64748b'}
-								fontSize={12}
-								fontWeight={500}
-							/>
-							<YAxis
-								stroke={isDarkMode ? '#94a3b8' : '#64748b'}
-								fontSize={12}
-								fontWeight={500}
-							/>
-							<Tooltip content={CustomTooltip} />
-							<Area
-								type="monotone"
-								dataKey={metric}
-								stroke={getChartColors()}
-								strokeWidth={3}
-								fill={`url(#gradient-${metric})`}
-								activeDot={{
-									r: 6,
-									fill: getChartColors(),
-									stroke: isDarkMode ? '#1a1f29' : '#ffffff',
-									strokeWidth: 2
-								}}
-								dot={{
-									r: 4,
-									fill: getChartColors(),
-									stroke: isDarkMode ? '#1a1f29' : '#ffffff',
-									strokeWidth: 1
-								}}
-							/>
-						</AreaChart>
-					</ResponsiveContainer>
-				</div>
-			</CardContent>
-		</Card>
-	);
+      <CardContent className="p-0">
+        <div className="h-[360px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart
+              data={chartData}
+              margin={{ top: 24, right: 24, left: 16, bottom: 32 }}
+            >
+              <defs>
+                <linearGradient id={`gradient-${metric}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={chartColor} stopOpacity={0.25} />
+                  <stop offset="95%" stopColor={chartColor} stopOpacity={0.05} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="4 4" stroke={gridColor} />
+              <XAxis
+                dataKey="formattedDate"
+                angle={-35}
+                textAnchor="end"
+                height={60}
+                stroke={axisColor}
+                fontSize={12}
+              />
+              <YAxis stroke={axisColor} fontSize={12} />
+              <Tooltip content={CustomTooltip} cursor={{ strokeDasharray: '3 3', stroke: 'var(--border)' }} />
+              <Area
+                type="monotone"
+                dataKey={metric}
+                stroke={chartColor}
+                strokeWidth={3}
+                fill={`url(#gradient-${metric})`}
+                activeDot={{
+                  r: 6,
+                  fill: chartColor,
+                  stroke: isDarkMode ? '#0f172a' : '#ffffff',
+                  strokeWidth: 2,
+                }}
+                dot={{
+                  r: 4,
+                  fill: chartColor,
+                  stroke: isDarkMode ? '#0f172a' : '#ffffff',
+                  strokeWidth: 1,
+                }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function getMetricInfo(metricType: MetricType) {
+  const metricMap = {
+    maxWeight: {
+      label: 'Max weight (kg)',
+      icon: Weight,
+      description: 'Heaviest single set recorded for this movement.',
+    },
+    totalWeight: {
+      label: 'Total weight (kg)',
+      icon: Weight,
+      description: 'Combined weight lifted per workout across all sets.',
+    },
+    maxReps: {
+      label: 'Max reps',
+      icon: Repeat,
+      description: 'Highest repetitions achieved in a single set.',
+    },
+    totalReps: {
+      label: 'Total reps',
+      icon: Repeat,
+      description: 'Sum of repetitions across every set in a workout.',
+    },
+    totalSets: {
+      label: 'Total sets',
+      icon: BarChart3,
+      description: 'Number of sets completed per workout.',
+    },
+  } as const;
+
+  return metricMap[metricType];
+}
+
+function getAvailableMetrics(exerciseType: ExerciseLogType) {
+  if (exerciseType === ExerciseLogType.WeightAndReps) {
+    return [
+      { value: 'maxWeight', label: 'Max weight', icon: Weight },
+      { value: 'totalWeight', label: 'Total weight', icon: Weight },
+      { value: 'maxReps', label: 'Max reps', icon: Repeat },
+      { value: 'totalReps', label: 'Total reps', icon: Repeat },
+      { value: 'totalSets', label: 'Total sets', icon: BarChart3 },
+    ];
+  }
+
+  if (
+    exerciseType === ExerciseLogType.BodyWeight ||
+    exerciseType === ExerciseLogType.BodyWeightWithAdditionalWeight ||
+    exerciseType === ExerciseLogType.BodyWeightWithAssistance
+  ) {
+    return [
+      { value: 'maxWeight', label: 'Max weight (bodyweight)', icon: Weight },
+      { value: 'totalWeight', label: 'Total weight (bodyweight)', icon: Weight },
+      { value: 'maxReps', label: 'Max reps', icon: Repeat },
+      { value: 'totalReps', label: 'Total reps', icon: Repeat },
+      { value: 'totalSets', label: 'Total sets', icon: BarChart3 },
+    ];
+  }
+
+  if (exerciseType === ExerciseLogType.RepsOnly) {
+    return [
+      { value: 'maxReps', label: 'Max reps', icon: Repeat },
+      { value: 'totalReps', label: 'Total reps', icon: Repeat },
+      { value: 'totalSets', label: 'Total sets', icon: BarChart3 },
+    ];
+  }
+
+  return [{ value: 'totalSets', label: 'Total sets', icon: BarChart3 }];
+}
+
+function formatMetricValue(value: number, metric: MetricType, withUnit = true) {
+  const unit = getMetricUnit(metric);
+  const numeric = Number.isFinite(value) ? value : 0;
+  const absolute = Math.abs(numeric);
+  const formattedMagnitude = Number.isInteger(absolute)
+    ? absolute.toLocaleString()
+    : absolute.toFixed(1);
+  const signedMagnitude = numeric < 0 ? `−${formattedMagnitude}` : formattedMagnitude;
+
+  if (!withUnit || !unit) {
+    return signedMagnitude;
+  }
+  return `${signedMagnitude} ${unit}`;
+}
+
+function formatDelta(value: number, metric: MetricType) {
+  if (Math.abs(value) < 0.05) {
+    const unit = getMetricUnit(metric);
+    return unit ? `0 ${unit}` : '0';
+  }
+
+  const sign = value > 0 ? '+' : '−';
+  return `${sign}${formatMetricValue(Math.abs(value), metric, true)}`;
+}
+
+function getMetricUnit(metric: MetricType) {
+  switch (metric) {
+    case 'maxWeight':
+    case 'totalWeight':
+      return 'kg';
+    case 'maxReps':
+    case 'totalReps':
+      return 'reps';
+    case 'totalSets':
+      return 'sets';
+    default:
+      return '';
+  }
 }

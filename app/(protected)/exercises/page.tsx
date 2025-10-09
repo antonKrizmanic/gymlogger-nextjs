@@ -1,89 +1,66 @@
 "use client";
-import { Container } from '@/src/components/common/container';
-import { Button } from '@/src/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
-import { ExerciseIndex } from '@/src/views/exercise/exercise-index';
-import { Activity, Filter, Plus } from 'lucide-react';
-import Link from 'next/link';
-import React, { Suspense, useState } from 'react';
 
-// Create a client component that contains the ExerciseIndex with useSearchParams
-const ExerciseContent = () => {
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
+import { useState } from "react";
 
-  // Listen for the toggle filter event
-  React.useEffect(() => {
-    const handleToggleFilter = () => {
-      setIsFilterOpen(prev => !prev);
-    };
-
-    window.addEventListener('toggleExerciseFilter', handleToggleFilter);
-    return () => window.removeEventListener('toggleExerciseFilter', handleToggleFilter);
-  }, []);
-
-  return (
-    <ExerciseIndex isFilterOpen={isFilterOpen} />
-  );
-};
+import { Container } from "@/src/components/common/container";
+import { Button } from "@/src/components/ui/button";
+import { ExerciseIndex } from "@/src/views/exercise/exercise-index";
+import { Filter, LibraryBig, Plus } from "lucide-react";
+import Link from "next/link";
 
 export default function ExercisesPage() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-accent/20">
-      <Container>
-        {/* Hero Section */}
-        <div className="space-y-6 pb-8">
-          <div className="space-y-4">
-            <h1 className="type-display-sm lg:type-display-md text-foreground flex items-center gap-4">
-              <div className="p-3 bg-primary/10 rounded-xl">
-                <Activity className="h-8 w-8 text-primary" />
-              </div>
-              Exercise Library
-            </h1>
-            <p className="type-body-lg text-muted-foreground max-w-2xl">
-              Discover and master new exercises. Build your perfect workout routine with
-              our comprehensive exercise database and tracking tools.
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button asChild size="lg" className="px-6 py-3 text-lg font-semibold">
-              <Link href="/exercises/create">
-                <Plus className="mr-2 h-5 w-5" />
-                Add Exercise
-              </Link>
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="px-6 py-3 text-lg font-semibold"
-              onClick={() => {
-                const event = new CustomEvent('toggleExerciseFilter');
-                window.dispatchEvent(event);
-              }}
-            >
-              <Filter className="mr-2 h-5 w-5" />
-              Filter & Search
-            </Button>
-          </div>
-        </div>
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
-        {/* Exercises List */}
-        <Card className="border-0">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-foreground">
-              <Activity className="h-6 w-6 text-primary" />
-              All Exercises
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Suspense fallback={
-              <div className="flex items-center justify-center min-h-[400px]">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-accent/10">
+      <Container>
+        <div className="space-y-10 py-10">
+          <header className="space-y-6">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+              <div className="space-y-3">
+                <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
+                  <LibraryBig className="h-3.5 w-3.5" aria-hidden="true" />
+                  Exercises
+                </div>
+                <div className="space-y-2">
+                  <h1 className="type-heading-lg text-foreground">Explore and organise your exercise library</h1>
+                  <p className="max-w-2xl type-body-sm text-muted-foreground">
+                    Search, filter, and review every movement in your routine. Persistent filters help you quickly narrow down options without losing your place.
+                  </p>
+                </div>
               </div>
-            }>
-              <ExerciseContent />
-            </Suspense>
-          </CardContent>
-        </Card>
+              <Button asChild size="lg" className="hidden shrink-0 shadow-card-rest lg:inline-flex">
+                <Link href="/exercises/create">
+                  <Plus className="mr-2 h-5 w-5" aria-hidden="true" />
+                  Add exercise
+                </Link>
+              </Button>
+            </div>
+
+            <div className="flex flex-wrap gap-3 lg:hidden">
+              <Button asChild size="lg" className="flex-1 shadow-card-rest">
+                <Link href="/exercises/create">
+                  <Plus className="mr-2 h-5 w-5" aria-hidden="true" />
+                  Add exercise
+                </Link>
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                className="flex-1"
+                onClick={() => setIsMobileFiltersOpen(open => !open)}
+              >
+                <Filter className="mr-2 h-5 w-5" aria-hidden="true" />
+                {isMobileFiltersOpen ? "Hide filters" : "Show filters"}
+              </Button>
+            </div>
+          </header>
+
+          <ExerciseIndex
+            isFilterOpen={isMobileFiltersOpen}
+            onFiltersDismiss={() => setIsMobileFiltersOpen(false)}
+          />
+        </div>
       </Container>
     </div>
   );

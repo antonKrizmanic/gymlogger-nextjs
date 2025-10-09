@@ -33,10 +33,10 @@
 - [x] Align mobile dialogs such as `ExerciseSetDrawer` with desktop styling for spacing, labels, and CTAs.
 
 ## Exercises catalog & analytics
-- [ ] Apply workouts layout improvements to the exercises catalog including persistent filters and masonry cards.
-- [ ] Update `ExerciseCard` with new headers, metadata layout, and button styling.
-- [ ] Redesign `ExerciseDetailPage` header, tabs, and analytics charts for consistency with dashboard visuals.
-- [ ] Harmonize `ExerciseWorkoutHistory` and `ExerciseProgress` charts with shared palettes and empty states.
+- [x] Apply workouts layout improvements to the exercises catalog including persistent filters and masonry cards.
+- [x] Update `ExerciseCard` with new headers, metadata layout, and button styling.
+- [x] Redesign `ExerciseDetailPage` header, tabs, and analytics charts for consistency with dashboard visuals.
+- [x] Harmonize `ExerciseWorkoutHistory` and `ExerciseProgress` charts with shared palettes and empty states.
 
 ## Profile & account management
 - [ ] Create a two-column profile layout with overview card and editable panels.
