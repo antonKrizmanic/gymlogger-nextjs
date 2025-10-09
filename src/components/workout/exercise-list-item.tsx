@@ -1,7 +1,18 @@
 "use client"
 import { memo, useCallback, useEffect, useMemo, useState } from "react"
 
-import { Copy, Info, Pencil, PlusCircle, StickyNote, X } from "lucide-react"
+import { format } from "date-fns"
+import {
+  ChevronDown,
+  ChevronUp,
+  Copy,
+  GripVertical,
+  Info,
+  Pencil,
+  PlusCircle,
+  StickyNote,
+  X,
+} from "lucide-react"
 
 import { ExerciseApiService } from "@/src/api/services/exercise-api-service"
 import { ExerciseApiWorkoutService } from "@/src/api/services/exercise-workout-api-service"
@@ -9,12 +20,12 @@ import type { IExercise } from "@/src/models/domain/exercise"
 import type { IExerciseSetCreate, IExerciseWorkout, IExerciseWorkoutCreate } from "@/src/models/domain/workout"
 import { ExerciseLogType } from "@/src/types/enums"
 
-import { Button } from "@/src/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/src/components/ui/collapsible"
-// IconTextarea no longer used here; CollapsibleNote handles input
 import { CollapsibleNote } from "@/src/components/common/collapsible-note"
+import { Badge } from "@/src/components/ui/badge"
+import { Button } from "@/src/components/ui/button"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/src/components/ui/collapsible"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/components/ui/table"
+import { cn } from "@/src/lib/utils"
 import { ExerciseSelect } from "./exercise-select"
 import { ExerciseSetDrawer } from "./exercise-set-drawer"
 import { ExerciseSetEdit } from "./exercise-set-edit"
@@ -27,6 +38,12 @@ interface ExerciseListItemProps {
   onExerciseChange: (exercise: IExerciseWorkoutCreate, index: number) => void
   onRemoveExercise: (index: number) => void
   onAddExercise: (index: number, exerciseId: string) => void
+  isExpanded: boolean
+  onToggle: (open: boolean) => void
+  onMoveUp: () => void
+  onMoveDown: () => void
+  isFirst: boolean
+  isLast: boolean
 }
 
 export const ExerciseListItem = memo(function ExerciseListItem({
@@ -36,6 +53,12 @@ export const ExerciseListItem = memo(function ExerciseListItem({
   onExerciseChange,
   onRemoveExercise,
   onAddExercise,
+  isExpanded,
+  onToggle,
+  onMoveUp,
+  onMoveDown,
+  isFirst,
+  isLast,
 }: ExerciseListItemProps) {
   const [lastExercise, setLastExercise] = useState<IExerciseWorkout | null>(null)
   const [selectedExercise, setSelectedExercise] = useState<IExercise | null>(null)
@@ -74,7 +97,6 @@ export const ExerciseListItem = memo(function ExerciseListItem({
   // Don't auto-expand notes - let user decide
 
   const handleExerciseSelect = useCallback(async (exerciseId: string) => {
-    console.log("Selected exercise ID:", exerciseId)
     // Let the parent component know about the change
     onAddExercise(index, exerciseId)
   }, [onAddExercise, index])
@@ -196,212 +218,306 @@ export const ExerciseListItem = memo(function ExerciseListItem({
     setsCount: exercise.sets?.length || 0,
   }), [selectedExercise?.description, exercise.sets?.length])
 
+  const exerciseTypeLabel = useMemo(() => {
+    switch (exerciseLogType) {
+      case ExerciseLogType.WeightAndReps:
+        return "Weight + reps"
+      case ExerciseLogType.BodyWeight:
+        return "Bodyweight"
+      case ExerciseLogType.BodyWeightWithAdditionalWeight:
+        return "Bodyweight + load"
+      case ExerciseLogType.BodyWeightWithAssistance:
+        return "Bodyweight + assist"
+      case ExerciseLogType.RepsOnly:
+        return "Reps"
+      case ExerciseLogType.TimeOnly:
+        return "Time"
+      default:
+        return "Sets"
+    }
+  }, [exerciseLogType])
+
+  const lastWorkoutDate = useMemo(() => {
+    if (!lastExercise?.workoutDate) {
+      return null
+    }
+    try {
+      return format(new Date(lastExercise.workoutDate), "PPP")
+    } catch {
+      return null
+    }
+  }, [lastExercise?.workoutDate])
+
+  const setsBadgeLabel = `${exerciseDisplayProps.setsCount || 0} set${exerciseDisplayProps.setsCount === 1 ? "" : "s"}`
+
   return (
-    <Card className="border-0 border-b-1 rounded-none p-0 pb-4 bg-gradient-to-br from-card to-card/80 overflow-hidden">
-      <CardHeader className="pb-0 flex flex-row items-center justify-between">
-        <CardTitle className="text-xl font-bold text-foreground">
-          {index + 1}. Exercise
-        </CardTitle>
-        {/* Remove button */}
-        <Button
-          type="button"
-          onClick={() => onRemoveExercise(index)}
-          variant="ghost"
-          size="icon"
-          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-        >
-          <X className="h-5 w-5" />
-          <span className="sr-only">Remove exercise</span>
-        </Button>
-      </CardHeader>
-      <CardContent className="space-y-4 p-0">
-        {/* Exercise selection */}
-        <div className="w-full">
-          <ExerciseSelect
-            selectedExerciseId={exercise.exerciseId}
-            onExerciseSelect={(exerciseId) => handleExerciseSelect(exerciseId)}
-            required
-          />
+    <Collapsible open={isExpanded} onOpenChange={onToggle}>
+      <div className={cn("flex flex-col", isExpanded ? "bg-card/95" : "bg-card")}>
+        <div className="flex flex-col gap-4 p-4 sm:p-6">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="flex min-w-0 flex-1 items-start gap-3">
+              <span className="mt-1 flex size-8 items-center justify-center rounded-full bg-primary/15 text-sm font-semibold text-primary">
+                {index + 1}
+              </span>
+              <div className="flex min-w-0 flex-1 items-start gap-2">
+                <span className="mt-2 text-muted-foreground/80">
+                  <GripVertical className="size-5" aria-hidden />
+                  <span className="sr-only">Drag to reorder exercise {index + 1}</span>
+                </span>
+                <CollapsibleTrigger asChild>
+                  <button
+                    type="button"
+                    className="min-w-0 flex-1 text-left"
+                  >
+                    <p className="type-label text-muted-foreground">Exercise</p>
+                    <div className="flex items-center gap-2">
+                      <p className="truncate text-base font-semibold text-foreground">
+                        {selectedExercise?.name || "Select an exercise"}
+                      </p>
+                      <ChevronDown
+                        className={cn(
+                          "size-4 shrink-0 transition-transform",
+                          isExpanded ? "rotate-180" : "rotate-0",
+                        )}
+                        aria-hidden
+                      />
+                    </div>
+                  </button>
+                </CollapsibleTrigger>
+              </div>
+            </div>
+            <div className="flex items-center gap-1">
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="size-9 text-muted-foreground hover:text-foreground"
+                onClick={onMoveUp}
+                disabled={isFirst}
+              >
+                <ChevronUp className="size-4" aria-hidden />
+                <span className="sr-only">Move exercise up</span>
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="size-9 text-muted-foreground hover:text-foreground"
+                onClick={onMoveDown}
+                disabled={isLast}
+              >
+                <ChevronDown className="size-4" aria-hidden />
+                <span className="sr-only">Move exercise down</span>
+              </Button>
+              <Button
+                type="button"
+                onClick={() => onRemoveExercise(index)}
+                variant="ghost"
+                size="icon"
+                className="size-9 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+              >
+                <X className="size-4" aria-hidden />
+                <span className="sr-only">Remove exercise</span>
+              </Button>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="secondary" className="bg-primary/10 text-primary">
+              {exerciseTypeLabel}
+            </Badge>
+            <Badge variant="outline">{setsBadgeLabel}</Badge>
+            {selectedExercise?.muscleGroupName ? (
+              <Badge variant="outline" className="capitalize">
+                {selectedExercise.muscleGroupName.toLowerCase()}
+              </Badge>
+            ) : null}
+            {lastWorkoutDate ? (
+              <Badge variant="outline" className="gap-1">
+                <Info className="size-3.5" aria-hidden />
+                Last: {lastWorkoutDate}
+              </Badge>
+            ) : null}
+          </div>
         </div>
 
-        {exerciseDisplayProps.hasDescription && (
-          <div className="p-3 bg-muted/50 rounded-lg border-l-4 border-primary/20">
-            <p className="text-sm text-muted-foreground">{exerciseDisplayProps.description}</p>
-          </div>
-        )}
-
-        {/* Notes field */}
-        <CollapsibleNote
-          label="Exercise Notes"
-          value={exercise.note || ""}
-          onChange={handleNoteValueChange}
-          icon={StickyNote}
-          placeholder="Add notes for this exercise..."
-        />
-
-        {lastExercise && (
-          <Collapsible open={isLastWorkoutOpen} onOpenChange={setIsLastWorkoutOpen} className="p-2">
-            <CollapsibleTrigger asChild>
-              <Button variant="ghost" className="flex w-full justify-between p-2">
-                <span className="text-sm font-medium">Last workout</span>
-                <Info className="h-4 w-4" />
-              </Button>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="pt-2">
-              <ExerciseSets exercise={lastExercise} />
-            </CollapsibleContent>
-          </Collapsible>
-        )}
-
-        {/* Sets section */}
-        {exercise.exerciseId && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-medium">Sets</h3>
+        <CollapsibleContent className="border-t border-border/60">
+          <div className="space-y-6 p-4 sm:p-6">
+            <div className="w-full">
+              <ExerciseSelect
+                selectedExerciseId={exercise.exerciseId}
+                onExerciseSelect={(exerciseId) => handleExerciseSelect(exerciseId)}
+                required
+              />
             </div>
 
-            {/* Desktop view - show the original set editor */}
-            <div className="hidden md:block space-y-2">
-              {exercise.sets?.map((set, setIndex) => (
-                <ExerciseSetEdit
-                  key={setIndex}
-                  set={set}
-                  index={setIndex}
-                  exerciseType={exerciseLogType}
-                  onSetChange={(updatedSet) => handleSetChange(setIndex, updatedSet)}
-                  onCopy={() => handleCopySet(setIndex)}
-                  onRemove={() => handleRemoveSet(setIndex)}
-                />
-              ))}
-            </div>
+            {exerciseDisplayProps.hasDescription && (
+              <div className="rounded-xl border border-dashed border-primary/30 bg-primary/5 p-4">
+                <p className="type-helper text-muted-foreground">{exerciseDisplayProps.description}</p>
+              </div>
+            )}
 
-            {/* Mobile view - show a table of sets */}
-            <div className="md:hidden">
-              {exercise.sets && exercise.sets.length > 0 ? (
-                <div className="border rounded-md overflow-hidden">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-[50px] text-gray-500 dark:text-white">Set</TableHead>
+            <CollapsibleNote
+              label="Exercise notes"
+              value={exercise.note || ""}
+              onChange={handleNoteValueChange}
+              icon={StickyNote}
+              placeholder="Add cues, warm-up details, or modifications..."
+            />
 
-                        {exerciseLogType === ExerciseLogType.WeightAndReps && (
-                          <>
-                            <TableHead className="text-gray-500 dark:text-white">Reps</TableHead>
-                            <TableHead className="text-gray-500 dark:text-white">Kg</TableHead>
-                          </>
-                        )}
+            {lastExercise && (
+              <Collapsible open={isLastWorkoutOpen} onOpenChange={setIsLastWorkoutOpen}>
+                <CollapsibleTrigger asChild>
+                  <Button variant="ghost" className="group flex w-full items-center justify-between px-3 py-2">
+                    <span className="type-label">Last workout details</span>
+                    <ChevronDown
+                      className={cn(
+                        "size-4 transition-transform group-data-[state=open]:rotate-180",
+                        isLastWorkoutOpen && "rotate-180",
+                      )}
+                      aria-hidden
+                    />
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="pt-3">
+                  <ExerciseSets exercise={lastExercise} />
+                </CollapsibleContent>
+              </Collapsible>
+            )}
 
-                        {exerciseLogType === ExerciseLogType.BodyWeight && (
-                          <TableHead className="text-gray-500 dark:text-white">Reps</TableHead>
-                        )}
-
-                        {exerciseLogType === ExerciseLogType.BodyWeightWithAdditionalWeight && (
-                          <>
-                            <TableHead className="text-gray-500 dark:text-white">Reps</TableHead>
-                            <TableHead className="text-gray-500 dark:text-white">Extra Kg</TableHead>
-                          </>
-                        )}
-
-                        {exerciseLogType === ExerciseLogType.BodyWeightWithAssistance && (
-                          <>
-                            <TableHead className="text-gray-500 dark:text-white">Reps</TableHead>
-                            <TableHead className="text-gray-500 dark:text-white">Assistance Kg</TableHead>
-                          </>
-                        )}
-
-                        {exerciseLogType === ExerciseLogType.RepsOnly && <TableHead className="text-gray-500 dark:text-white">Reps</TableHead>}
-
-                        {exerciseLogType === ExerciseLogType.TimeOnly && <TableHead className="text-gray-500 dark:text-white">Time</TableHead>}
-
-                        <TableHead className="w-[70px] text-gray-500 dark:text-white">Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {exercise.sets.map((set, setIndex) => (
-                        <TableRow key={setIndex}>
-                          <TableCell>{setIndex + 1}</TableCell>
-
-                          {exerciseLogType === ExerciseLogType.WeightAndReps && (
-                            <>
-                              <TableCell>{set.reps || "-"}</TableCell>
-                              <TableCell>{set.weight || "-"}</TableCell>
-                            </>
-                          )}
-
-                          {exerciseLogType === ExerciseLogType.BodyWeight && (
-                            <TableCell>{set.reps || "-"}</TableCell>
-                          )}
-
-                          {exerciseLogType === ExerciseLogType.BodyWeightWithAdditionalWeight && (
-                            <>
-                              <TableCell>{set.reps || "-"}</TableCell>
-                              <TableCell>{set.weight || "-"}</TableCell>
-                            </>
-                          )}
-
-                          {exerciseLogType === ExerciseLogType.BodyWeightWithAssistance && (
-                            <>
-                              <TableCell>{set.reps || "-"}</TableCell>
-                              <TableCell>{set.weight || "-"}</TableCell>
-                            </>
-                          )}
-
-                          {exerciseLogType === ExerciseLogType.RepsOnly && <TableCell>{set.reps || "-"}</TableCell>}
-
-                          {exerciseLogType === ExerciseLogType.TimeOnly && (
-                            <TableCell>{set.time ? `${set.time}s` : "-"}</TableCell>
-                          )}
-
-                          <TableCell>
-                            <div className="flex items-center space-x-1">
-                              <Button
-                                type="button"
-                                onClick={() => handleCopySet(setIndex)}
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                              >
-                                <Copy className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                onClick={() => handleEditSet(setIndex)}
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8"
-                              >
-                                <Pencil className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                onClick={() => handleRemoveSet(setIndex)}
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8 text-destructive"
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+            {exercise.exerciseId && (
+              <div className="space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <h3 className="type-label text-muted-foreground">Sets</h3>
+                  <Button type="button" onClick={handleAddSet} size="sm" className="gap-2">
+                    <PlusCircle className="size-4" aria-hidden />
+                    Add set
+                  </Button>
                 </div>
-              ) : (
-                <p className="text-sm text-muted-foreground text-center py-4">No sets added yet</p>
-              )}
-            </div>
 
-            <Button type="button" onClick={handleAddSet} variant="outline" className="w-full">
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Add Set
-            </Button>
+                <div className="hidden space-y-3 md:block">
+                  {exercise.sets?.map((set, setIndex) => (
+                    <ExerciseSetEdit
+                      key={setIndex}
+                      set={set}
+                      index={setIndex}
+                      exerciseType={exerciseLogType}
+                      onSetChange={(updatedSet) => handleSetChange(setIndex, updatedSet)}
+                      onCopy={() => handleCopySet(setIndex)}
+                      onRemove={() => handleRemoveSet(setIndex)}
+                    />
+                  ))}
+                  {(!exercise.sets || exercise.sets.length === 0) && (
+                    <div className="rounded-lg border border-dashed border-muted-foreground/40 p-4 text-center text-sm text-muted-foreground">
+                      No sets yet. Use “Add set” to start building this exercise.
+                    </div>
+                  )}
+                </div>
+
+                <div className="md:hidden">
+                  {exercise.sets && exercise.sets.length > 0 ? (
+                    <div className="overflow-hidden rounded-lg border">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="w-[50px]">Set</TableHead>
+                            {exerciseLogType === ExerciseLogType.WeightAndReps && (
+                              <>
+                                <TableHead>Reps</TableHead>
+                                <TableHead>Kg</TableHead>
+                              </>
+                            )}
+                            {exerciseLogType === ExerciseLogType.BodyWeight && <TableHead>Reps</TableHead>}
+                            {exerciseLogType === ExerciseLogType.BodyWeightWithAdditionalWeight && (
+                              <>
+                                <TableHead>Reps</TableHead>
+                                <TableHead>Extra Kg</TableHead>
+                              </>
+                            )}
+                            {exerciseLogType === ExerciseLogType.BodyWeightWithAssistance && (
+                              <>
+                                <TableHead>Reps</TableHead>
+                                <TableHead>Assist Kg</TableHead>
+                              </>
+                            )}
+                            {exerciseLogType === ExerciseLogType.RepsOnly && <TableHead>Reps</TableHead>}
+                            {exerciseLogType === ExerciseLogType.TimeOnly && <TableHead>Time</TableHead>}
+                            <TableHead className="w-[80px]">Actions</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {exercise.sets.map((set, setIndex) => (
+                            <TableRow key={setIndex}>
+                              <TableCell>{setIndex + 1}</TableCell>
+                              {exerciseLogType === ExerciseLogType.WeightAndReps && (
+                                <>
+                                  <TableCell>{set.reps || "-"}</TableCell>
+                                  <TableCell>{set.weight || "-"}</TableCell>
+                                </>
+                              )}
+                              {exerciseLogType === ExerciseLogType.BodyWeight && <TableCell>{set.reps || "-"}</TableCell>}
+                              {exerciseLogType === ExerciseLogType.BodyWeightWithAdditionalWeight && (
+                                <>
+                                  <TableCell>{set.reps || "-"}</TableCell>
+                                  <TableCell>{set.weight || "-"}</TableCell>
+                                </>
+                              )}
+                              {exerciseLogType === ExerciseLogType.BodyWeightWithAssistance && (
+                                <>
+                                  <TableCell>{set.reps || "-"}</TableCell>
+                                  <TableCell>{set.weight || "-"}</TableCell>
+                                </>
+                              )}
+                              {exerciseLogType === ExerciseLogType.RepsOnly && <TableCell>{set.reps || "-"}</TableCell>}
+                              {exerciseLogType === ExerciseLogType.TimeOnly && (
+                                <TableCell>{set.time ? `${set.time}s` : "-"}</TableCell>
+                              )}
+                              <TableCell>
+                                <div className="flex items-center gap-1">
+                                  <Button
+                                    type="button"
+                                    onClick={() => handleCopySet(setIndex)}
+                                    variant="ghost"
+                                    size="icon"
+                                    className="size-8 text-muted-foreground hover:text-foreground"
+                                  >
+                                    <Copy className="size-4" aria-hidden />
+                                  </Button>
+                                  <Button
+                                    onClick={() => handleEditSet(setIndex)}
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="size-8"
+                                  >
+                                    <Pencil className="size-4" aria-hidden />
+                                  </Button>
+                                  <Button
+                                    onClick={() => handleRemoveSet(setIndex)}
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="size-8 text-destructive"
+                                  >
+                                    <X className="size-4" aria-hidden />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  ) : (
+                    <div className="py-4 text-center text-sm text-muted-foreground">No sets added yet</div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </CardContent>
+        </CollapsibleContent>
+      </div>
 
-      {/* Dialog for adding/editing sets on mobile */}
       <ExerciseSetDrawer
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
@@ -411,7 +527,7 @@ export const ExerciseListItem = memo(function ExerciseListItem({
         onSave={handleDialogSave}
         isNew={currentSetIndex === null}
       />
-    </Card >
+    </Collapsible>
   )
 })
 

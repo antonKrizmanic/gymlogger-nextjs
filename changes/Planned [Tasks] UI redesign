@@ -28,9 +28,9 @@
 - [x] Redesign `WorkoutDetailPage` with timeline banner, stat cards, and accordion exercise sections.
 
 ## Workout creation & editing
-- [ ] Organize `WorkoutForm` into step-based sections with sticky progress indicator and helper modals.
-- [ ] Refresh `ExerciseList` and `ExerciseListItem` to use accordions, drag handles, and chip metadata while retaining current interactions.
-- [ ] Align mobile dialogs such as `ExerciseSetDrawer` with desktop styling for spacing, labels, and CTAs.
+- [x] Organize `WorkoutForm` into step-based sections with sticky progress indicator and helper modals.
+- [x] Refresh `ExerciseList` and `ExerciseListItem` to use accordions, drag handles, and chip metadata while retaining current interactions.
+- [x] Align mobile dialogs such as `ExerciseSetDrawer` with desktop styling for spacing, labels, and CTAs.
 
 ## Exercises catalog & analytics
 - [ ] Apply workouts layout improvements to the exercises catalog including persistent filters and masonry cards.

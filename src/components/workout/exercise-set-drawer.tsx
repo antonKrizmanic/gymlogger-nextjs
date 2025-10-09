@@ -1,14 +1,23 @@
 "use client"
 
 import type React from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { Button } from "@/src/components/ui/button"
 import { IconInput } from "@/src/components/ui/icon-input"
 import type { IExerciseSetCreate } from "@/src/models/domain/workout"
 import { ExerciseLogType } from "@/src/types/enums"
 import { Clock, Hash, StickyNote, Weight } from "lucide-react"
-import { useEffect, useRef, useState } from "react"
-import { Drawer, DrawerClose, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from "../ui/drawer"
+
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from "../ui/drawer"
 
 interface ExerciseSetDrawerProps {
   open: boolean
@@ -32,28 +41,27 @@ export function ExerciseSetDrawer({
   const [localSet, setLocalSet] = useState<IExerciseSetCreate>(set)
   const firstFieldRef = useRef<HTMLInputElement>(null)
 
-  // Update local state when the set prop changes
   useEffect(() => {
     setLocalSet(set)
-  }, [set])  
+  }, [set])
 
-  const handleWeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const weight = e.target.value ? Number(e.target.value) : undefined
+  const handleWeightChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const weight = event.target.value ? Number(event.target.value) : undefined
     setLocalSet({ ...localSet, weight })
   }
 
-  const handleRepsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const reps = e.target.value ? Number(e.target.value) : undefined
+  const handleRepsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const reps = event.target.value ? Number(event.target.value) : undefined
     setLocalSet({ ...localSet, reps })
   }
 
-  const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const time = e.target.value ? Number(e.target.value) : undefined
+  const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const time = event.target.value ? Number(event.target.value) : undefined
     setLocalSet({ ...localSet, time })
   }
 
-  const handleNoteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const note = e.target.value
+  const handleNoteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const note = event.target.value
     setLocalSet({ ...localSet, note })
   }
 
@@ -61,36 +69,40 @@ export function ExerciseSetDrawer({
     onSave(localSet)
   }
 
+  const title = isNew ? "Add set" : `Edit set ${index + 1}`
+
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="border-t-2 border-primary/20">
-        <DrawerHeader className="text-center space-y-2">          
-          <DrawerTitle className="text-xl font-bold">
-            {isNew ? "Add New Set" : `Edit Set ${index + 1}`}
-          </DrawerTitle>          
+      <DrawerContent className="border-t border-border bg-card/95">
+        <DrawerHeader className="gap-2 px-6 pt-6 text-left">
+          <DrawerTitle className="type-heading-xs">{title}</DrawerTitle>
+          <DrawerDescription>
+            Capture reps, load, time, and notes exactly as you would on desktop. Changes are applied when you confirm.
+          </DrawerDescription>
         </DrawerHeader>
-        <SetForm
-          exerciseType={exerciseType}
-          localSet={localSet}
-          firstFieldRef={firstFieldRef}
-          handleWeightChange={handleWeightChange}
-          handleRepsChange={handleRepsChange}
-          handleTimeChange={handleTimeChange}
-          handleNoteChange={handleNoteChange} />
-        <DrawerFooter className="pt-6 pb-6 space-y-3">
-          <Button
-            type="button"
-            onClick={handleSave}
-            className="h-12 text-base font-semibold"
-          >
-            {isNew ? "Add Set" : "Save Changes"}
+
+        <div className="px-6">
+          <SetForm
+            exerciseType={exerciseType}
+            localSet={localSet}
+            firstFieldRef={firstFieldRef}
+            handleWeightChange={handleWeightChange}
+            handleRepsChange={handleRepsChange}
+            handleTimeChange={handleTimeChange}
+            handleNoteChange={handleNoteChange}
+          />
+        </div>
+
+        <DrawerFooter className="space-y-3 border-t border-border/60 bg-muted/50 px-6 py-5">
+          <Button type="button" onClick={handleSave} className="h-11 gap-2">
+            {isNew ? "Add set" : "Save changes"}
           </Button>
           <DrawerClose asChild>
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
-              className="h-12 text-base border-2"
+              className="h-11 border-2"
             >
               Cancel
             </Button>
@@ -98,18 +110,17 @@ export function ExerciseSetDrawer({
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  );
-
+  )
 }
 
 interface SetFormProps {
-  exerciseType: ExerciseLogType,
-  localSet: IExerciseSetCreate,
-  firstFieldRef: React.MutableRefObject<HTMLInputElement | null>,
-  handleWeightChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-  handleRepsChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-  handleTimeChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-  handleNoteChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+  exerciseType: ExerciseLogType
+  localSet: IExerciseSetCreate
+  firstFieldRef: React.MutableRefObject<HTMLInputElement | null>
+  handleWeightChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  handleRepsChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  handleTimeChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  handleNoteChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 function SetForm({
@@ -122,7 +133,7 @@ function SetForm({
   handleNoteChange,
 }: SetFormProps) {
   return (
-    <div className="grid gap-6 px-6 py-4">
+    <div className="grid gap-5 py-6">
       {exerciseType === ExerciseLogType.WeightAndReps && (
         <div className="grid grid-cols-1 gap-4">
           <IconInput
@@ -136,6 +147,7 @@ function SetForm({
             onChange={handleRepsChange}
             placeholder="0"
             ref={firstFieldRef}
+            size="comfortable"
           />
           <IconInput
             icon={Weight}
@@ -146,6 +158,7 @@ function SetForm({
             value={localSet.weight || ""}
             onChange={handleWeightChange}
             placeholder="0"
+            size="comfortable"
           />
         </div>
       )}
@@ -163,9 +176,10 @@ function SetForm({
             onChange={handleRepsChange}
             placeholder="0"
             ref={firstFieldRef}
+            size="comfortable"
           />
-          <p className="text-sm text-muted-foreground">
-            Note: Body weight will be automatically calculated and added to total weight.
+          <p className="type-helper text-muted-foreground">
+            Body weight is included automatically when calculating total load.
           </p>
         </>
       )}
@@ -184,20 +198,22 @@ function SetForm({
               onChange={handleRepsChange}
               placeholder="0"
               ref={firstFieldRef}
+              size="comfortable"
             />
             <IconInput
               icon={Weight}
-              label="Additional Weight (kg)"
+              label="Additional weight (kg)"
               id="weight"
               name="weight"
               type="number"
               value={localSet.weight || ""}
               onChange={handleWeightChange}
               placeholder="0"
+              size="comfortable"
             />
           </div>
-          <p className="text-sm text-muted-foreground">
-            Note: Your body weight will be added to the additional weight for total weight calculation.
+          <p className="type-helper text-muted-foreground">
+            Your body weight will be added to this extra load when summarizing the set.
           </p>
         </>
       )}
@@ -216,20 +232,22 @@ function SetForm({
               onChange={handleRepsChange}
               placeholder="0"
               ref={firstFieldRef}
+              size="comfortable"
             />
             <IconInput
               icon={Weight}
-              label="Assistance Weight (kg)"
+              label="Assistance (kg)"
               id="weight"
               name="weight"
               type="number"
               value={localSet.weight || ""}
               onChange={handleWeightChange}
               placeholder="0"
+              size="comfortable"
             />
           </div>
-          <p className="text-sm text-muted-foreground">
-            Note: Assistance weight will be subtracted from your body weight for total weight calculation.
+          <p className="type-helper text-muted-foreground">
+            Assistance load will be subtracted from your body weight in total calculations.
           </p>
         </>
       )}
@@ -246,6 +264,7 @@ function SetForm({
           onChange={handleRepsChange}
           placeholder="0"
           ref={firstFieldRef}
+          size="comfortable"
         />
       )}
 
@@ -261,17 +280,19 @@ function SetForm({
           onChange={handleTimeChange}
           placeholder="0"
           ref={firstFieldRef}
+          size="comfortable"
         />
       )}
 
       <IconInput
         icon={StickyNote}
-        label="Set Notes"
+        label="Set notes"
         id="note"
         name="note"
         value={localSet.note || ""}
         onChange={handleNoteChange}
-        placeholder="Add notes for this set..."
+        placeholder="Add cues or adjustments for this set"
+        size="comfortable"
       />
     </div>
   )
