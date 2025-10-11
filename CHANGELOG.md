@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.45.1] - 2025-10-11
+### Fixed
+- [BuildSystem] release pipeline
+
 ## [0.45.0] - 2025-10-11
 ### Changed
 - [Refactoring] release pipeline
