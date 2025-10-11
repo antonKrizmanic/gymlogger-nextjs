@@ -164,7 +164,7 @@ jobs:
         uses: Enterwell/ChangelogManager-GitHub-Action@v3
         with:
           should-bump-version: true
-        id: changelog
+        id: version-bump
 
       # Committing new changes
       - name: Commit changes
