@@ -17,6 +17,8 @@ jobs:
                 fetch-depth: 0
                 
             - name: Generate changelog entry
+              env:
+                PR_BODY: ${{ github.event.pull_request.body || '' }}
               run: |
                 # Create changes directory if it doesn't exist
                 mkdir -p changes
@@ -24,11 +26,6 @@ jobs:
                 # Extract package name from branch name
                 BRANCH_NAME="${{ github.head_ref }}"
                 PACKAGE_NAME=${BRANCH_NAME#renovate/}
-                
-                # Get PR body to extract dependency info
-                PR_BODY=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                    "https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}" \
-                    | jq -r '.body')
                 
                 # Try to extract specific package and version info from PR body
                 PACKAGE_INFO=$(echo "$PR_BODY" | grep -o -P '(?<=## Release Notes.*\n\n).*' | head -n 1 || echo "")
@@ -59,5 +56,4 @@ jobs:
                 git config --local user.name "github-actions[bot]"                
                 git add changes/
                 git commit -m "Add changelog entry for dependency update [skip ci]" || echo "No changes to commit"
-                git pull --rebase origin ${{ github.head_ref }}
                 git push origin HEAD:${{ github.head_ref }}
