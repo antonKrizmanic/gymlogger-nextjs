@@ -1,5 +1,12 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.46.0] - 2025-10-11
+### Changed
+- [Dependencies] Updated react-email-components-0.x
+- [Dependencies] Updated react-email-4.x
+- [BuildSystem] Github workflows
+- [Dependencies] Updated zod-4.x
+
 ## [0.45.1] - 2025-10-11
 ### Fixed
 - [BuildSystem] release pipeline
