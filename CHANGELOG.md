@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.47.0] - 2025-10-12
+### Added
+- [BuildSystem] Sync PR main to stage
+
 ## [0.46.0] - 2025-10-11
 ### Changed
 - [Dependencies] Updated react-email-components-0.x
