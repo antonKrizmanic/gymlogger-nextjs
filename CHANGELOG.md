@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.48.0] - 2025-10-12
+### Changed
+- [BuildSystem] sync PR
+
 ## [0.47.0] - 2025-10-12
 ### Added
 - [BuildSystem] Sync PR main to stage
