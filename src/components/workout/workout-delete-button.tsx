@@ -2,7 +2,7 @@
 
 import { WorkoutApiService } from '@/src/api/services/workout-api-service';
 import { DeleteButton } from '@/src/components/common/delete-button';
-import { IWorkout } from '@/src/models/domain/workout';
+import type { IWorkout } from '@/src/models/domain/workout';
 
 interface WorkoutDeleteButtonProps {
     workout: IWorkout;

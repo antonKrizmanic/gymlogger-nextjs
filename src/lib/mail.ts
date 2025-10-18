@@ -14,9 +14,9 @@ export const sendVerificationEmail = async (email: string, token: string) => {
     const confirmLink = `https://www.gymnotebook.win/auth/new-verification?token=${token}`;
 
     await getResend().emails.send({
-        from: "donotreply@email.gymnotebook.win",
+        from: 'donotreply@email.gymnotebook.win',
         to: email,
-        subject: "GymNotebook - Verify your email",        
+        subject: 'GymNotebook - Verify your email',
         react: VerifyEmail({ email, confirmLink }),
     });
-}
+};

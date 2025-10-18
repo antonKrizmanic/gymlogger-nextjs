@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { format, isValid, parse } from "date-fns";
-import { CalendarIcon, ChevronDown, LucideIcon } from "lucide-react";
-import React from "react";
-import ReactDOM from "react-dom";
-import { Button } from "./button";
-import { Calendar } from "./calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "./popover";
+import { format, isValid, parse } from 'date-fns';
+import { CalendarIcon, ChevronDown, type LucideIcon } from 'lucide-react';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Button } from './button';
+import { Calendar } from './calendar';
+import { Popover, PopoverContent, PopoverTrigger } from './popover';
 
 interface IconInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     icon: LucideIcon;
@@ -26,7 +26,8 @@ interface IconSelectProps {
     disabled?: boolean;
 }
 
-interface IconTextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface IconTextareaProps
+    extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
     icon: LucideIcon;
     label?: string;
     placeholder?: string;
@@ -49,62 +50,65 @@ interface IconDatePickerProps {
     isInModal?: boolean;
 }
 
-export const IconInput = React.forwardRef<HTMLInputElement, IconInputProps>(function IconInput(
-    {
-        icon: Icon,
-        label,
-        className,
-        ...props
+export const IconInput = React.forwardRef<HTMLInputElement, IconInputProps>(
+    function IconInput({ icon: Icon, label, className, ...props }, ref) {
+        const hasLabel = Boolean(label);
+
+        return (
+            <div
+                className={`flex items-center space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 focus-within:border-primary/50 focus-within:bg-muted/40 focus-within:shadow-sm ${hasLabel ? '' : 'py-3'}`}
+            >
+                <div className="p-2 bg-primary/10 rounded-lg">
+                    <Icon className="h-5 w-5 text-primary" />
+                </div>
+                <div className="flex-1">
+                    {hasLabel && (
+                        <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                            {label}
+                        </p>
+                    )}
+                    <input
+                        ref={ref}
+                        {...props}
+                        className={`text-lg font-semibold bg-transparent border-none outline-none w-full placeholder:text-muted-foreground/60 transition-colors duration-200 focus:text-primary ${hasLabel ? 'mt-1' : ''} ${className || ''}`}
+                    />
+                </div>
+            </div>
+        );
     },
-    ref
-) {
-    const hasLabel = Boolean(label);
+);
 
-    return (
-        <div className={`flex items-center space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 focus-within:border-primary/50 focus-within:bg-muted/40 focus-within:shadow-sm ${hasLabel ? '' : 'py-3'}`}>
-            <div className="p-2 bg-primary/10 rounded-lg">
-                <Icon className="h-5 w-5 text-primary" />
-            </div>
-            <div className="flex-1">
-                {hasLabel && (
-                    <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                        {label}
-                    </p>
-                )}
-                <input
-                    ref={ref}
-                    {...props}
-                    className={`text-lg font-semibold bg-transparent border-none outline-none w-full placeholder:text-muted-foreground/60 transition-colors duration-200 focus:text-primary ${hasLabel ? 'mt-1' : ''} ${className || ''}`}
-                />
-            </div>
-        </div>
-    );
-});
-
-IconInput.displayName = "IconInput";
+IconInput.displayName = 'IconInput';
 
 export function IconSelect({
     icon: Icon,
     label,
-    placeholder = "Select option...",
+    placeholder = 'Select option...',
     value,
     onValueChange,
     options,
     disabled = false,
 }: IconSelectProps) {
     const [isOpen, setIsOpen] = React.useState(false);
-    const [dropdownPosition, setDropdownPosition] = React.useState({ top: 0, left: 0, width: 0 });
+    const [dropdownPosition, setDropdownPosition] = React.useState({
+        top: 0,
+        left: 0,
+        width: 0,
+    });
     const DROPDOWN_MAX_HEIGHT_PX = 240; // matches max-h-60
     const containerRef = React.useRef<HTMLDivElement>(null);
     const scrollAncestorsRef = React.useRef<HTMLElement[]>([]);
     const hasLabel = Boolean(label);
-    const selectedOption = options.find(opt => opt.value === value);
+    const selectedOption = options.find((opt) => opt.value === value);
 
     const updateDropdownPosition = React.useCallback(() => {
         if (containerRef.current) {
             const rect = containerRef.current.getBoundingClientRect();
             // Estimate dropdown height (approx 40px per option, capped by max height)
-            const estimatedHeight = Math.min(DROPDOWN_MAX_HEIGHT_PX, Math.max(40, options.length * 40));
+            const estimatedHeight = Math.min(
+                DROPDOWN_MAX_HEIGHT_PX,
+                Math.max(40, options.length * 40),
+            );
             const spaceBelow = window.innerHeight - rect.bottom;
             // For position: fixed we must use viewport coordinates (no scroll offsets)
             let top = rect.bottom + 4; // default place below
@@ -115,7 +119,7 @@ export function IconSelect({
             setDropdownPosition({
                 top,
                 left: rect.left,
-                width: rect.width
+                width: rect.width,
             });
         }
     }, [options.length]);
@@ -131,7 +135,9 @@ export function IconSelect({
             el = el.parentElement;
         }
         return () => {
-            scrollAncestorsRef.current.forEach(a => a.removeEventListener('scroll', handler as EventListener));
+            scrollAncestorsRef.current.forEach((a) =>
+                a.removeEventListener('scroll', handler as EventListener),
+            );
             scrollAncestorsRef.current = [];
         };
     }, [updateDropdownPosition]);
@@ -141,15 +147,24 @@ export function IconSelect({
             updateDropdownPosition();
             // Update position on scroll or resize
             const handlePositionUpdate = () => updateDropdownPosition();
-            window.addEventListener('scroll', handlePositionUpdate, { passive: true });
-            window.addEventListener('resize', handlePositionUpdate, { passive: true as unknown as boolean });
-            window.addEventListener('orientationchange', handlePositionUpdate, { passive: true as unknown as boolean });
+            window.addEventListener('scroll', handlePositionUpdate, {
+                passive: true,
+            });
+            window.addEventListener('resize', handlePositionUpdate, {
+                passive: true as unknown as boolean,
+            });
+            window.addEventListener('orientationchange', handlePositionUpdate, {
+                passive: true as unknown as boolean,
+            });
             // Add listeners to scrollable ancestors
             const cleanupAncestors = addScrollListenersToAncestors();
             return () => {
                 window.removeEventListener('scroll', handlePositionUpdate);
                 window.removeEventListener('resize', handlePositionUpdate);
-                window.removeEventListener('orientationchange', handlePositionUpdate);
+                window.removeEventListener(
+                    'orientationchange',
+                    handlePositionUpdate,
+                );
                 cleanupAncestors();
             };
         }
@@ -172,7 +187,9 @@ export function IconSelect({
 
     return (
         <div className="relative w-full" ref={containerRef}>
-            <div className={`flex items-center space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 ${isOpen ? 'border-primary/50 bg-muted/40 shadow-sm' : ''} ${hasLabel ? '' : 'py-3'} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
+            <div
+                className={`flex items-center space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 ${isOpen ? 'border-primary/50 bg-muted/40 shadow-sm' : ''} ${hasLabel ? '' : 'py-3'} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+            >
                 <div className="p-2 bg-primary/10 rounded-lg">
                     <Icon className="h-5 w-5 text-primary" />
                 </div>
@@ -186,51 +203,67 @@ export function IconSelect({
                                 {label}
                             </p>
                         )}
-                        <div className={`text-lg font-semibold bg-transparent border-none outline-none w-full ${hasLabel ? 'mt-1' : ''} ${!selectedOption ? 'text-muted-foreground' : 'text-foreground'}`}>
-                            {selectedOption ? selectedOption.label : placeholder}
+                        <div
+                            className={`text-lg font-semibold bg-transparent border-none outline-none w-full ${hasLabel ? 'mt-1' : ''} ${!selectedOption ? 'text-muted-foreground' : 'text-foreground'}`}
+                        >
+                            {selectedOption
+                                ? selectedOption.label
+                                : placeholder}
                         </div>
                     </div>
-                    <ChevronDown className={`h-5 w-5 text-muted-foreground transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+                    <ChevronDown
+                        className={`h-5 w-5 text-muted-foreground transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                    />
                 </div>
             </div>
 
-            {isOpen && !disabled && ReactDOM.createPortal(
-                <>
-                    <div
-                        className="fixed inset-0 z-40"
-                        onClick={() => setIsOpen(false)}
-                    />
-                    <div
-                        className="fixed bg-popover border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-auto will-change-transform"
-                        style={{
-                            top: dropdownPosition.top,
-                            left: dropdownPosition.left,
-                            width: dropdownPosition.width,
-                        }}
-                    >
-                        {options.map((option) => {
-                            const isActive = option.value === value;
-                            return (
-                                <div
-                                    key={option.value}
-                                    role="option"
-                                    aria-selected={isActive}
-                                    className={`flex items-center space-x-3 p-3 cursor-pointer transition-colors
+            {isOpen &&
+                !disabled &&
+                ReactDOM.createPortal(
+                    <>
+                        <div
+                            className="fixed inset-0 z-40"
+                            onClick={() => setIsOpen(false)}
+                        />
+                        <div
+                            className="fixed bg-popover border border-border rounded-lg shadow-lg z-50 max-h-60 overflow-auto will-change-transform"
+                            style={{
+                                top: dropdownPosition.top,
+                                left: dropdownPosition.left,
+                                width: dropdownPosition.width,
+                            }}
+                        >
+                            {options.map((option) => {
+                                const isActive = option.value === value;
+                                return (
+                                    <div
+                                        key={option.value}
+                                        role="option"
+                                        aria-selected={isActive}
+                                        className={`flex items-center space-x-3 p-3 cursor-pointer transition-colors
                                         hover:bg-accent hover:text-accent-foreground
                                         ${isActive ? 'bg-accent/60 text-accent-foreground' : ''}`}
-                                    onClick={() => handleSelect(option.value)}
-                                >
-                                    <div className={`p-1.5 rounded-md ${isActive ? 'bg-primary/20' : 'bg-primary/10'}`}>
-                                        <Icon className={`h-4 w-4 ${isActive ? 'text-primary' : 'text-primary'}`} />
+                                        onClick={() =>
+                                            handleSelect(option.value)
+                                        }
+                                    >
+                                        <div
+                                            className={`p-1.5 rounded-md ${isActive ? 'bg-primary/20' : 'bg-primary/10'}`}
+                                        >
+                                            <Icon
+                                                className={`h-4 w-4 ${isActive ? 'text-primary' : 'text-primary'}`}
+                                            />
+                                        </div>
+                                        <span className="text-sm font-medium">
+                                            {option.label}
+                                        </span>
                                     </div>
-                                    <span className="text-sm font-medium">{option.label}</span>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </>,
-                document.body
-            )}
+                                );
+                            })}
+                        </div>
+                    </>,
+                    document.body,
+                )}
         </div>
     );
 }
@@ -244,7 +277,9 @@ export function IconTextarea({
     const hasLabel = Boolean(label);
 
     return (
-        <div className={`flex items-start space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 focus-within:border-primary/50 focus-within:bg-muted/40 focus-within:shadow-sm ${hasLabel ? '' : 'py-3'}`}>
+        <div
+            className={`flex items-start space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 focus-within:border-primary/50 focus-within:bg-muted/40 focus-within:shadow-sm ${hasLabel ? '' : 'py-3'}`}
+        >
             <div className="p-2 bg-primary/10 rounded-lg mt-1">
                 <Icon className="h-5 w-5 text-primary" />
             </div>
@@ -267,10 +302,10 @@ export function IconTextarea({
 export function IconDatePicker({
     icon: Icon = CalendarIcon,
     label,
-    placeholder = "Pick a date",
+    placeholder = 'Pick a date',
     value,
     onChange,
-    dateFormat = "dd.MM.yyyy.",
+    dateFormat = 'dd.MM.yyyy.',
     className,
     disabled = false,
     clearable = true,
@@ -280,23 +315,28 @@ export function IconDatePicker({
     isInModal = false,
 }: IconDatePickerProps) {
     const [open, setOpen] = React.useState(false);
-    const [inputValue, setInputValue] = React.useState("");
+    const [inputValue, setInputValue] = React.useState('');
     const [error, setError] = React.useState<string | null>(null);
-    const [selectedDate, setSelectedDate] = React.useState<Date | null | undefined>(value);
+    const [selectedDate, setSelectedDate] = React.useState<
+        Date | null | undefined
+    >(value);
     const hasLabel = Boolean(label);
 
     // Helper function to update input value from date
-    const updateInputValueFromDate = React.useCallback((date: Date | null | undefined) => {
-        if (date) {
-            try {
-                setInputValue(format(date, dateFormat));
-            } catch {
-                setInputValue("");
+    const updateInputValueFromDate = React.useCallback(
+        (date: Date | null | undefined) => {
+            if (date) {
+                try {
+                    setInputValue(format(date, dateFormat));
+                } catch {
+                    setInputValue('');
+                }
+            } else {
+                setInputValue('');
             }
-        } else {
-            setInputValue("");
-        }
-    }, [dateFormat]);
+        },
+        [dateFormat],
+    );
 
     // Update internal state when external value changes
     React.useEffect(() => {
@@ -313,7 +353,7 @@ export function IconDatePicker({
             onChange?.(newDate);
         } else {
             setSelectedDate(null);
-            setInputValue("");
+            setInputValue('');
             onChange?.(null);
         }
         setOpen(false);
@@ -339,16 +379,22 @@ export function IconDatePicker({
             if (isValid(parsedDate)) {
                 // Check if the date is within the allowed range
                 if (minDate && parsedDate < minDate) {
-                    setError(`Date must be after ${format(minDate, dateFormat)}`);
+                    setError(
+                        `Date must be after ${format(minDate, dateFormat)}`,
+                    );
                     return;
                 }
 
                 if (maxDate && parsedDate > maxDate) {
-                    setError(`Date must be before ${format(maxDate, dateFormat)}`);
+                    setError(
+                        `Date must be before ${format(maxDate, dateFormat)}`,
+                    );
                     return;
                 }
 
-                const normalizedDate = new Date(parsedDate.setHours(0, 0, 0, 0));
+                const normalizedDate = new Date(
+                    parsedDate.setHours(0, 0, 0, 0),
+                );
                 setSelectedDate(normalizedDate);
                 onChange?.(normalizedDate);
             }
@@ -375,7 +421,9 @@ export function IconDatePicker({
                 // Reset to the current value if invalid
                 updateInputValueFromDate(selectedDate);
             } else {
-                const normalizedDate = new Date(parsedDate.setHours(0, 0, 0, 0));
+                const normalizedDate = new Date(
+                    parsedDate.setHours(0, 0, 0, 0),
+                );
                 setSelectedDate(normalizedDate);
                 onChange?.(normalizedDate);
                 updateInputValueFromDate(normalizedDate);
@@ -389,14 +437,19 @@ export function IconDatePicker({
 
     return (
         <div className="relative">
-            <div className={`flex items-center space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 ${open ? 'border-primary/50 bg-muted/40 shadow-sm' : ''} ${hasLabel ? '' : 'py-3'} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
+            <div
+                className={`flex items-center space-x-4 p-4 bg-muted/30 rounded-lg border border-secondary transition-all duration-200 ${open ? 'border-primary/50 bg-muted/40 shadow-sm' : ''} ${hasLabel ? '' : 'py-3'} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+            >
                 <div className="p-2 bg-primary/10 rounded-lg">
                     <Icon className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1">
                     {hasLabel && (
                         <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-                            {label} {required && <span className="text-destructive">*</span>}
+                            {label}{' '}
+                            {required && (
+                                <span className="text-destructive">*</span>
+                            )}
                         </p>
                     )}
                     <input
@@ -404,7 +457,7 @@ export function IconDatePicker({
                         value={inputValue}
                         onChange={handleInputChange}
                         onBlur={handleInputBlur}
-                        placeholder={placeholder || "Pick a date"}
+                        placeholder={placeholder || 'Pick a date'}
                         disabled={disabled}
                         className={`text-lg font-semibold bg-transparent border-none outline-none w-full placeholder:text-muted-foreground/60 transition-colors duration-200 focus:text-primary ${hasLabel ? 'mt-1' : ''} ${className || ''}`}
                     />
@@ -432,7 +485,12 @@ export function IconDatePicker({
                         />
                         {clearable && selectedDate && (
                             <div className="p-3 border-t border-border">
-                                <Button variant="ghost" size="sm" className="w-full" onClick={() => handleSelect(null)}>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="w-full"
+                                    onClick={() => handleSelect(null)}
+                                >
                                     Clear
                                 </Button>
                             </div>

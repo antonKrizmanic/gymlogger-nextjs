@@ -1,10 +1,13 @@
 'use client';
 
-import { WorkoutApiService } from '@/src/api/services/workout-api-service';
-import { IWorkoutCreate, IWorkoutUpdate } from '@/src/models/domain/workout';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { toast } from "sonner";
+import { toast } from 'sonner';
+import { WorkoutApiService } from '@/src/api/services/workout-api-service';
+import type {
+    IWorkoutCreate,
+    IWorkoutUpdate,
+} from '@/src/models/domain/workout';
 import { WorkoutForm } from './workout-form';
 
 interface ClientWorkoutFormProps {
@@ -14,15 +17,22 @@ interface ClientWorkoutFormProps {
     cancelHref: string;
 }
 
-export function ClientWorkoutForm({ title, workout, id, cancelHref }: ClientWorkoutFormProps) {
+export function ClientWorkoutForm({
+    title,
+    workout,
+    id,
+    cancelHref,
+}: ClientWorkoutFormProps) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
     // For new workouts (no id), always use current date
-    const workoutData = id ? workout : {
-        ...workout,
-        date: new Date()
-    };
+    const workoutData = id
+        ? workout
+        : {
+              ...workout,
+              date: new Date(),
+          };
 
     const handleSubmit = async (formData: IWorkoutCreate) => {
         // Basic validation
@@ -40,11 +50,11 @@ export function ClientWorkoutForm({ title, workout, id, cancelHref }: ClientWork
                 // Update existing workout
                 const updateData: IWorkoutUpdate = {
                     ...formData,
-                    id
+                    id,
                 };
                 await service.updateWorkout(id, updateData);
                 toast.success('Workout updated successfully!');
-                router.push('/workouts')
+                router.push('/workouts');
             } else {
                 // Create new workout
                 await service.createWorkout(formData);
@@ -53,14 +63,17 @@ export function ClientWorkoutForm({ title, workout, id, cancelHref }: ClientWork
                 router.push('/workouts');
             }
         } catch (error) {
-            console.error(`Failed to ${id ? 'update' : 'create'} workout:`, error);
-            toast.error(`Failed to ${id ? 'update' : 'create'} workout. Please try again.`);
+            console.error(
+                `Failed to ${id ? 'update' : 'create'} workout:`,
+                error,
+            );
+            toast.error(
+                `Failed to ${id ? 'update' : 'create'} workout. Please try again.`,
+            );
         } finally {
             setIsLoading(false);
         }
     };
-
-
 
     return (
         <WorkoutForm

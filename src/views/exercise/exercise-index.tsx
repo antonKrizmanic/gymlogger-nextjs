@@ -1,18 +1,18 @@
 'use client';
 
-import { ExerciseApiService } from "@/src/api/services/exercise-api-service";
-import { Grid } from "@/src/components/common/grid";
-import { LogTypeSelect } from "@/src/components/common/log-type-select";
-import { MuscleGroupSelect } from "@/src/components/common/muscle-group-select";
-import { Pagination } from "@/src/components/common/pagination";
-import { SearchBar } from "@/src/components/common/search-bar";
-import { ExerciseCard } from "@/src/components/exercise/exercise-card";
-import { IExerciseRequest } from "@/src/data/exercise";
-import { IExercise } from "@/src/models/domain/exercise";
-import { IPagingDataResponseDto } from "@/src/types/common";
-import { ExerciseLogType } from "@/src/types/enums";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { ExerciseApiService } from '@/src/api/services/exercise-api-service';
+import { Grid } from '@/src/components/common/grid';
+import { LogTypeSelect } from '@/src/components/common/log-type-select';
+import { MuscleGroupSelect } from '@/src/components/common/muscle-group-select';
+import { Pagination } from '@/src/components/common/pagination';
+import { SearchBar } from '@/src/components/common/search-bar';
+import { ExerciseCard } from '@/src/components/exercise/exercise-card';
+import type { IExerciseRequest } from '@/src/data/exercise';
+import type { IExercise } from '@/src/models/domain/exercise';
+import type { IPagingDataResponseDto } from '@/src/types/common';
+import { ExerciseLogType } from '@/src/types/enums';
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -36,30 +36,37 @@ export const ExerciseIndex = ({ isFilterOpen }: IExerciseIndexProps) => {
         pageSize: DEFAULT_PAGE_SIZE,
         search: '',
         muscleGroupId: undefined,
-        exerciseLogType: undefined
+        exerciseLogType: undefined,
     } as IExerciseRequest);
 
     const [isLoading, setIsLoading] = useState(false);
     const [selectedMuscleGroup, setSelectedMuscleGroup] = useState<string>('');
-    const [selectedLogType, setSelectedLogType] = useState<ExerciseLogType | undefined>(undefined);
+    const [selectedLogType, setSelectedLogType] = useState<
+        ExerciseLogType | undefined
+    >(undefined);
     const [searchTerm, setSearchTerm] = useState('');
 
     // Access the current values for pagination using useMemo to avoid recalculations
-    const { currentPage, pageSize, totalPages } = useMemo(() => ({
-        currentPage: pagingData.page,
-        pageSize: pagingData.pageSize,
-        totalPages: pagingData.totalPages
-    }), [pagingData]);
+    const { currentPage, pageSize, totalPages } = useMemo(
+        () => ({
+            currentPage: pagingData.page,
+            pageSize: pagingData.pageSize,
+            totalPages: pagingData.totalPages,
+        }),
+        [pagingData],
+    );
 
     // Initialize from URL parameters on component mount
     useEffect(() => {
         const page = Number(searchParams.get('page') || '0');
-        const size = Number(searchParams.get('size') || DEFAULT_PAGE_SIZE.toString());
+        const size = Number(
+            searchParams.get('size') || DEFAULT_PAGE_SIZE.toString(),
+        );
         const search = searchParams.get('search') || '';
         const muscleGroup = searchParams.get('muscleGroup') || '';
-        const logType = searchParams.get('logType') ?
-            Number(searchParams.get('logType')) as ExerciseLogType :
-            undefined;
+        const logType = searchParams.get('logType')
+            ? (Number(searchParams.get('logType')) as ExerciseLogType)
+            : undefined;
 
         setSearchTerm(search);
         setSelectedMuscleGroup(muscleGroup);
@@ -70,26 +77,30 @@ export const ExerciseIndex = ({ isFilterOpen }: IExerciseIndexProps) => {
             pageSize: size,
             search,
             muscleGroupId: muscleGroup || undefined,
-            exerciseLogType: logType
+            exerciseLogType: logType,
         } as IExerciseRequest);
     }, [searchParams]);
 
     // Update request with new parameters - removed router dependency since it's not used
-    const updateUrl = useCallback((
-        page: number,
-        search: string,
-        size: number,
-        muscleGroup?: string,
-        logType?: ExerciseLogType
-    ) => {
-        const params = new URLSearchParams();
-        params.set('page', page.toString());
-        params.set('size', size.toString());
-        if (search) params.set('search', search);
-        if (muscleGroup) params.set('muscleGroup', muscleGroup);
-        if (logType !== undefined) params.set('logType', logType.toString());
-        router.push(`/exercises?${params.toString()}`);
-    }, [router]);
+    const updateUrl = useCallback(
+        (
+            page: number,
+            search: string,
+            size: number,
+            muscleGroup?: string,
+            logType?: ExerciseLogType,
+        ) => {
+            const params = new URLSearchParams();
+            params.set('page', page.toString());
+            params.set('size', size.toString());
+            if (search) params.set('search', search);
+            if (muscleGroup) params.set('muscleGroup', muscleGroup);
+            if (logType !== undefined)
+                params.set('logType', logType.toString());
+            router.push(`/exercises?${params.toString()}`);
+        },
+        [router],
+    );
 
     // Fetch exercises when request changes
     useEffect(() => {
@@ -110,35 +121,75 @@ export const ExerciseIndex = ({ isFilterOpen }: IExerciseIndexProps) => {
         fetchExercises();
     }, [exerciseRequest]);
 
-    const handleSearch = useCallback((value: string) => {
-        setSearchTerm(value);
-        updateUrl(0, value, pageSize, selectedMuscleGroup, selectedLogType);
-    }, [pageSize, selectedMuscleGroup, selectedLogType, updateUrl]);
+    const handleSearch = useCallback(
+        (value: string) => {
+            setSearchTerm(value);
+            updateUrl(0, value, pageSize, selectedMuscleGroup, selectedLogType);
+        },
+        [pageSize, selectedMuscleGroup, selectedLogType, updateUrl],
+    );
 
-    const handleMuscleGroupChange = useCallback((muscleGroupId: string) => {
-        setSelectedMuscleGroup(muscleGroupId);
-        updateUrl(0, searchTerm, pageSize, muscleGroupId, selectedLogType);
-    }, [searchTerm, pageSize, selectedLogType, updateUrl]);
+    const handleMuscleGroupChange = useCallback(
+        (muscleGroupId: string) => {
+            setSelectedMuscleGroup(muscleGroupId);
+            updateUrl(0, searchTerm, pageSize, muscleGroupId, selectedLogType);
+        },
+        [searchTerm, pageSize, selectedLogType, updateUrl],
+    );
 
-    const handleLogTypeChange = useCallback((newValue: ExerciseLogType) => {
-        setSelectedLogType(newValue);
-        updateUrl(0, searchTerm, pageSize, selectedMuscleGroup, newValue);
-    }, [searchTerm, pageSize, selectedMuscleGroup, updateUrl]);
+    const handleLogTypeChange = useCallback(
+        (newValue: ExerciseLogType) => {
+            setSelectedLogType(newValue);
+            updateUrl(0, searchTerm, pageSize, selectedMuscleGroup, newValue);
+        },
+        [searchTerm, pageSize, selectedMuscleGroup, updateUrl],
+    );
 
-    const handlePageSizeChange = useCallback((newValue: string) => {
-        const newSize = Number(newValue);
-        updateUrl(0, searchTerm, newSize, selectedMuscleGroup, selectedLogType);
-    }, [searchTerm, selectedMuscleGroup, selectedLogType, updateUrl]);
+    const handlePageSizeChange = useCallback(
+        (newValue: string) => {
+            const newSize = Number(newValue);
+            updateUrl(
+                0,
+                searchTerm,
+                newSize,
+                selectedMuscleGroup,
+                selectedLogType,
+            );
+        },
+        [searchTerm, selectedMuscleGroup, selectedLogType, updateUrl],
+    );
 
-    const handlePageChange = useCallback((page: number) => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        updateUrl(page, searchTerm, pageSize, selectedMuscleGroup, selectedLogType);
-    }, [searchTerm, pageSize, selectedMuscleGroup, selectedLogType, updateUrl]);
+    const handlePageChange = useCallback(
+        (page: number) => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            updateUrl(
+                page,
+                searchTerm,
+                pageSize,
+                selectedMuscleGroup,
+                selectedLogType,
+            );
+        },
+        [searchTerm, pageSize, selectedMuscleGroup, selectedLogType, updateUrl],
+    );
 
     const handleExerciseDelete = useCallback(() => {
         // Refresh the current page
-        updateUrl(currentPage, searchTerm, pageSize, selectedMuscleGroup, selectedLogType);
-    }, [currentPage, searchTerm, pageSize, selectedMuscleGroup, selectedLogType, updateUrl]);
+        updateUrl(
+            currentPage,
+            searchTerm,
+            pageSize,
+            selectedMuscleGroup,
+            selectedLogType,
+        );
+    }, [
+        currentPage,
+        searchTerm,
+        pageSize,
+        selectedMuscleGroup,
+        selectedLogType,
+        updateUrl,
+    ]);
 
     return (
         <>
@@ -154,7 +205,9 @@ export const ExerciseIndex = ({ isFilterOpen }: IExerciseIndexProps) => {
                         </div>
                         <div className="w-full md:w-1/2 pb-4">
                             <LogTypeSelect
-                                selectedLogType={selectedLogType ?? ExerciseLogType.Unknown}
+                                selectedLogType={
+                                    selectedLogType ?? ExerciseLogType.Unknown
+                                }
                                 onLogTypeChange={handleLogTypeChange}
                             />
                         </div>
@@ -193,4 +246,4 @@ export const ExerciseIndex = ({ isFilterOpen }: IExerciseIndexProps) => {
             />
         </>
     );
-}
+};

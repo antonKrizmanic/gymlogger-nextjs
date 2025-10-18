@@ -1,33 +1,33 @@
-import { prisma } from '../lib/prisma';
 import { v4 } from 'uuid';
+import { prisma } from '../lib/prisma';
 
 export const getVerificationTokenByEmail = async (email: string) => {
-    try{
+    try {
         const verificationToken = await prisma.verificationToken.findFirst({
             where: {
-            email,
+                email,
             },
         });
-        
+
         return verificationToken;
-    } catch{
+    } catch {
         return null;
     }
-}
+};
 
 export const getVerificationTokenByToken = async (token: string) => {
-    try{
+    try {
         const verificationToken = await prisma.verificationToken.findUnique({
             where: {
-            token,
+                token,
             },
         });
-        
+
         return verificationToken;
-    } catch{
+    } catch {
         return null;
     }
-}
+};
 
 export const generateVerificationToken = async (email: string) => {
     const token = v4();
@@ -38,7 +38,7 @@ export const generateVerificationToken = async (email: string) => {
         await prisma.verificationToken.delete({
             where: {
                 id: existingToken.id,
-            }
+            },
         });
     }
 
@@ -51,4 +51,4 @@ export const generateVerificationToken = async (email: string) => {
     });
 
     return verificationToken;
-}
+};

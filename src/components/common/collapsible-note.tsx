@@ -1,51 +1,64 @@
-'use client'
+'use client';
 
-import { Button } from '@/src/components/ui/button'
-import { IconTextarea } from '@/src/components/ui/icon-input'
-import { ChevronDown, ChevronUp, MessageSquare, type LucideIcon } from 'lucide-react'
-import React from 'react'
+import {
+    ChevronDown,
+    ChevronUp,
+    type LucideIcon,
+    MessageSquare,
+} from 'lucide-react';
+import React from 'react';
+import { Button } from '@/src/components/ui/button';
+import { IconTextarea } from '@/src/components/ui/icon-input';
 
 interface CollapsibleNoteProps {
-    label: string
-    value: string
-    onChange: (value: string) => void
-    icon: LucideIcon
-    placeholder?: string
+    label: string;
+    value: string;
+    onChange: (value: string) => void;
+    icon: LucideIcon;
+    placeholder?: string;
 }
 
-export function CollapsibleNote({ label, value, onChange, icon: Icon, placeholder }: CollapsibleNoteProps) {
-    const [isExpanded, setIsExpanded] = React.useState(false)
-    const [isEditing, setIsEditing] = React.useState(false)
-    const [draft, setDraft] = React.useState<string>(value || '')
+export function CollapsibleNote({
+    label,
+    value,
+    onChange,
+    icon: Icon,
+    placeholder,
+}: CollapsibleNoteProps) {
+    const [isExpanded, setIsExpanded] = React.useState(false);
+    const [isEditing, setIsEditing] = React.useState(false);
+    const [draft, setDraft] = React.useState<string>(value || '');
 
     React.useEffect(() => {
-        setDraft(value || '')
-    }, [value])
+        setDraft(value || '');
+    }, [value]);
 
     const handleToggle = React.useCallback(() => {
-        setIsExpanded((prev) => !prev)
-    }, [])
+        setIsExpanded((prev) => !prev);
+    }, []);
 
     const handleEdit = React.useCallback(() => {
-        setIsEditing(true)
-        setIsExpanded(true)
-    }, [])
+        setIsEditing(true);
+        setIsExpanded(true);
+    }, []);
 
     const handleSave = React.useCallback(() => {
-        onChange(draft)
-        setIsEditing(false)
-        setIsExpanded(false)
-    }, [draft, onChange])
+        onChange(draft);
+        setIsEditing(false);
+        setIsExpanded(false);
+    }, [draft, onChange]);
 
     const handleCancel = React.useCallback(() => {
-        setDraft(value || '')
-        setIsEditing(false)
-        setIsExpanded(false)
-    }, [value])
+        setDraft(value || '');
+        setIsEditing(false);
+        setIsExpanded(false);
+    }, [value]);
 
     return (
         <div className="space-y-2">
             {!isExpanded && (
+                // biome-ignore lint/a11y/noStaticElementInteractions: <explanation>
+                // biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
                 <div
                     className="border border-dashed border-muted-foreground/30 rounded-lg p-3 bg-muted/10 hover:bg-muted/20 transition-colors cursor-pointer"
                     style={{ pointerEvents: 'auto' }}
@@ -56,7 +69,9 @@ export function CollapsibleNote({ label, value, onChange, icon: Icon, placeholde
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center space-x-2 mb-1">
                                     <Icon className="h-4 w-4 text-muted-foreground" />
-                                    <span className="text-sm font-medium text-muted-foreground">{label}</span>
+                                    <span className="text-sm font-medium text-muted-foreground">
+                                        {label}
+                                    </span>
                                 </div>
                                 <p className="text-sm text-foreground line-clamp-2 break-words">
                                     {draft}
@@ -68,8 +83,8 @@ export function CollapsibleNote({ label, value, onChange, icon: Icon, placeholde
                                     variant="ghost"
                                     size="sm"
                                     onClick={(e) => {
-                                        e.stopPropagation()
-                                        handleEdit()
+                                        e.stopPropagation();
+                                        handleEdit();
                                     }}
                                     className="h-6 px-2 text-xs"
                                 >
@@ -85,7 +100,9 @@ export function CollapsibleNote({ label, value, onChange, icon: Icon, placeholde
                     ) : (
                         <div className="flex items-center justify-center space-x-2 py-2">
                             <MessageSquare className="h-3 w-3 text-muted-foreground" />
-                            <span className="text-xs text-muted-foreground">{placeholder || 'Add note'}</span>
+                            <span className="text-xs text-muted-foreground">
+                                {placeholder || 'Add note'}
+                            </span>
                             <ChevronDown className="h-3 w-3 text-muted-foreground" />
                         </div>
                     )}
@@ -97,7 +114,9 @@ export function CollapsibleNote({ label, value, onChange, icon: Icon, placeholde
                     <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center space-x-2">
                             <Icon className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm font-medium text-muted-foreground">{label}</span>
+                            <span className="text-sm font-medium text-muted-foreground">
+                                {label}
+                            </span>
                         </div>
                         <div className="flex items-center space-x-2">
                             <Button
@@ -129,7 +148,5 @@ export function CollapsibleNote({ label, value, onChange, icon: Icon, placeholde
                 </div>
             )}
         </div>
-    )
+    );
 }
-
-

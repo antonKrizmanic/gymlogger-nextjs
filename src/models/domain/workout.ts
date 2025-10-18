@@ -1,4 +1,4 @@
-import { ExerciseLogType } from "@/src/types/enums";
+import type { ExerciseLogType } from '@/src/types/enums';
 
 export interface IWorkout extends IWorkoutSimple {
     exercises: IExerciseWorkout[];
@@ -64,8 +64,6 @@ export interface IExerciseWorkoutCreate {
     sets?: IExerciseSetCreate[];
 }
 
-
-
 export const mapWorkoutToIWorkout = (workout: any): IWorkout => {
     return {
         id: workout.id,
@@ -83,7 +81,8 @@ export const mapWorkoutToIWorkout = (workout: any): IWorkout => {
             exerciseName: exercise.exercise?.name,
             exerciseDescription: exercise.exercise?.description,
             workoutId: exercise.workoutId,
-            exerciseLogType: exercise.exercise?.exerciseLogType as unknown as ExerciseLogType,
+            exerciseLogType: exercise.exercise
+                ?.exerciseLogType as unknown as ExerciseLogType,
             totalWeight: Number(exercise.totalWeight),
             totalReps: Number(exercise.totalReps),
             totalSets: Number(exercise.totalSets),
@@ -95,8 +94,8 @@ export const mapWorkoutToIWorkout = (workout: any): IWorkout => {
                 weight: Number(set.weight),
                 reps: Number(set.reps),
                 time: Number(set.time),
-                note: set.note
-            }))
-        }))
+                note: set.note,
+            })),
+        })),
     };
-}
+};

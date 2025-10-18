@@ -1,81 +1,86 @@
-import { IExercise, mapExerciseToIExercise } from "../models/domain/exercise";
-import { IPagedRequest, IPagedResponse } from "../types/common";
-import { prisma } from "@/src/lib/prisma";
-import { ExerciseLogType } from "../types/enums";
-import { auth } from "../lib/auth";
-import { getLoggedInUser } from "./loggedInUser";
+import { prisma } from '@/src/lib/prisma';
+import { auth } from '../lib/auth';
+import {
+    type IExercise,
+    mapExerciseToIExercise,
+} from '../models/domain/exercise';
+import type { IPagedRequest, IPagedResponse } from '../types/common';
+import type { ExerciseLogType } from '../types/enums';
+import { getLoggedInUser } from './loggedInUser';
 
 export interface IExerciseRequest extends IPagedRequest {
-  muscleGroupId?: string;
-  exerciseLogType?: ExerciseLogType;
-  search?: string;
+    muscleGroupId?: string;
+    exerciseLogType?: ExerciseLogType;
+    search?: string;
 }
 
 export const getExercise = async (id: string): Promise<IExercise | null> => {
-  const session = await auth();
-  if (!session) return null;
+    const session = await auth();
+    if (!session) return null;
 
-  const exercise = await prisma.exercise.findUnique({
-    where: {
-      id,
-    },
-    include: {
-      muscleGroup: true,
-    },
-  });
+    const exercise = await prisma.exercise.findUnique({
+        where: {
+            id,
+        },
+        include: {
+            muscleGroup: true,
+        },
+    });
 
-  return mapExerciseToIExercise(exercise);
+    return mapExerciseToIExercise(exercise);
 };
 
 export const getPagedExercises = async (pagedRequest: IExerciseRequest) => {
-  const loggedInUser = await getLoggedInUser();
-  if (!loggedInUser) return null;
-  
-  const where: any = {};
-  if (pagedRequest.search) {
-    where.name = { contains: pagedRequest.search, mode: "insensitive" };
-  }
+    const loggedInUser = await getLoggedInUser();
+    if (!loggedInUser) return null;
 
-  if (pagedRequest.muscleGroupId) {
-    where.muscleGroupId = pagedRequest.muscleGroupId;
-  }
+    const where: any = {};
+    if (pagedRequest.search) {
+        where.name = { contains: pagedRequest.search, mode: 'insensitive' };
+    }
 
-  if (pagedRequest.exerciseLogType) {
-    where.exerciseLogType = pagedRequest.exerciseLogType;
-  }
+    if (pagedRequest.muscleGroupId) {
+        where.muscleGroupId = pagedRequest.muscleGroupId;
+    }
 
-  where.OR = [
-    { belongsToUserId: loggedInUser.id },
-    { belongsToUserId: null }
-]
+    if (pagedRequest.exerciseLogType) {
+        where.exerciseLogType = pagedRequest.exerciseLogType;
+    }
 
-  const exercises = await prisma.exercise.findMany({
-    where,
-    include: {
-      muscleGroup: true,
-    },
-    skip: (pagedRequest.page) * pagedRequest.pageSize,
-    take: pagedRequest.pageSize,
-    orderBy: { name: "asc" },
-  })
+    where.OR = [
+        { belongsToUserId: loggedInUser.id },
+        { belongsToUserId: null },
+    ];
 
-  // Dohvat podataka iz baze
-  const totalItems = await prisma.exercise.count({ where });
+    const exercises = await prisma.exercise.findMany({
+        where,
+        include: {
+            muscleGroup: true,
+        },
+        skip: pagedRequest.page * pagedRequest.pageSize,
+        take: pagedRequest.pageSize,
+        orderBy: { name: 'asc' },
+    });
 
-  const mappedExercises = exercises.map((exercise) => mapExerciseToIExercise(exercise));
+    // Dohvat podataka iz baze
+    const totalItems = await prisma.exercise.count({ where });
 
-  const response: IPagedResponse<IExercise> = {
-    pagingData: {
-      totalItems,
-      page: pagedRequest.page,
-      pageSize: pagedRequest.pageSize,
-      totalPages: Math.ceil(totalItems / pagedRequest.pageSize),
-      search: pagedRequest.search,
-      sortColumn: pagedRequest.sortColumn,
-      sortDirection: pagedRequest.sortDirection,
-    },
-    items: mappedExercises,
-  }
+    const mappedExercises = exercises.map((exercise) =>
+        mapExerciseToIExercise(exercise),
+    );
 
-  return response;
+    const response: IPagedResponse<IExercise> = {
+        pagingData: {
+            totalItems,
+            page: pagedRequest.page,
+            pageSize: pagedRequest.pageSize,
+            totalPages: Math.ceil(totalItems / pagedRequest.pageSize),
+            search: pagedRequest.search,
+            sortColumn: pagedRequest.sortColumn,
+            sortDirection: pagedRequest.sortDirection,
+        },
+        items: mappedExercises,
+    };
+
+    return response;
 };

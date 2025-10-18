@@ -1,16 +1,16 @@
-"use client"
+'use client';
 
+import { FaDumbbell } from 'react-icons/fa';
+
+import { BackButton } from '@/src/components/auth/back-button';
+import { Header } from '@/src/components/auth/header';
 import {
     Card,
     CardContent,
     CardFooter,
-    CardHeader
-} from "@/src/components/ui/card";
-
-import { BackButton } from "@/src/components/auth/back-button";
-import { Header } from "@/src/components/auth/header";
-import { FaDumbbell } from "react-icons/fa";
-import { Social } from "./social";
+    CardHeader,
+} from '@/src/components/ui/card';
+import { Social } from './social';
 
 interface CardWrapperProps {
     children: React.ReactNode;
@@ -25,7 +25,7 @@ export const CardWrapper = ({
     headerLabel,
     backButtonLabel,
     backButtonHref,
-    showSocial
+    showSocial,
 }: CardWrapperProps) => {
     return (
         <Card className="w-full border-0 shadow-2xl backdrop-blur-sm bg-card/95">
@@ -37,9 +37,7 @@ export const CardWrapper = ({
                 </div>
                 <Header label={headerLabel} />
             </CardHeader>
-            <CardContent className="px-8">
-                {children}
-            </CardContent>
+            <CardContent className="px-8">{children}</CardContent>
             {showSocial && (
                 <CardFooter className="px-8 pt-6">
                     <Social />
@@ -49,5 +47,5 @@ export const CardWrapper = ({
                 <BackButton href={backButtonHref} label={backButtonLabel} />
             </CardFooter>
         </Card>
-    )
+    );
 };

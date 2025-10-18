@@ -5,10 +5,10 @@ export enum ExerciseLogType {
     RepsOnly = 3,
     BodyWeight = 4,
     BodyWeightWithAdditionalWeight = 5,
-    BodyWeightWithAssistance = 6
+    BodyWeightWithAssistance = 6,
 }
 
 export enum SortDirection {
     Ascending = 0,
-    Descending = 1
-} 
+    Descending = 1,
+}

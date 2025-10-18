@@ -1,26 +1,29 @@
-import { getLoggedInUser } from "@/src/data/loggedInUser";
-import { prisma } from "@/src/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
+import { getLoggedInUser } from '@/src/data/loggedInUser';
+import { prisma } from '@/src/lib/prisma';
 
 export async function GET() {
     const loggedInUser = await getLoggedInUser();
-    if (!loggedInUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!loggedInUser)
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     try {
-
         const exercises = await prisma.exercise.findMany({
             where: {
                 OR: [
                     { belongsToUserId: loggedInUser.id },
-                    { belongsToUserId: null }
-                ]
+                    { belongsToUserId: null },
+                ],
             },
-            orderBy: { name: "asc" },
+            orderBy: { name: 'asc' },
         });
 
         return NextResponse.json(exercises);
     } catch (error) {
-        console.error("Failed to fetch exercises:", error);
-        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+        console.error('Failed to fetch exercises:', error);
+        return NextResponse.json(
+            { error: 'Internal Server Error' },
+            { status: 500 },
+        );
     }
 }

@@ -2,7 +2,7 @@
 
 import { ExerciseApiService } from '@/src/api/services/exercise-api-service';
 import { DeleteButton } from '@/src/components/common/delete-button';
-import { IExercise } from '@/src/models/domain/exercise';
+import type { IExercise } from '@/src/models/domain/exercise';
 
 interface ExerciseDeleteButtonProps {
     exercise: IExercise;

@@ -1,26 +1,25 @@
-"use client";
+'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
+import { useState, useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import type * as z from 'zod';
+import { login } from '@/src/actions/login';
 import {
     Form,
     FormControl,
     FormField,
     FormItem,
     FormLabel,
-    FormMessage
-} from "@/src/components/ui/form";
-import { LoginSchema } from "@/src/schemas/index";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-
-import { login } from "@/src/actions/login";
-import { Loader2 } from "lucide-react";
-import { FormError } from "../form-error";
-import { FormSuccess } from "../form-success";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { CardWrapper } from "./card-wrapper";
+    FormMessage,
+} from '@/src/components/ui/form';
+import { LoginSchema } from '@/src/schemas/index';
+import { FormError } from '../form-error';
+import { FormSuccess } from '../form-success';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { CardWrapper } from './card-wrapper';
 
 export const LoginForm = () => {
     const [isSubmitting, setIsSubmitting] = useTransition();
@@ -29,8 +28,8 @@ export const LoginForm = () => {
     const form = useForm<z.infer<typeof LoginSchema>>({
         resolver: zodResolver(LoginSchema),
         defaultValues: {
-            email: "",
-            password: ""
+            email: '',
+            password: '',
         },
     });
 
@@ -38,13 +37,12 @@ export const LoginForm = () => {
         setError(undefined);
         setSuccess(undefined);
         setIsSubmitting(() => {
-            login(values)
-                .then((data: any) => {
-                    setError(data.error);
-                    setSuccess(data.success);
-                })
+            login(values).then((data: any) => {
+                setError(data.error);
+                setSuccess(data.success);
+            });
         });
-    }
+    };
 
     return (
         <CardWrapper
@@ -54,8 +52,10 @@ export const LoginForm = () => {
             showSocial={true}
         >
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-6">
+                <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6"
+                >
                     <div className="space-y-4">
                         <FormField
                             control={form.control}
@@ -73,7 +73,8 @@ export const LoginForm = () => {
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
-                            )} />
+                            )}
+                        />
 
                         <FormField
                             control={form.control}
@@ -91,7 +92,8 @@ export const LoginForm = () => {
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
-                            )} />
+                            )}
+                        />
                     </div>
                     <FormError message={error} />
                     <FormSuccess message={success} />
@@ -107,11 +109,11 @@ export const LoginForm = () => {
                                 Signing you in...
                             </>
                         ) : (
-                            "Sign In"
+                            'Sign In'
                         )}
                     </Button>
                 </form>
             </Form>
         </CardWrapper>
-    )
-} 
+    );
+};

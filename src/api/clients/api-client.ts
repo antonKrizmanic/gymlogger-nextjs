@@ -5,7 +5,7 @@ type RequestConfig = {
 };
 
 export class ApiClient {
-    private static instance: ApiClient;    
+    private static instance: ApiClient;
 
     public static getInstance(): ApiClient {
         if (!ApiClient.instance) {
@@ -14,44 +14,55 @@ export class ApiClient {
         return ApiClient.instance;
     }
 
-    private async fetchWithAuth(endpoint: string, config: RequestConfig = {}): Promise<Response> {
+    private async fetchWithAuth(
+        endpoint: string,
+        config: RequestConfig = {},
+    ): Promise<Response> {
         const headers: Record<string, string> = {
             'Content-Type': 'application/json',
-            ...config.headers
-        };        
+            ...config.headers,
+        };
 
         const response = await fetch(`${endpoint}`, {
-            credentials: "include",
+            credentials: 'include',
             ...config,
             headers,
-            body: config.body ? JSON.stringify(config.body) : undefined
+            body: config.body ? JSON.stringify(config.body) : undefined,
         });
-        
+
         return response;
     }
 
     async get<T>(endpoint: string, config: RequestConfig = {}): Promise<T> {
         const response = await this.fetchWithAuth(endpoint, {
             ...config,
-            method: 'GET'
+            method: 'GET',
         });
         return response.json();
     }
 
-    async post<T>(endpoint: string, data: any, config: RequestConfig = {}): Promise<T> {
+    async post<T>(
+        endpoint: string,
+        data: any,
+        config: RequestConfig = {},
+    ): Promise<T> {
         const response = await this.fetchWithAuth(endpoint, {
             ...config,
             method: 'POST',
-            body: data
+            body: data,
         });
         return response.json();
     }
 
-    async put<T>(endpoint: string, data: any, config: RequestConfig = {}): Promise<T> {
+    async put<T>(
+        endpoint: string,
+        data: any,
+        config: RequestConfig = {},
+    ): Promise<T> {
         const response = await this.fetchWithAuth(endpoint, {
             ...config,
             method: 'PUT',
-            body: data
+            body: data,
         });
         return response.json();
     }
@@ -59,7 +70,7 @@ export class ApiClient {
     async delete<T>(endpoint: string, config: RequestConfig = {}): Promise<T> {
         const response = await this.fetchWithAuth(endpoint, {
             ...config,
-            method: 'DELETE'
+            method: 'DELETE',
         });
         return response.json();
     }

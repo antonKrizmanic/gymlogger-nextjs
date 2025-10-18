@@ -1,18 +1,32 @@
+import { format } from 'date-fns';
+import {
+    Activity,
+    Calendar,
+    Dumbbell,
+    MoveLeft,
+    Pencil,
+    Target,
+} from 'lucide-react';
+import Link from 'next/link';
 import { Container } from '@/src/components/common/container';
 import { Badge } from '@/src/components/ui/badge';
 import { Button } from '@/src/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from '@/src/components/ui/card';
 import { WorkoutDeleteButton } from '@/src/components/workout/workout-delete-button';
 import { WorkoutExerciseList } from '@/src/components/workout/workout-exercise-list';
 import { getWorkout } from '@/src/data/workout';
-import { format } from 'date-fns';
-import { Activity, Calendar, Dumbbell, MoveLeft, Pencil, Target } from 'lucide-react';
-import Link from 'next/link';
 
 // Force dynamic rendering to prevent caching
 export const dynamic = 'force-dynamic';
 
-export default async function WorkoutDetailPage(props: { params: Promise<{ id: string }> }) {
+export default async function WorkoutDetailPage(props: {
+    params: Promise<{ id: string }>;
+}) {
     const params = await props.params;
     const id = await params.id;
     const workout = await getWorkout(id);
@@ -29,9 +43,13 @@ export default async function WorkoutDetailPage(props: { params: Promise<{ id: s
                                         <Activity className="h-8 w-8 text-destructive" />
                                     </div>
                                     <div className="space-y-2">
-                                        <h3 className="text-xl font-semibold text-foreground">Workout Not Found</h3>
+                                        <h3 className="text-xl font-semibold text-foreground">
+                                            Workout Not Found
+                                        </h3>
                                         <p className="text-muted-foreground">
-                                            The workout you&apos;re looking for doesn&apos;t exist or has been removed.
+                                            The workout you&apos;re looking for
+                                            doesn&apos;t exist or has been
+                                            removed.
                                         </p>
                                     </div>
                                     <Button asChild className="mt-4">
@@ -65,8 +83,15 @@ export default async function WorkoutDetailPage(props: { params: Promise<{ id: s
                 <div className="space-y-6 pb-8">
                     <div className="space-y-4">
                         {/* Back Navigation */}
-                        <Button asChild variant="ghost" className="p-0 h-auto font-normal text-muted-foreground hover:text-foreground">
-                            <Link href="/workouts" className="flex items-center gap-2">
+                        <Button
+                            asChild
+                            variant="ghost"
+                            className="p-0 h-auto font-normal text-muted-foreground hover:text-foreground"
+                        >
+                            <Link
+                                href="/workouts"
+                                className="flex items-center gap-2"
+                            >
                                 <MoveLeft className="h-4 w-4" />
                                 Back to Workouts
                             </Link>
@@ -83,12 +108,18 @@ export default async function WorkoutDetailPage(props: { params: Promise<{ id: s
 
                             {/* Badges */}
                             <div className="flex flex-wrap gap-3">
-                                <Badge variant="secondary" className="text-sm px-3 py-1 flex items-center gap-2">
+                                <Badge
+                                    variant="secondary"
+                                    className="text-sm px-3 py-1 flex items-center gap-2"
+                                >
                                     <Calendar className="h-4 w-4" />
                                     {formatWorkoutDate(workout.date)}
                                 </Badge>
                                 {workout.muscleGroupName && (
-                                    <Badge variant="outline" className="text-sm px-3 py-1 flex items-center gap-2">
+                                    <Badge
+                                        variant="outline"
+                                        className="text-sm px-3 py-1 flex items-center gap-2"
+                                    >
                                         <Target className="h-4 w-4" />
                                         {workout.muscleGroupName}
                                     </Badge>
@@ -98,7 +129,11 @@ export default async function WorkoutDetailPage(props: { params: Promise<{ id: s
 
                         {/* Action Buttons */}
                         <div className="flex flex-col sm:flex-row gap-3">
-                            <Button asChild size="lg" className="px-6 py-3 text-lg font-semibold">
+                            <Button
+                                asChild
+                                size="lg"
+                                className="px-6 py-3 text-lg font-semibold"
+                            >
                                 <Link href={`/workouts/${workout.id}/edit`}>
                                     <Pencil className="mr-2 h-5 w-5" />
                                     Edit Workout
@@ -159,7 +194,10 @@ export default async function WorkoutDetailPage(props: { params: Promise<{ id: s
                 </Card>
 
                 {/* Exercise List */}
-                <WorkoutExerciseList exercises={workout.exercises} userWeight={workout.userWeight} />
+                <WorkoutExerciseList
+                    exercises={workout.exercises}
+                    userWeight={workout.userWeight}
+                />
             </Container>
         </div>
     );

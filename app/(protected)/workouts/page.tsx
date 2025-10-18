@@ -1,11 +1,16 @@
-"use client";
-import { Container } from '@/src/components/common/container';
-import { Button } from '@/src/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/src/components/ui/card';
-import { WorkoutsIndex } from '@/src/views/workout/workouts-index';
+'use client';
 import { Calendar, Dumbbell, Filter, Plus } from 'lucide-react';
 import Link from 'next/link';
 import React, { Suspense, useState } from 'react';
+import { Container } from '@/src/components/common/container';
+import { Button } from '@/src/components/ui/button';
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from '@/src/components/ui/card';
+import { WorkoutsIndex } from '@/src/views/workout/workouts-index';
 
 // Create a client component that uses searchParams
 const WorkoutsContent = () => {
@@ -14,18 +19,15 @@ const WorkoutsContent = () => {
     // Listen for the toggle filter event
     React.useEffect(() => {
         const handleToggleFilter = () => {
-            setIsFilterOpen(prev => !prev);
+            setIsFilterOpen((prev) => !prev);
         };
 
         window.addEventListener('toggleFilter', handleToggleFilter);
-        return () => window.removeEventListener('toggleFilter', handleToggleFilter);
+        return () =>
+            window.removeEventListener('toggleFilter', handleToggleFilter);
     }, []);
 
-    return (
-        <WorkoutsIndex
-            isFilterOpen={isFilterOpen}
-        />
-    );
+    return <WorkoutsIndex isFilterOpen={isFilterOpen} />;
 };
 
 // Main page component with Suspense boundary
@@ -43,13 +45,18 @@ export default function WorkoutsPage() {
                             Your Workouts
                         </h1>
                         <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl">
-                            Track your fitness journey with detailed workout logs. Monitor your progress
-                            and achieve your goals one session at a time.
+                            Track your fitness journey with detailed workout
+                            logs. Monitor your progress and achieve your goals
+                            one session at a time.
                         </p>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-4">
-                        <Button asChild size="lg" className="px-6 py-3 text-lg font-semibold">
-                            <Link href='/workouts/create'>
+                        <Button
+                            asChild
+                            size="lg"
+                            className="px-6 py-3 text-lg font-semibold"
+                        >
+                            <Link href="/workouts/create">
                                 <Plus className="mr-2 h-5 w-5" />
                                 New Workout
                             </Link>
@@ -79,11 +86,13 @@ export default function WorkoutsPage() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <Suspense fallback={
-                            <div className="flex items-center justify-center min-h-[400px]">
-                                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-                            </div>
-                        }>
+                        <Suspense
+                            fallback={
+                                <div className="flex items-center justify-center min-h-[400px]">
+                                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                                </div>
+                            }
+                        >
                             <WorkoutsContent />
                         </Suspense>
                     </CardContent>

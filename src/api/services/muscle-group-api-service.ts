@@ -1,6 +1,6 @@
-import { BaseApiService } from './base-api-service';
+import type { IMuscleGroup } from '../../models/domain/muscle-group';
 import { Endpoints } from '../endpoints';
-import { IMuscleGroup } from '../../models/domain/muscle-group';
+import { BaseApiService } from './base-api-service';
 
 export class MuscleGroupApiService extends BaseApiService {
     public async getMuscleGroups(): Promise<IMuscleGroup[]> {
@@ -10,4 +10,4 @@ export class MuscleGroupApiService extends BaseApiService {
     public async getMuscleGroup(id: string): Promise<IMuscleGroup> {
         return this.get<IMuscleGroup>(Endpoints.MuscleGroup.ById(id));
     }
-} 
+}

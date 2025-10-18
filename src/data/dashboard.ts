@@ -1,8 +1,11 @@
-import { Prisma } from "@prisma/client";
+import type { Prisma } from '@prisma/client';
 
-import { prisma } from "../lib/prisma";
-import { IDashboard, IDashboardDateItem } from "../models/domain/dashboard";
-import { getLoggedInUser } from "./loggedInUser";
+import { prisma } from '../lib/prisma';
+import type {
+    IDashboard,
+    IDashboardDateItem,
+} from '../models/domain/dashboard';
+import { getLoggedInUser } from './loggedInUser';
 
 interface DateBoundaries {
     today: Date;
@@ -65,13 +68,19 @@ function getDateBoundaries(reference = new Date()): DateBoundaries {
     weekStart.setDate(weekStart.getDate() - daysSinceMonday);
 
     const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-    const nextMonthStart = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+    const nextMonthStart = new Date(
+        today.getFullYear(),
+        today.getMonth() + 1,
+        1,
+    );
     const yearStart = new Date(today.getFullYear(), 0, 1);
 
     return { today, weekStart, monthStart, nextMonthStart, yearStart };
 }
 
-async function loadLastWorkout(userId: string): Promise<IDashboard["lastWorkout"]> {
+async function loadLastWorkout(
+    userId: string,
+): Promise<IDashboard['lastWorkout']> {
     const workout = await prisma.workout.findFirst({
         select: {
             id: true,
@@ -100,7 +109,7 @@ async function loadLastWorkout(userId: string): Promise<IDashboard["lastWorkout"
             },
         },
         where: { belongsToUserId: userId },
-        orderBy: { date: "desc" },
+        orderBy: { date: 'desc' },
     });
 
     if (!workout) {
@@ -108,7 +117,9 @@ async function loadLastWorkout(userId: string): Promise<IDashboard["lastWorkout"
     }
 
     // Use the stored workout weight for historical accuracy
-    const workoutWeight = workout.userWeight ? Number(workout.userWeight) : null;
+    const workoutWeight = workout.userWeight
+        ? Number(workout.userWeight)
+        : null;
 
     const totals = workout.exerciseWorkouts.reduce(
         (acc, exercise) => {
@@ -122,16 +133,19 @@ async function loadLastWorkout(userId: string): Promise<IDashboard["lastWorkout"
                 acc.totalReps += reps;
 
                 // Calculate weight based on exercise log type using stored workout weight
-                if (exerciseLogType === 4) { // BodyWeight
+                if (exerciseLogType === 4) {
+                    // BodyWeight
                     // For pure bodyweight exercises, use stored workout weight
                     const bodyWeight = workoutWeight || 0;
                     acc.totalWeight += bodyWeight * reps;
-                } else if (exerciseLogType === 5) { // BodyWeightWithAdditionalWeight
+                } else if (exerciseLogType === 5) {
+                    // BodyWeightWithAdditionalWeight
                     // For bodyweight exercises with additional weight, add stored workout weight to the additional weight
                     const bodyWeight = workoutWeight || 0;
                     const additionalWeight = setWeight;
                     acc.totalWeight += (bodyWeight + additionalWeight) * reps;
-                } else if (exerciseLogType === 6) { // BodyWeightWithAssistance
+                } else if (exerciseLogType === 6) {
+                    // BodyWeightWithAssistance
                     // For assisted bodyweight exercises, subtract assistance weight from stored workout weight
                     const bodyWeight = workoutWeight || 0;
                     const assistanceWeight = setWeight;
@@ -160,13 +174,15 @@ async function loadLastWorkout(userId: string): Promise<IDashboard["lastWorkout"
     };
 }
 
-async function loadFavoriteMuscleGroupName(userId: string): Promise<string | undefined> {
+async function loadFavoriteMuscleGroupName(
+    userId: string,
+): Promise<string | undefined> {
     const [mostFrequent] = await prisma.workout.groupBy({
-        by: ["muscleGroupId"],
+        by: ['muscleGroupId'],
         _count: { muscleGroupId: true },
         where: { belongsToUserId: userId },
         orderBy: {
-            _count: { muscleGroupId: "desc" },
+            _count: { muscleGroupId: 'desc' },
         },
         take: 1,
     });
@@ -184,7 +200,13 @@ async function loadFavoriteMuscleGroupName(userId: string): Promise<string | und
 }
 
 async function loadWorkoutCounts(userId: string, boundaries: DateBoundaries) {
-    const [row] = await prisma.$queryRaw<Array<{ week_count: NumericPrimitive; month_count: NumericPrimitive; year_count: NumericPrimitive }>>`
+    const [row] = await prisma.$queryRaw<
+        Array<{
+            week_count: NumericPrimitive;
+            month_count: NumericPrimitive;
+            year_count: NumericPrimitive;
+        }>
+    >`
     SELECT
       SUM(CASE WHEN "date" >= ${boundaries.weekStart} THEN 1 ELSE 0 END) AS week_count,
       SUM(CASE WHEN "date" >= ${boundaries.monthStart} THEN 1 ELSE 0 END) AS month_count,
@@ -202,11 +224,13 @@ async function loadWorkoutCounts(userId: string, boundaries: DateBoundaries) {
 }
 
 async function loadSeriesTotals(userId: string, boundaries: DateBoundaries) {
-    const [row] = await prisma.$queryRaw<Array<{
-        week_total: NumericPrimitive;
-        month_total: NumericPrimitive;
-        year_total: NumericPrimitive;
-    }>>`
+    const [row] = await prisma.$queryRaw<
+        Array<{
+            week_total: NumericPrimitive;
+            month_total: NumericPrimitive;
+            year_total: NumericPrimitive;
+        }>
+    >`
     SELECT
       SUM(CASE WHEN w."date" >= ${boundaries.weekStart} THEN COALESCE(e."totalSets", 0) ELSE 0 END) AS week_total,
       SUM(CASE WHEN w."date" >= ${boundaries.monthStart} THEN COALESCE(e."totalSets", 0) ELSE 0 END) AS month_total,
@@ -258,28 +282,33 @@ async function loadWeightTotals(userId: string, boundaries: DateBoundaries) {
     let monthTotal = 0;
     let yearTotal = 0;
 
-    workouts.forEach(workout => {
-        const workoutWeight = workout.userWeight ? Number(workout.userWeight) : null;
-        workout.exerciseWorkouts.forEach(exercise => {
+    workouts.forEach((workout) => {
+        const workoutWeight = workout.userWeight
+            ? Number(workout.userWeight)
+            : null;
+        workout.exerciseWorkouts.forEach((exercise) => {
             const exerciseLogType = exercise.exercise.exerciseLogType;
             const sets = exercise.exerciseSets;
 
-            sets.forEach(set => {
+            sets.forEach((set) => {
                 const reps = toNumber(set.reps);
                 const setWeight = toNumber(set.weight);
                 let setTotalWeight = 0;
 
                 // Calculate weight based on exercise log type using stored workout weight
-                if (exerciseLogType === 4) { // BodyWeight
+                if (exerciseLogType === 4) {
+                    // BodyWeight
                     // For pure bodyweight exercises, use stored workout weight
                     const bodyWeight = workoutWeight || 0;
                     setTotalWeight = bodyWeight * reps;
-                } else if (exerciseLogType === 5) { // BodyWeightWithAdditionalWeight
+                } else if (exerciseLogType === 5) {
+                    // BodyWeightWithAdditionalWeight
                     // For bodyweight exercises with additional weight, add stored workout weight to the additional weight
                     const bodyWeight = workoutWeight || 0;
                     const additionalWeight = setWeight;
                     setTotalWeight = (bodyWeight + additionalWeight) * reps;
-                } else if (exerciseLogType === 6) { // BodyWeightWithAssistance
+                } else if (exerciseLogType === 6) {
+                    // BodyWeightWithAssistance
                     // For assisted bodyweight exercises, subtract assistance weight from stored workout weight
                     const bodyWeight = workoutWeight || 0;
                     const assistanceWeight = setWeight;
@@ -310,7 +339,10 @@ async function loadWeightTotals(userId: string, boundaries: DateBoundaries) {
     };
 }
 
-async function loadWorkoutsByDate(userId: string, boundaries: DateBoundaries): Promise<IDashboardDateItem[]> {
+async function loadWorkoutsByDate(
+    userId: string,
+    boundaries: DateBoundaries,
+): Promise<IDashboardDateItem[]> {
     // Fetch workouts with exercise log types and stored workout weights for proper calculations
     const workouts = await prisma.workout.findMany({
         select: {
@@ -341,30 +373,38 @@ async function loadWorkoutsByDate(userId: string, boundaries: DateBoundaries): P
         },
     });
 
-    const dateMap = new Map<string, { weight: number; reps: number; sets: number }>();
+    const dateMap = new Map<
+        string,
+        { weight: number; reps: number; sets: number }
+    >();
 
-    workouts.forEach(workout => {
-        const workoutWeight = workout.userWeight ? Number(workout.userWeight) : null;
-        workout.exerciseWorkouts.forEach(exercise => {
+    workouts.forEach((workout) => {
+        const workoutWeight = workout.userWeight
+            ? Number(workout.userWeight)
+            : null;
+        workout.exerciseWorkouts.forEach((exercise) => {
             const exerciseLogType = exercise.exercise.exerciseLogType;
             const sets = exercise.exerciseSets;
 
-            sets.forEach(set => {
+            sets.forEach((set) => {
                 const reps = toNumber(set.reps);
                 const setWeight = toNumber(set.weight);
                 let setTotalWeight = 0;
 
                 // Calculate weight based on exercise log type using stored workout weight
-                if (exerciseLogType === 4) { // BodyWeight
+                if (exerciseLogType === 4) {
+                    // BodyWeight
                     // For pure bodyweight exercises, use stored workout weight
                     const bodyWeight = workoutWeight || 0;
                     setTotalWeight = bodyWeight * reps;
-                } else if (exerciseLogType === 5) { // BodyWeightWithAdditionalWeight
+                } else if (exerciseLogType === 5) {
+                    // BodyWeightWithAdditionalWeight
                     // For bodyweight exercises with additional weight, add stored workout weight to the additional weight
                     const bodyWeight = workoutWeight || 0;
                     const additionalWeight = setWeight;
                     setTotalWeight = (bodyWeight + additionalWeight) * reps;
-                } else if (exerciseLogType === 6) { // BodyWeightWithAssistance
+                } else if (exerciseLogType === 6) {
+                    // BodyWeightWithAssistance
                     // For assisted bodyweight exercises, subtract assistance weight from stored workout weight
                     const bodyWeight = workoutWeight || 0;
                     const assistanceWeight = setWeight;
@@ -375,7 +415,11 @@ async function loadWorkoutsByDate(userId: string, boundaries: DateBoundaries): P
                 }
 
                 const dateKey = toIsoDate(workout.date);
-                const existing = dateMap.get(dateKey) || { weight: 0, reps: 0, sets: 0 };
+                const existing = dateMap.get(dateKey) || {
+                    weight: 0,
+                    reps: 0,
+                    sets: 0,
+                };
 
                 dateMap.set(dateKey, {
                     weight: existing.weight + setTotalWeight,
@@ -411,11 +455,11 @@ function toNumber(value: NumericPrimitive): number {
         return 0;
     }
 
-    if (typeof value === "number") {
+    if (typeof value === 'number') {
         return Number.isNaN(value) ? 0 : value;
     }
 
-    if (typeof value === "bigint") {
+    if (typeof value === 'bigint') {
         return Number(value);
     }
 
@@ -425,5 +469,5 @@ function toNumber(value: NumericPrimitive): number {
 function toIsoDate(value: Date): string {
     const date = new Date(value);
     date.setHours(0, 0, 0, 0);
-    return date.toISOString().split("T")[0];
+    return date.toISOString().split('T')[0];
 }

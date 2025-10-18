@@ -1,27 +1,25 @@
-"use client";
+'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
+import { useState, useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import type * as z from 'zod';
+import { register } from '@/src/actions/register';
 import {
     Form,
     FormControl,
     FormField,
     FormItem,
     FormLabel,
-    FormMessage
-} from "@/src/components/ui/form";
-import { RegisterSchema } from "@/src/schemas/index";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-
-import { register } from "@/src/actions/register";
-import { Loader2 } from "lucide-react";
-import { FormError } from "../form-error";
-import { FormSuccess } from "../form-success";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { CardWrapper } from "./card-wrapper";
-
+    FormMessage,
+} from '@/src/components/ui/form';
+import { RegisterSchema } from '@/src/schemas/index';
+import { FormError } from '../form-error';
+import { FormSuccess } from '../form-success';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { CardWrapper } from './card-wrapper';
 
 export const RegisterForm = () => {
     const [isSubmitting, setIsSubmitting] = useTransition();
@@ -30,10 +28,10 @@ export const RegisterForm = () => {
     const form = useForm<z.infer<typeof RegisterSchema>>({
         resolver: zodResolver(RegisterSchema),
         defaultValues: {
-            name: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
+            name: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
         },
     });
 
@@ -41,13 +39,12 @@ export const RegisterForm = () => {
         setError(undefined);
         setSuccess(undefined);
         setIsSubmitting(() => {
-            register(values)
-                .then((data) => {
-                    setError(data.error);
-                    setSuccess(data.success);
-                })
+            register(values).then((data) => {
+                setError(data.error);
+                setSuccess(data.success);
+            });
         });
-    }
+    };
 
     return (
         <CardWrapper
@@ -57,8 +54,10 @@ export const RegisterForm = () => {
             showSocial={false}
         >
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-6">
+                <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-6"
+                >
                     <div className="space-y-4">
                         <FormField
                             control={form.control}
@@ -76,7 +75,8 @@ export const RegisterForm = () => {
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
-                            )} />
+                            )}
+                        />
 
                         <FormField
                             control={form.control}
@@ -94,7 +94,8 @@ export const RegisterForm = () => {
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
-                            )} />
+                            )}
+                        />
 
                         <FormField
                             control={form.control}
@@ -112,7 +113,8 @@ export const RegisterForm = () => {
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
-                            )} />
+                            )}
+                        />
 
                         <FormField
                             control={form.control}
@@ -130,7 +132,8 @@ export const RegisterForm = () => {
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
-                            )} />
+                            )}
+                        />
                     </div>
                     <FormError message={error} />
                     <FormSuccess message={success} />
@@ -146,11 +149,11 @@ export const RegisterForm = () => {
                                 Creating your account...
                             </>
                         ) : (
-                            "Create Account"
+                            'Create Account'
                         )}
                     </Button>
                 </form>
             </Form>
         </CardWrapper>
-    )
-} 
+    );
+};

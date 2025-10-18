@@ -1,6 +1,6 @@
-import { prisma } from "@/src/lib/prisma";
-import { auth } from "../lib/auth";
-import { IMuscleGroup } from "../models/domain/muscle-group";
+import { prisma } from '@/src/lib/prisma';
+import { auth } from '../lib/auth';
+import type { IMuscleGroup } from '../models/domain/muscle-group';
 
 export const getMuscleGroups = async (): Promise<IMuscleGroup[] | null> => {
     const session = await auth();
@@ -14,11 +14,11 @@ export const getMuscleGroups = async (): Promise<IMuscleGroup[] | null> => {
                 description: true,
             },
             orderBy: {
-                name: 'asc'
-            }
+                name: 'asc',
+            },
         });
     } catch (error) {
-        console.error("Failed to fetch muscle groups:", error);
+        console.error('Failed to fetch muscle groups:', error);
         throw error;
     }
-}
+};

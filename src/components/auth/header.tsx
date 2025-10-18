@@ -8,5 +8,5 @@ export const Header = ({ label }: HeaderProps) => {
             <h1 className="text-3xl font-bold text-foreground">GymNotebook</h1>
             <p className="text-lg text-muted-foreground">{label}</p>
         </div>
-    )
+    );
 };
