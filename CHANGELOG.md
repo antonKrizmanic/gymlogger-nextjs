@@ -1,5 +1,21 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.49.0] - 2025-10-18
+### Added
+- [CodeStyleChanges] Biome
+
+### Changed
+- [Dependencies] Updated pnpm-10.x
+- [Dependencies] Updated react-monorepo
+- [Dependencies] Updated prisma-monorepo
+- [Dependencies] Updated react-day-picker-9.x
+- [Dependencies] Updated react-hook-form-7.x
+- [Dependencies] Updated auth-prisma-adapter-2.x
+- [Dependencies] Updated node-22.x
+
+### Removed
+- [CodeStyleChanges] Eslint
+
 ## [0.48.0] - 2025-10-12
 ### Changed
 - [BuildSystem] sync PR
