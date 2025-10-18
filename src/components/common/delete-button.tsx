@@ -1,10 +1,10 @@
 'use client';
-import { ConfirmationModal } from "@/src/components/common/confirmation-modal";
-import { Button } from "@/src/components/ui/button";
-import { cn } from "@/src/lib/utils";
-import { Trash } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
+import { Trash } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { ConfirmationModal } from '@/src/components/common/confirmation-modal';
+import { Button } from '@/src/components/ui/button';
+import { cn } from '@/src/lib/utils';
 
 interface DeleteButtonProps {
     entityName: string;
@@ -12,11 +12,19 @@ interface DeleteButtonProps {
     onDelete?: () => void; // Optional callback when deletion is successful
     deleteAction: () => Promise<void>;
     className?: string;
-    size?: "default" | "sm" | "lg";
+    size?: 'default' | 'sm' | 'lg';
     text?: string;
 }
 
-export function DeleteButton({ entityName, entityType, onDelete, deleteAction, className, size = "default", text }: DeleteButtonProps) {
+export function DeleteButton({
+    entityName,
+    entityType,
+    onDelete,
+    deleteAction,
+    className,
+    size = 'default',
+    text,
+}: DeleteButtonProps) {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
@@ -48,12 +56,11 @@ export function DeleteButton({ entityName, entityType, onDelete, deleteAction, c
             <Button
                 onClick={handleDelete}
                 size={size}
-                className={cn("rounded-1 w-full", className)}
+                className={cn('rounded-1 w-full', className)}
             >
                 <Trash />
                 {text}
             </Button>
-
 
             <ConfirmationModal
                 isOpen={isDeleteModalOpen}

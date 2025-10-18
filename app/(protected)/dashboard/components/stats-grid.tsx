@@ -1,21 +1,26 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
-import { formatNumber } from "@/src/lib/utils";
-import { IDashboard } from "@/src/models/domain/dashboard";
-import { BarChart3, Calendar, Target, TrendingUp } from "lucide-react";
+import { BarChart3, Calendar, Target, TrendingUp } from 'lucide-react';
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from '@/src/components/ui/card';
+import { formatNumber } from '@/src/lib/utils';
+import type { IDashboard } from '@/src/models/domain/dashboard';
 
 interface StatsGridProps {
     metrics: Pick<
         IDashboard,
-        | "workoutsCount"
-        | "workoutsThisWeek"
-        | "workoutsThisMonth"
-        | "workoutsThisYear"
-        | "seriesThisWeek"
-        | "seriesThisMonth"
-        | "seriesThisYear"
-        | "weightThisWeek"
-        | "weightThisMonth"
-        | "weightThisYear"
+        | 'workoutsCount'
+        | 'workoutsThisWeek'
+        | 'workoutsThisMonth'
+        | 'workoutsThisYear'
+        | 'seriesThisWeek'
+        | 'seriesThisMonth'
+        | 'seriesThisYear'
+        | 'weightThisWeek'
+        | 'weightThisMonth'
+        | 'weightThisYear'
     >;
 }
 
@@ -74,25 +79,52 @@ interface StatCardProps {
     suffix?: string;
 }
 
-function StatCard({ icon, title, subtitle, weekly, monthly, yearly, suffix = "" }: StatCardProps) {
+function StatCard({
+    icon,
+    title,
+    subtitle,
+    weekly,
+    monthly,
+    yearly,
+    suffix = '',
+}: StatCardProps) {
     return (
         <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] bg-gradient-to-br from-card to-card/80">
             <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                        <div className="p-3 bg-primary/10 rounded-xl">{icon}</div>
+                        <div className="p-3 bg-primary/10 rounded-xl">
+                            {icon}
+                        </div>
                         <div>
-                            <CardTitle className="text-lg font-bold">{title}</CardTitle>
-                            <p className="text-xs text-muted-foreground">{subtitle}</p>
+                            <CardTitle className="text-lg font-bold">
+                                {title}
+                            </CardTitle>
+                            <p className="text-xs text-muted-foreground">
+                                {subtitle}
+                            </p>
                         </div>
                     </div>
                 </div>
             </CardHeader>
             <CardContent className="pt-0">
                 <div className="space-y-3">
-                    <StatMetric label="This Week" value={weekly} suffix={suffix} bold />
-                    <StatMetric label="This Month" value={monthly} suffix={suffix} />
-                    <StatMetric label="This Year" value={yearly} suffix={suffix} />
+                    <StatMetric
+                        label="This Week"
+                        value={weekly}
+                        suffix={suffix}
+                        bold
+                    />
+                    <StatMetric
+                        label="This Month"
+                        value={monthly}
+                        suffix={suffix}
+                    />
+                    <StatMetric
+                        label="This Year"
+                        value={yearly}
+                        suffix={suffix}
+                    />
                 </div>
             </CardContent>
         </Card>
@@ -106,12 +138,23 @@ interface StatMetricProps {
     bold?: boolean;
 }
 
-function StatMetric({ label, value, suffix = "", bold = false }: StatMetricProps) {
-    const valueClassName = bold ? "text-lg font-bold" : "text-base font-semibold";
+function StatMetric({
+    label,
+    value,
+    suffix = '',
+    bold = false,
+}: StatMetricProps) {
+    const valueClassName = bold
+        ? 'text-lg font-bold'
+        : 'text-base font-semibold';
 
     return (
         <div className="bg-muted/30 rounded-lg p-3 flex justify-between items-center">
-            <span className={`text-sm ${bold ? "font-bold" : "text-muted-foreground"}`}>{label}</span>
+            <span
+                className={`text-sm ${bold ? 'font-bold' : 'text-muted-foreground'}`}
+            >
+                {label}
+            </span>
             <span className={`${valueClassName}`}>
                 {formatNumber(value)}
                 {suffix}

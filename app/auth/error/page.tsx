@@ -1,7 +1,7 @@
-import { Button } from "@/src/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/src/components/ui/card";
-import { AlertTriangle } from "lucide-react";
-import Link from "next/link";
+import { AlertTriangle } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '@/src/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/src/components/ui/card';
 
 const AuthErrorPage = () => {
     return (
@@ -13,7 +13,9 @@ const AuthErrorPage = () => {
                     </div>
                 </div>
                 <div className="space-y-2">
-                    <h1 className="text-3xl font-bold text-foreground">Authentication Error</h1>
+                    <h1 className="text-3xl font-bold text-foreground">
+                        Authentication Error
+                    </h1>
                     <p className="text-lg text-muted-foreground">
                         Something went wrong during authentication
                     </p>
@@ -21,24 +23,30 @@ const AuthErrorPage = () => {
             </CardHeader>
             <CardContent className="px-8 pb-8 space-y-6">
                 <p className="text-center text-muted-foreground">
-                    We encountered an issue while processing your authentication request.
-                    Please try again or contact support if the problem persists.
+                    We encountered an issue while processing your authentication
+                    request. Please try again or contact support if the problem
+                    persists.
                 </p>
                 <div className="flex flex-col space-y-3">
-                    <Button asChild size="lg" className="h-12 text-lg font-semibold">
-                        <Link href="/auth/login">
-                            Try Again
-                        </Link>
+                    <Button
+                        asChild
+                        size="lg"
+                        className="h-12 text-lg font-semibold"
+                    >
+                        <Link href="/auth/login">Try Again</Link>
                     </Button>
-                    <Button asChild variant="outline" size="lg" className="h-12 text-lg font-semibold">
-                        <Link href="/">
-                            Back to Home
-                        </Link>
+                    <Button
+                        asChild
+                        variant="outline"
+                        size="lg"
+                        className="h-12 text-lg font-semibold"
+                    >
+                        <Link href="/">Back to Home</Link>
                     </Button>
                 </div>
             </CardContent>
         </Card>
     );
-}
+};
 
 export default AuthErrorPage;

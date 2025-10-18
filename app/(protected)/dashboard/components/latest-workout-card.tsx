@@ -1,11 +1,18 @@
-import { IconLinkButton } from "@/src/components/common/icon-link-button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/src/components/ui/card";
-import { formatDate, formatNumber } from "@/src/lib/utils";
-import { IDashboard } from "@/src/models/domain/dashboard";
-import { Clock, Dumbbell, Eye, Pencil, Trophy } from "lucide-react";
+import { Clock, Dumbbell, Eye, Pencil, Trophy } from 'lucide-react';
+import { IconLinkButton } from '@/src/components/common/icon-link-button';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from '@/src/components/ui/card';
+import { formatDate, formatNumber } from '@/src/lib/utils';
+import type { IDashboard } from '@/src/models/domain/dashboard';
 
 interface LatestWorkoutCardProps {
-    workout: NonNullable<IDashboard["lastWorkout"]>;
+    workout: NonNullable<IDashboard['lastWorkout']>;
 }
 
 export function LatestWorkoutCard({ workout }: LatestWorkoutCardProps) {
@@ -68,7 +75,9 @@ interface MetricProps {
 function Metric({ label, value }: MetricProps) {
     return (
         <div className="bg-background/50 rounded-lg p-3">
-            <p className="text-2xl font-bold text-primary">{formatNumber(value)}</p>
+            <p className="text-2xl font-bold text-primary">
+                {formatNumber(value)}
+            </p>
             <p className="text-sm text-muted-foreground">{label}</p>
         </div>
     );

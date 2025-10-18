@@ -1,4 +1,4 @@
-import { ApiClient } from '../clients/api-client';
+import type { ApiClient } from '../clients/api-client';
 
 export abstract class BaseApiService {
     private apiClientInstance: ApiClient | null = null;
@@ -13,7 +13,9 @@ export abstract class BaseApiService {
 
     protected async get<T>(url: string, params?: URLSearchParams): Promise<T> {
         const client = await this.getClient();
-        const queryString = params ? '?' + new URLSearchParams(params as any).toString() : '';
+        const queryString = params
+            ? '?' + new URLSearchParams(params as any).toString()
+            : '';
         return client.get<T>(`${url}${queryString}`);
     }
 

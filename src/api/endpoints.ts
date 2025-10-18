@@ -10,7 +10,7 @@ export const Endpoints = {
         ResendConfirmation: '/resendConfirmationEmail',
         ForgotPassword: '/forgotPassword',
         ResetPassword: '/resetPassword',
-        TwoFactor: '/manage/2fa'
+        TwoFactor: '/manage/2fa',
     },
     Dashboard: {
         Base: `/api/dashboard`,
@@ -22,8 +22,12 @@ export const Endpoints = {
     },
     ExerciseWorkout: {
         Base: `/api/exerciseWorkout`,
-        GetLatest: (exerciseId: string, workoutId: string | null) => workoutId ? `/api/exerciseWorkout/GetLatest/${exerciseId}?workoutId=${workoutId}` : `/api/exerciseWorkout/GetLatest/${exerciseId}`,
-        GetPaginated: (exerciseId: string) => `/api/exerciseWorkout/getPaginated/${exerciseId}`,
+        GetLatest: (exerciseId: string, workoutId: string | null) =>
+            workoutId
+                ? `/api/exerciseWorkout/GetLatest/${exerciseId}?workoutId=${workoutId}`
+                : `/api/exerciseWorkout/GetLatest/${exerciseId}`,
+        GetPaginated: (exerciseId: string) =>
+            `/api/exerciseWorkout/getPaginated/${exerciseId}`,
     },
     MuscleGroup: {
         Base: `/api/muscleGroup`,

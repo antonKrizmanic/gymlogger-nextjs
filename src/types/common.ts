@@ -1,7 +1,14 @@
-import { ExerciseLogType, SortDirection } from './enums';
+import type { ExerciseLogType, SortDirection } from './enums';
 
 export type QueryParams = {
-    [key: string]: string | number | Date | ExerciseLogType | boolean | null | undefined;
+    [key: string]:
+        | string
+        | number
+        | Date
+        | ExerciseLogType
+        | boolean
+        | null
+        | undefined;
 };
 
 export interface IPagingDataResponseDto {
@@ -20,10 +27,17 @@ export interface IPagedResponse<T> {
 }
 
 export type IPagedRequest = {
-    [key: string]: string | number | ExerciseLogType | Date | boolean | null | undefined;
+    [key: string]:
+        | string
+        | number
+        | ExerciseLogType
+        | Date
+        | boolean
+        | null
+        | undefined;
     page: number;
     pageSize: number;
     search?: string;
     sortColumn: string;
     sortDirection: SortDirection;
-}
+};

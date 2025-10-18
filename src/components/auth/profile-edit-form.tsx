@@ -1,23 +1,32 @@
-"use client";
+'use client';
 
-import { updateProfile } from "@/src/actions/update-profile";
-import { Button } from "@/src/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card";
-import { IconInput } from "@/src/components/ui/icon-input";
-import { Check, Edit3, Ruler, Weight } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
-import { toast } from "sonner";
+import { Check, Edit3, Ruler, Weight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState, useTransition } from 'react';
+import { toast } from 'sonner';
+import { updateProfile } from '@/src/actions/update-profile';
+import { Button } from '@/src/components/ui/button';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/src/components/ui/card';
+import { IconInput } from '@/src/components/ui/icon-input';
 
 interface ProfileEditFormProps {
     initialWeight?: number | null;
     initialHeight?: number | null;
 }
 
-export function ProfileEditForm({ initialWeight, initialHeight }: ProfileEditFormProps) {
+export function ProfileEditForm({
+    initialWeight,
+    initialHeight,
+}: ProfileEditFormProps) {
     const router = useRouter();
-    const [weight, setWeight] = useState(initialWeight?.toString() || "");
-    const [height, setHeight] = useState(initialHeight?.toString() || "");
+    const [weight, setWeight] = useState(initialWeight?.toString() || '');
+    const [height, setHeight] = useState(initialHeight?.toString() || '');
     const [isPending, startTransition] = useTransition();
     const [isEditing, setIsEditing] = useState(false);
 
@@ -34,7 +43,9 @@ export function ProfileEditForm({ initialWeight, initialHeight }: ProfileEditFor
             if (result?.error) {
                 toast.error(result.error);
             } else {
-                toast.success(result?.success || "Profile updated successfully");
+                toast.success(
+                    result?.success || 'Profile updated successfully',
+                );
                 setIsEditing(false);
                 router.refresh();
             }
@@ -73,7 +84,9 @@ export function ProfileEditForm({ initialWeight, initialHeight }: ProfileEditFor
                         )}
                     </Button>
                 </div>
-                <CardDescription>Update your weight and height for bodyweight exercises</CardDescription>
+                <CardDescription>
+                    Update your weight and height for bodyweight exercises
+                </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
                 <div className="space-y-4">

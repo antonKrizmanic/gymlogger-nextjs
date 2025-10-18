@@ -1,4 +1,4 @@
-import { IWorkoutSimple } from './workout';
+import type { IWorkoutSimple } from './workout';
 
 export interface IDashboardDateItem {
     date: string;
@@ -21,4 +21,4 @@ export interface IDashboard {
     weightThisMonth?: number;
     weightThisYear?: number;
     workoutsByDate?: IDashboardDateItem[];
-} 
+}

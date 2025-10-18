@@ -1,8 +1,11 @@
-import { IPagedRequest, IPagedResponse } from "../types/common";
-import { prisma } from "@/src/lib/prisma";
-import { IWorkoutSimple, mapWorkoutToIWorkout } from "../models/domain/workout";
-import { Prisma } from '@prisma/client';
-import { getLoggedInUser } from "./loggedInUser";
+import type { Prisma } from '@prisma/client';
+import { prisma } from '@/src/lib/prisma';
+import {
+    type IWorkoutSimple,
+    mapWorkoutToIWorkout,
+} from '../models/domain/workout';
+import type { IPagedRequest, IPagedResponse } from '../types/common';
+import { getLoggedInUser } from './loggedInUser';
 
 export type WorkoutWhereInput = Prisma.WorkoutWhereInput;
 
@@ -17,26 +20,26 @@ export const getWorkout = async (id: string) => {
     const workout = await prisma.workout.findUnique({
         where: {
             id,
-            belongsToUserId: loggedInUser.id
+            belongsToUserId: loggedInUser.id,
         },
         include: {
             muscleGroup: true,
             exerciseWorkouts: {
                 include: {
                     exercise: true,
-                    exerciseSets: true
-                }
-            }
-        }
+                    exerciseSets: true,
+                },
+            },
+        },
     });
 
     return mapWorkoutToIWorkout(workout);
-}
+};
 
 export const getPagedWorkouts = async (pagedRequest: IWorkoutRequest) => {
     const loggedInUser = await getLoggedInUser();
     if (!loggedInUser) return null;
-    
+
     const where: WorkoutWhereInput = {};
     if (pagedRequest.muscleGroupId) {
         where.muscleGroupId = pagedRequest.muscleGroupId;
@@ -51,19 +54,23 @@ export const getPagedWorkouts = async (pagedRequest: IWorkoutRequest) => {
 
         where.date = {
             gte: startOfDay,
-            lte: endOfDay
+            lte: endOfDay,
         };
     }
 
     if (pagedRequest.search) {
         where.OR = [
             { name: { contains: pagedRequest.search, mode: 'insensitive' } },
-            { description: { contains: pagedRequest.search, mode: 'insensitive' } }
+            {
+                description: {
+                    contains: pagedRequest.search,
+                    mode: 'insensitive',
+                },
+            },
         ];
     }
 
     where.belongsToUserId = loggedInUser.id;
-
 
     // Dohvat podataka iz baze
     const totalItems = await prisma.workout.count({ where });
@@ -73,29 +80,29 @@ export const getPagedWorkouts = async (pagedRequest: IWorkoutRequest) => {
         include: {
             muscleGroup: {
                 select: {
-                    name: true
-                }
+                    name: true,
+                },
             },
             exerciseWorkouts: {
                 include: {
                     exercise: {
                         select: {
-                            name: true
-                        }
+                            name: true,
+                        },
                     },
-                    exerciseSets: true
-                }
-            }
+                    exerciseSets: true,
+                },
+            },
         },
         orderBy: {
-            date: 'desc'
+            date: 'desc',
         },
         skip: pagedRequest.page * pagedRequest.pageSize,
-        take: pagedRequest.pageSize
+        take: pagedRequest.pageSize,
     });
 
     // Map and calculate totals
-    const mappedWorkouts = workouts.map(workout => {
+    const mappedWorkouts = workouts.map((workout) => {
         const w: IWorkoutSimple = {
             id: workout.id,
             name: workout.name,
@@ -106,7 +113,7 @@ export const getPagedWorkouts = async (pagedRequest: IWorkoutRequest) => {
             totalWeight: Number(workout.totalWeight),
             totalReps: Number(workout.totalReps),
             totalSets: Number(workout.totalSets),
-        }
+        };
         return w;
     });
 
@@ -121,9 +128,7 @@ export const getPagedWorkouts = async (pagedRequest: IWorkoutRequest) => {
             sortDirection: pagedRequest.sortDirection,
         },
         items: mappedWorkouts,
-    }
+    };
 
     return response;
-}
-
-
+};

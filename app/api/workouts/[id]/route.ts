@@ -1,21 +1,26 @@
+import { type NextRequest, NextResponse } from 'next/server';
+import { v4 as uuidv4 } from 'uuid';
 import { getLoggedInUser } from '@/src/data/loggedInUser';
 import { prisma } from '@/src/lib/prisma';
-import { NextRequest, NextResponse } from 'next/server';
-import { v4 as uuidv4 } from 'uuid';
 
-export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+export async function GET(props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
 
     const loggedInUser = await getLoggedInUser();
-    if (!loggedInUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!loggedInUser)
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     try {
         const { id } = params;
 
         // Validate GUID format
-        const guidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+        const guidRegex =
+            /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
         if (!id || !guidRegex.test(id)) {
-            return NextResponse.json({ error: 'Invalid GUID format' }, { status: 400 });
+            return NextResponse.json(
+                { error: 'Invalid GUID format' },
+                { status: 400 },
+            );
         }
 
         const workout = await prisma.workout.findUnique({
@@ -27,8 +32,8 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
                 date: true,
                 muscleGroup: {
                     select: {
-                        name: true
-                    }
+                        name: true,
+                    },
                 },
                 exerciseWorkouts: {
                     select: {
@@ -44,8 +49,8 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
                                 reps: true,
                                 time: true,
                                 index: true,
-                                note: true
-                            }
+                                note: true,
+                            },
                         },
                         exercise: {
                             select: {
@@ -57,24 +62,24 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
                                 muscleGroupId: true,
                                 muscleGroup: {
                                     select: {
-                                        name: true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                                        name: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
             },
             where: {
                 id,
-                belongsToUserId: loggedInUser.id
-            }
+                belongsToUserId: loggedInUser.id,
+            },
         });
 
         if (!workout) {
             return NextResponse.json(
                 { message: 'Workout not found' },
-                { status: 404 }
+                { status: 404 },
             );
         }
         // Map from DB schema to our interface
@@ -83,12 +88,21 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
             name: workout.name,
             muscleGroupId: workout.muscleGroupId,
             muscleGroupName: workout.muscleGroup.name,
-            totalWeight: workout.exerciseWorkouts.reduce((acc, ew) => acc + Number(ew.totalWeight), 0),
-            totalReps: workout.exerciseWorkouts.reduce((acc, ew) => acc + Number(ew.totalReps), 0),
-            totalSets: workout.exerciseWorkouts.reduce((acc, ew) => acc + Number(ew.totalSets), 0),
+            totalWeight: workout.exerciseWorkouts.reduce(
+                (acc, ew) => acc + Number(ew.totalWeight),
+                0,
+            ),
+            totalReps: workout.exerciseWorkouts.reduce(
+                (acc, ew) => acc + Number(ew.totalReps),
+                0,
+            ),
+            totalSets: workout.exerciseWorkouts.reduce(
+                (acc, ew) => acc + Number(ew.totalSets),
+                0,
+            ),
             description: workout.description,
             date: workout.date,
-            exercises: workout.exerciseWorkouts.map(ew => ({
+            exercises: workout.exerciseWorkouts.map((ew) => ({
                 note: ew.note,
                 index: ew.index,
                 totalReps: ew.totalReps,
@@ -97,55 +111,70 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
                 exerciseId: ew.exercise.id,
                 exerciseName: ew.exercise.name,
                 exerciseLogType: ew.exercise.exerciseLogType,
-                sets: ew.exerciseSets.map(set => ({
+                sets: ew.exerciseSets.map((set) => ({
                     id: set.id,
                     index: set.index,
                     time: set.time,
                     weight: set.weight,
                     reps: set.reps,
-                    note: set.note
-                }))
-            }))
+                    note: set.note,
+                })),
+            })),
         });
     } catch (error) {
         console.error('Error fetching workout:', error);
         return NextResponse.json(
             { message: 'Failed to fetch workout' },
-            { status: 500 }
+            { status: 500 },
         );
     }
 }
 
-export async function PUT(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+export async function PUT(
+    request: NextRequest,
+    props: { params: Promise<{ id: string }> },
+) {
     const params = await props.params;
 
     const loggedInUser = await getLoggedInUser();
-    if (!loggedInUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!loggedInUser)
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     try {
         const { id } = params;
         const body = await request.json();
 
         // Validate GUID format
-        const guidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+        const guidRegex =
+            /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
         if (!id || !guidRegex.test(id)) {
-            return NextResponse.json({ error: 'Invalid GUID format' }, { status: 400 });
+            return NextResponse.json(
+                { error: 'Invalid GUID format' },
+                { status: 400 },
+            );
         }
 
         // Get the current user's weight for bodyweight calculations
-        const userWeight = (loggedInUser as any)?.weight ? Number((loggedInUser as any).weight) : null;
+        const userWeight = (loggedInUser as any)?.weight
+            ? Number((loggedInUser as any).weight)
+            : null;
 
         // Get exercises from database to check their log types
-        const exerciseIds = body.exercises.map((exercise: any) => exercise.exerciseId);
+        const exerciseIds = body.exercises.map(
+            (exercise: any) => exercise.exerciseId,
+        );
         const exercisesData = await prisma.exercise.findMany({
             where: { id: { in: exerciseIds } },
-            select: { id: true, exerciseLogType: true }
+            select: { id: true, exerciseLogType: true },
         });
 
-        const exerciseTypesMap = exercisesData.reduce((acc: any, exercise: any) => {
-            acc[exercise.id] = exercise.exerciseLogType;
-            return acc;
-        }, {});
+        const exerciseTypesMap = exercisesData.reduce(
+            (acc: any, exercise: any) => {
+                acc[exercise.id] = exercise.exerciseLogType;
+                return acc;
+            },
+            {},
+        );
 
         // Calculate total reps, weight, and sets
         const exercises = body.exercises.map((exercise: any) => {
@@ -153,40 +182,56 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
             let totalWeight = 0;
 
             exercise.sets.forEach((set: any) => {
-                if (exerciseLogType === 4) { // BodyWeight
+                if (exerciseLogType === 4) {
+                    // BodyWeight
                     // For pure bodyweight exercises, use user's weight
                     const bodyWeight = userWeight || 0;
                     totalWeight += bodyWeight * (set.reps || 0);
-                } else if (exerciseLogType === 5) { // BodyWeightWithAdditionalWeight
+                } else if (exerciseLogType === 5) {
+                    // BodyWeightWithAdditionalWeight
                     // For bodyweight exercises with additional weight, add user's weight to the additional weight
                     const bodyWeight = userWeight || 0;
                     const additionalWeight = set.weight || 0;
-                    totalWeight += (bodyWeight + additionalWeight) * (set.reps || 0);
-                } else if (exerciseLogType === 6) { // BodyWeightWithAssistance
+                    totalWeight +=
+                        (bodyWeight + additionalWeight) * (set.reps || 0);
+                } else if (exerciseLogType === 6) {
+                    // BodyWeightWithAssistance
                     // For assisted bodyweight exercises, subtract assistance weight from user's body weight
                     const bodyWeight = userWeight || 0;
                     const assistanceWeight = set.weight || 0;
-                    totalWeight += (bodyWeight - assistanceWeight) * (set.reps || 0);
+                    totalWeight +=
+                        (bodyWeight - assistanceWeight) * (set.reps || 0);
                 } else {
                     // For regular weight exercises
-                    totalWeight += ((set.weight || 0) * (set.reps || 0));
+                    totalWeight += (set.weight || 0) * (set.reps || 0);
                 }
             });
 
-            const totalReps = exercise.sets.reduce((acc: number, set: any) => acc + (set.reps || 0), 0);
+            const totalReps = exercise.sets.reduce(
+                (acc: number, set: any) => acc + (set.reps || 0),
+                0,
+            );
             const totalSets = exercise.sets.length;
 
             return {
                 ...exercise,
                 totalReps,
                 totalWeight,
-                totalSets
+                totalSets,
             };
         });
-        const totalReps = exercises.reduce((acc: number, exercise: any) => acc + (exercise.totalReps || 0), 0);
-        const totalWeight = exercises.reduce((acc: number, exercise: any) => acc + (exercise.totalWeight || 0), 0);
-        const totalSets = exercises.reduce((acc: number, exercise: any) => acc + (exercise.totalSets || 0), 0);
-
+        const totalReps = exercises.reduce(
+            (acc: number, exercise: any) => acc + (exercise.totalReps || 0),
+            0,
+        );
+        const totalWeight = exercises.reduce(
+            (acc: number, exercise: any) => acc + (exercise.totalWeight || 0),
+            0,
+        );
+        const totalSets = exercises.reduce(
+            (acc: number, exercise: any) => acc + (exercise.totalSets || 0),
+            0,
+        );
 
         // Update workout
         const updatedWorkout = await prisma.workout.update({
@@ -222,11 +267,11 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
                                 note: set.note,
                                 createdAt: new Date(),
                                 updatedAt: new Date(),
-                            }))
-                        }
-                    }))
-                }
-            }
+                            })),
+                        },
+                    })),
+                },
+            },
         });
 
         return NextResponse.json({
@@ -234,43 +279,48 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
             name: updatedWorkout.name,
             muscleGroupId: updatedWorkout.muscleGroupId,
             description: updatedWorkout.description,
-            date: updatedWorkout.date
+            date: updatedWorkout.date,
         });
     } catch (error) {
         console.error('Error updating workout:', error);
         return NextResponse.json(
             { message: 'Failed to update workout' },
-            { status: 500 }
+            { status: 500 },
         );
     }
 }
 
-export async function DELETE(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+export async function DELETE(props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
 
     const loggedInUser = await getLoggedInUser();
-    if (!loggedInUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!loggedInUser)
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     try {
         const { id } = params;
 
         // Validate GUID format
-        const guidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+        const guidRegex =
+            /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
         if (!id || !guidRegex.test(id)) {
-            return NextResponse.json({ error: 'Invalid GUID format' }, { status: 400 });
+            return NextResponse.json(
+                { error: 'Invalid GUID format' },
+                { status: 400 },
+            );
         }
 
         await prisma.workout.delete({
             where: {
-                id: id
-            }
+                id: id,
+            },
         });
         return NextResponse.json({ message: 'Workout deleted successfully' });
     } catch (error) {
         console.error('Error deleting workout:', error);
         return NextResponse.json(
             { message: 'Failed to delete workout' },
-            { status: 500 }
+            { status: 500 },
         );
     }
 }

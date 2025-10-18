@@ -1,20 +1,25 @@
-import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/src/lib/prisma";
-import { getLoggedInUser } from "@/src/data/loggedInUser";
+import { type NextRequest, NextResponse } from 'next/server';
+import { getLoggedInUser } from '@/src/data/loggedInUser';
+import { prisma } from '@/src/lib/prisma';
 
-export async function GET(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+export async function GET(props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
 
     const loggedInUser = await getLoggedInUser();
-    if (!loggedInUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!loggedInUser)
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     try {
         const { id } = params;
 
         // Provjera valjanosti GUID-a (možeš koristiti regex za dodatnu sigurnost)
-        const guidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+        const guidRegex =
+            /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
         if (!id || !guidRegex.test(id)) {
-            return NextResponse.json({ error: "Invalid GUID format" }, { status: 400 });
+            return NextResponse.json(
+                { error: 'Invalid GUID format' },
+                { status: 400 },
+            );
         }
 
         const exercise = await prisma.exercise.findUnique({
@@ -27,19 +32,19 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
                 belongsToUserId: true,
                 muscleGroup: {
                     select: {
-                        name: true
-                    }
-                }
+                        name: true,
+                    },
+                },
             },
             where: {
-                id: id
-            }
+                id: id,
+            },
         });
-        
+
         if (!exercise) {
             return NextResponse.json(
                 { message: 'Exercise not found' },
-                { status: 404 }
+                { status: 404 },
             );
         }
         // Map from DB schema to our interface
@@ -50,39 +55,43 @@ export async function GET(request: NextRequest, props: { params: Promise<{ id: s
             muscleGroupName: exercise.muscleGroup.name,
             description: exercise.description,
             exerciseLogType: exercise.exerciseLogType,
-            isPublic: exercise.belongsToUserId === null // If it doesn't belong to a user, it's public
+            isPublic: exercise.belongsToUserId === null, // If it doesn't belong to a user, it's public
         });
     } catch (error) {
         console.error('Error fetching exercise:', error);
         return NextResponse.json(
             { message: 'Failed to fetch exercise' },
-            { status: 500 }
+            { status: 500 },
         );
     }
 }
 
-export async function PUT(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+export async function PUT(
+    request: NextRequest,
+    props: { params: Promise<{ id: string }> },
+) {
     const params = await props.params;
 
     const loggedInUser = await getLoggedInUser();
-    if (!loggedInUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!loggedInUser)
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     try {
         const body = await request.json();
-        
+
         const updatedExercise = await prisma.exercise.update({
             where: {
-                id: params.id
+                id: params.id,
             },
             data: {
                 name: body.name,
                 muscleGroupId: body.muscleGroupId,
                 description: body.description,
                 exerciseLogType: body.exerciseLogType,
-                updatedAt: new Date()
-            }
+                updatedAt: new Date(),
+            },
         });
-        
+
         return NextResponse.json({
             id: updatedExercise.id,
             name: updatedExercise.name,
@@ -94,37 +103,42 @@ export async function PUT(request: NextRequest, props: { params: Promise<{ id: s
         console.error('Error updating exercise:', error);
         return NextResponse.json(
             { message: 'Failed to update exercise' },
-            { status: 500 }
+            { status: 500 },
         );
     }
 }
 
-export async function DELETE(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+export async function DELETE(props: { params: Promise<{ id: string }> }) {
     const params = await props.params;
 
     const loggedInUser = await getLoggedInUser();
-    if (!loggedInUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!loggedInUser)
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     try {
         const { id } = params;
 
         // Provjera valjanosti GUID-a (možeš koristiti regex za dodatnu sigurnost)
-        const guidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+        const guidRegex =
+            /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
         if (!id || !guidRegex.test(id)) {
-            return NextResponse.json({ error: "Invalid GUID format" }, { status: 400 });
+            return NextResponse.json(
+                { error: 'Invalid GUID format' },
+                { status: 400 },
+            );
         }
 
         await prisma.exercise.delete({
             where: {
-                id: id
-            }
+                id: id,
+            },
         });
-        return NextResponse.json({ message: "Exercise deleted successfully" });
+        return NextResponse.json({ message: 'Exercise deleted successfully' });
     } catch (error) {
         console.error('Error deleting exercise:', error);
         return NextResponse.json(
             { message: 'Failed to delete exercise' },
-            { status: 500 }
+            { status: 500 },
         );
     }
 }

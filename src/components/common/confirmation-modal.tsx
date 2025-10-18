@@ -1,8 +1,8 @@
 'use client';
 
-import { cn } from '@/src/lib/utils';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { cn } from '@/src/lib/utils';
 import { Button } from '../ui/button';
 
 interface ConfirmationModalProps {
@@ -24,7 +24,7 @@ export function ConfirmationModal({
     onCancel,
     isLoading = false,
     confirmText = 'Delete',
-    cancelText = 'Cancel'
+    cancelText = 'Cancel',
 }: ConfirmationModalProps) {
     const [mounted, setMounted] = useState(false);
 
@@ -37,14 +37,18 @@ export function ConfirmationModal({
     const modalContent = (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center">
             {/* Backdrop */}
+            {/** biome-ignore lint/a11y/noStaticElementInteractions: <explanation> */}
+            {/** biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
             <div className="fixed inset-0 bg-black/50" onClick={onCancel} />
 
             {/* Modal */}
-            <div className={cn(
-                'relative z-[9999] w-full max-w-md p-6 rounded-lg',
-                'bg-white dark:bg-slate-800',
-                'shadow-xl'
-            )}>
+            <div
+                className={cn(
+                    'relative z-[9999] w-full max-w-md p-6 rounded-lg',
+                    'bg-white dark:bg-slate-800',
+                    'shadow-xl',
+                )}
+            >
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                     {title}
                 </h3>
@@ -81,4 +85,4 @@ export function ConfirmationModal({
     );
 
     return createPortal(modalContent, document.body);
-} 
+}

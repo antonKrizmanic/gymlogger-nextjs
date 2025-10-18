@@ -1,15 +1,22 @@
-import { Container } from "@/src/components/common/container";
-import { ExerciseDeleteButton } from "@/src/components/exercise/exercise-delete-button";
-import { ExerciseTabs } from "@/src/components/exercise/exercise-tabs";
-import { Badge } from "@/src/components/ui/badge";
-import { Button } from "@/src/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
-import { getExercise } from "@/src/data/exercise";
-import { getLogTypeInfo } from "@/src/utils/get-log-type-info";
-import { Activity, MoveLeft, Pencil, Target } from "lucide-react";
-import Link from "next/link";
+import { Activity, MoveLeft, Pencil, Target } from 'lucide-react';
+import Link from 'next/link';
+import { Container } from '@/src/components/common/container';
+import { ExerciseDeleteButton } from '@/src/components/exercise/exercise-delete-button';
+import { ExerciseTabs } from '@/src/components/exercise/exercise-tabs';
+import { Badge } from '@/src/components/ui/badge';
+import { Button } from '@/src/components/ui/button';
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from '@/src/components/ui/card';
+import { getExercise } from '@/src/data/exercise';
+import { getLogTypeInfo } from '@/src/utils/get-log-type-info';
 
-export default async function ExerciseDetailPage(props: { params: Promise<{ id: string }> }) {
+export default async function ExerciseDetailPage(props: {
+    params: Promise<{ id: string }>;
+}) {
     const params = await props.params;
     const id = await params.id;
     const exercise = await getExercise(id);
@@ -26,9 +33,13 @@ export default async function ExerciseDetailPage(props: { params: Promise<{ id: 
                                         <Activity className="h-8 w-8 text-destructive" />
                                     </div>
                                     <div className="space-y-2">
-                                        <h3 className="text-xl font-semibold text-foreground">Exercise Not Found</h3>
+                                        <h3 className="text-xl font-semibold text-foreground">
+                                            Exercise Not Found
+                                        </h3>
                                         <p className="text-muted-foreground">
-                                            The exercise you&apos;re looking for doesn&apos;t exist or has been removed.
+                                            The exercise you&apos;re looking for
+                                            doesn&apos;t exist or has been
+                                            removed.
                                         </p>
                                     </div>
                                     <Button asChild className="mt-4">
@@ -56,8 +67,15 @@ export default async function ExerciseDetailPage(props: { params: Promise<{ id: 
                 <div className="space-y-6 pb-8">
                     <div className="space-y-4">
                         {/* Back Navigation */}
-                        <Button asChild variant="ghost" className="p-0 h-auto font-normal text-muted-foreground hover:text-foreground">
-                            <Link href="/exercises" className="flex items-center gap-2">
+                        <Button
+                            asChild
+                            variant="ghost"
+                            className="p-0 h-auto font-normal text-muted-foreground hover:text-foreground"
+                        >
+                            <Link
+                                href="/exercises"
+                                className="flex items-center gap-2"
+                            >
                                 <MoveLeft className="h-4 w-4" />
                                 Back to Exercises
                             </Link>
@@ -75,12 +93,18 @@ export default async function ExerciseDetailPage(props: { params: Promise<{ id: 
                             {/* Badges */}
                             <div className="flex flex-wrap gap-3">
                                 {exercise.muscleGroupName && (
-                                    <Badge variant="secondary" className="text-sm px-3 py-1 flex items-center gap-2">
+                                    <Badge
+                                        variant="secondary"
+                                        className="text-sm px-3 py-1 flex items-center gap-2"
+                                    >
                                         <Target className="h-4 w-4" />
                                         {exercise.muscleGroupName}
                                     </Badge>
                                 )}
-                                <Badge variant={logTypeInfo.variant} className="text-sm px-3 py-1 flex items-center gap-2">
+                                <Badge
+                                    variant={logTypeInfo.variant}
+                                    className="text-sm px-3 py-1 flex items-center gap-2"
+                                >
                                     <LogTypeIcon className="h-4 w-4" />
                                     {logTypeInfo.label}
                                 </Badge>
@@ -89,7 +113,11 @@ export default async function ExerciseDetailPage(props: { params: Promise<{ id: 
 
                         {/* Action Buttons */}
                         <div className="flex flex-col sm:flex-row gap-3">
-                            <Button asChild size="lg" className="px-6 py-3 text-lg font-semibold">
+                            <Button
+                                asChild
+                                size="lg"
+                                className="px-6 py-3 text-lg font-semibold"
+                            >
                                 <Link href={`/exercises/${exercise.id}/edit`}>
                                     <Pencil className="mr-2 h-5 w-5" />
                                     Edit Exercise
@@ -116,7 +144,6 @@ export default async function ExerciseDetailPage(props: { params: Promise<{ id: 
                         </CardContent>
                     </Card>
                 )}
-
 
                 {/* Tabbed interface for history and progress */}
                 <ExerciseTabs exerciseId={exercise.id} />

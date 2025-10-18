@@ -1,7 +1,7 @@
-import { WorkoutApiService } from '@/src/api/services/workout-api-service';
-import { IWorkoutSimple } from '@/src/models/domain/workout';
 import { format } from 'date-fns';
 import { Calendar, Eye, Pencil, Target } from 'lucide-react';
+import { WorkoutApiService } from '@/src/api/services/workout-api-service';
+import type { IWorkoutSimple } from '@/src/models/domain/workout';
 import { DeleteButton } from '../common/delete-button';
 import { IconLinkButton } from '../common/icon-link-button';
 import { Badge } from '../ui/badge';
@@ -50,7 +50,10 @@ export function WorkoutCard({ workout, onDelete }: WorkoutCardProps) {
                         </div>
                         <div className="flex flex-wrap gap-2">
                             {workout.muscleGroupName && (
-                                <Badge variant="secondary" className="text-xs flex items-center gap-1">
+                                <Badge
+                                    variant="secondary"
+                                    className="text-xs flex items-center gap-1"
+                                >
                                     <Target className="h-3 w-3" />
                                     {workout.muscleGroupName}
                                 </Badge>
@@ -101,10 +104,18 @@ export function WorkoutCard({ workout, onDelete }: WorkoutCardProps) {
 
             <CardFooter className="pt-4 gap-2">
                 <div className="flex-1">
-                    <IconLinkButton href={`/workouts/${workout.id}`} icon={<Eye />} aria-label="View workout" />
+                    <IconLinkButton
+                        href={`/workouts/${workout.id}`}
+                        icon={<Eye />}
+                        aria-label="View workout"
+                    />
                 </div>
                 <div className="flex-1">
-                    <IconLinkButton href={`/workouts/${workout.id}/edit`} icon={<Pencil />} aria-label="Edit workout" />
+                    <IconLinkButton
+                        href={`/workouts/${workout.id}/edit`}
+                        icon={<Pencil />}
+                        aria-label="Edit workout"
+                    />
                 </div>
                 <div className="flex-1">
                     <DeleteButton
@@ -117,4 +128,4 @@ export function WorkoutCard({ workout, onDelete }: WorkoutCardProps) {
             </CardFooter>
         </Card>
     );
-} 
+}

@@ -1,6 +1,12 @@
 import { memo, useCallback, useMemo } from 'react';
 import { Button } from '../ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '../ui/select';
 
 const ITEMS_PER_PAGE_OPTIONS = [12, 24, 48];
 const DEFAULT_PAGE_SIZE = 12;
@@ -18,7 +24,7 @@ export const Pagination = memo(function Pagination({
     totalPages,
     onPageChange,
     pageSize = DEFAULT_PAGE_SIZE,
-    onPageSizeChange
+    onPageSizeChange,
 }: PaginationProps) {
     // Memoize page numbers calculation
     const pageNumbers = useMemo(() => {
@@ -46,10 +52,13 @@ export const Pagination = memo(function Pagination({
     }, [currentPage, onPageChange]);
 
     // Memoize navigation state
-    const navigationState = useMemo(() => ({
-        canGoPrevious: currentPage > 0,
-        canGoNext: currentPage < totalPages - 1,
-    }), [currentPage, totalPages]);
+    const navigationState = useMemo(
+        () => ({
+            canGoPrevious: currentPage > 0,
+            canGoNext: currentPage < totalPages - 1,
+        }),
+        [currentPage, totalPages],
+    );
 
     return (
         <div className="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -58,26 +67,34 @@ export const Pagination = memo(function Pagination({
                 <Button
                     variant="outline"
                     onClick={handlePrevious}
-                    disabled={!navigationState.canGoPrevious}>
+                    disabled={!navigationState.canGoPrevious}
+                >
                     Previous
                 </Button>
                 {pageNumbers.map((page, index, array) => {
                     if (index > 0 && array[index - 1] !== page - 1) {
                         return [
-                            <span key={`ellipsis-${page}`} className="px-4 py-2">...</span>,
+                            <span
+                                key={`ellipsis-${page}`}
+                                className="px-4 py-2"
+                            >
+                                ...
+                            </span>,
                             <Button
                                 variant="outline"
                                 key={page}
-                                onClick={() => onPageChange(page)}>
+                                onClick={() => onPageChange(page)}
+                            >
                                 {page + 1}
-                            </Button>
+                            </Button>,
                         ];
                     }
                     return (
                         <Button
                             variant="outline"
                             key={page}
-                            onClick={() => onPageChange(page)}>
+                            onClick={() => onPageChange(page)}
+                        >
                             {page + 1}
                         </Button>
                     );
@@ -85,22 +102,29 @@ export const Pagination = memo(function Pagination({
                 <Button
                     variant="outline"
                     onClick={handleNext}
-                    disabled={!navigationState.canGoNext}>
+                    disabled={!navigationState.canGoNext}
+                >
                     Next
                 </Button>
             </div>
 
             {/* Page size selector */}
             <div className="flex items-center gap-2">
-                <label htmlFor="pageSize" className="text-sm text-gray-600 dark:text-gray-400">
+                <label
+                    htmlFor="pageSize"
+                    className="text-sm text-gray-600 dark:text-gray-400"
+                >
                     Items per page:
                 </label>
-                <Select value={pageSize.toString()} onValueChange={onPageSizeChange}>
+                <Select
+                    value={pageSize.toString()}
+                    onValueChange={onPageSizeChange}
+                >
                     <SelectTrigger className="bg-white text-black dark:text-white">
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                        {ITEMS_PER_PAGE_OPTIONS.map(size => (
+                        {ITEMS_PER_PAGE_OPTIONS.map((size) => (
                             <SelectItem key={size} value={size.toString()}>
                                 {size}
                             </SelectItem>
@@ -110,4 +134,4 @@ export const Pagination = memo(function Pagination({
             </div>
         </div>
     );
-}) 
+});

@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { Button } from "@/src/components/ui/button";
-import { Card, CardContent } from "@/src/components/ui/card";
 import {
     BarChart3,
     CheckCircle,
     Dumbbell,
     Loader2,
     TrendingUp,
-    Users
-} from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+    Users,
+} from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { Button } from '@/src/components/ui/button';
+import { Card, CardContent } from '@/src/components/ui/card';
 
 export default function IndexPage() {
     const router = useRouter();
@@ -25,26 +25,29 @@ export default function IndexPage() {
     const features = [
         {
             icon: <Dumbbell className="h-8 w-8 text-primary" />,
-            title: "Workout Tracking",
-            description: "Log your exercises, sets, reps, and weights with ease. Track every detail of your fitness journey."
+            title: 'Workout Tracking',
+            description:
+                'Log your exercises, sets, reps, and weights with ease. Track every detail of your fitness journey.',
         },
         {
             icon: <TrendingUp className="h-8 w-8 text-primary" />,
-            title: "Progress Analytics",
-            description: "Visualize your strength gains and performance improvements with detailed charts and statistics."
+            title: 'Progress Analytics',
+            description:
+                'Visualize your strength gains and performance improvements with detailed charts and statistics.',
         },
         {
             icon: <BarChart3 className="h-8 w-8 text-primary" />,
-            title: "Performance Metrics",
-            description: "Analyze your training volume, frequency, and intensity to optimize your workout routines."
+            title: 'Performance Metrics',
+            description:
+                'Analyze your training volume, frequency, and intensity to optimize your workout routines.',
         },
     ];
 
     const benefits = [
-        "Track unlimited workouts and exercises",
-        "Visual progress charts and analytics",
-        "Mobile-responsive design for gym use",
-        "Exercise history and personal records"
+        'Track unlimited workouts and exercises',
+        'Visual progress charts and analytics',
+        'Mobile-responsive design for gym use',
+        'Exercise history and personal records',
     ];
 
     return (
@@ -60,8 +63,10 @@ export default function IndexPage() {
                             </span>
                         </h1>
                         <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                            Take control of your fitness with intelligent workout tracking, progress analytics,
-                            and personalized insights. Join thousands of users achieving their fitness goals.
+                            Take control of your fitness with intelligent
+                            workout tracking, progress analytics, and
+                            personalized insights. Join thousands of users
+                            achieving their fitness goals.
                         </p>
                     </div>
 
@@ -70,9 +75,9 @@ export default function IndexPage() {
                             size="lg"
                             className="px-8 py-6 text-lg font-semibold"
                             disabled={isNavigating !== null}
-                            onClick={() => handleNavigation("/auth/register")}
+                            onClick={() => handleNavigation('/auth/register')}
                         >
-                            {isNavigating === "/auth/register" ? (
+                            {isNavigating === '/auth/register' ? (
                                 <>
                                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                                     Creating Account...
@@ -89,15 +94,15 @@ export default function IndexPage() {
                             variant="outline"
                             className="px-8 py-6 text-lg font-semibold"
                             disabled={isNavigating !== null}
-                            onClick={() => handleNavigation("/auth/login")}
+                            onClick={() => handleNavigation('/auth/login')}
                         >
-                            {isNavigating === "/auth/login" ? (
+                            {isNavigating === '/auth/login' ? (
                                 <>
                                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                                     Signing In...
                                 </>
                             ) : (
-                                "Sign In"
+                                'Sign In'
                             )}
                         </Button>
                     </div>
@@ -111,13 +116,17 @@ export default function IndexPage() {
                         Everything You Need to Succeed
                     </h2>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        Powerful features designed to help you track, analyze, and optimize your fitness journey.
+                        Powerful features designed to help you track, analyze,
+                        and optimize your fitness journey.
                     </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {features.map((feature, index) => (
-                        <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                        <Card
+                            key={index}
+                            className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300"
+                        >
                             <CardContent className="p-6 space-y-4">
                                 <div className="flex items-center justify-center w-16 h-16 bg-primary/10 rounded-xl">
                                     {feature.icon}
@@ -143,14 +152,21 @@ export default function IndexPage() {
                                 Why Choose GymNotebook?
                             </h2>
                             <p className="text-lg text-muted-foreground leading-relaxed">
-                                Built by fitness enthusiasts for fitness enthusiasts. Our platform combines
-                                simplicity with powerful analytics to give you the insights you need to reach your goals.
+                                Built by fitness enthusiasts for fitness
+                                enthusiasts. Our platform combines simplicity
+                                with powerful analytics to give you the insights
+                                you need to reach your goals.
                             </p>
                             <div className="space-y-3">
                                 {benefits.map((benefit, index) => (
-                                    <div key={index} className="flex items-center space-x-3">
+                                    <div
+                                        key={index}
+                                        className="flex items-center space-x-3"
+                                    >
                                         <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                                        <span className="text-foreground">{benefit}</span>
+                                        <span className="text-foreground">
+                                            {benefit}
+                                        </span>
                                     </div>
                                 ))}
                             </div>
@@ -166,23 +182,23 @@ export default function IndexPage() {
                         Ready to Start Your Transformation?
                     </h2>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        Join our community of dedicated fitness enthusiasts and take the first step
-                        towards achieving your goals.
+                        Join our community of dedicated fitness enthusiasts and
+                        take the first step towards achieving your goals.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Button
                             size="lg"
                             className="px-8 py-6 text-lg font-semibold"
                             disabled={isNavigating !== null}
-                            onClick={() => handleNavigation("/auth/register")}
+                            onClick={() => handleNavigation('/auth/register')}
                         >
-                            {isNavigating === "/auth/register" ? (
+                            {isNavigating === '/auth/register' ? (
                                 <>
                                     <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                                     Creating Account...
                                 </>
                             ) : (
-                                "Get Started Free"
+                                'Get Started Free'
                             )}
                         </Button>
                     </div>

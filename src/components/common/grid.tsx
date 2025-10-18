@@ -1,4 +1,4 @@
-import { ReactNode, memo, useMemo } from 'react';
+import { memo, type ReactNode, useMemo } from 'react';
 
 interface GridProps<T> {
     items: T[];
@@ -13,17 +13,13 @@ function GridComponent<T>({
     renderItem,
     isLoading,
     emptyMessage = 'No items found',
-    keyExtractor
+    keyExtractor,
 }: GridProps<T>) {
     // Memoize rendered items to prevent unnecessary re-renders
     const renderedItems = useMemo(() => {
         return items.map((item, index) => {
             const key = keyExtractor ? keyExtractor(item, index) : index;
-            return (
-                <div key={key}>
-                    {renderItem(item)}
-                </div>
-            );
+            return <div key={key}>{renderItem(item)}</div>;
         });
     }, [items, renderItem, keyExtractor]);
 
@@ -38,7 +34,9 @@ function GridComponent<T>({
     if (items.length === 0) {
         return (
             <div className="text-center py-12">
-                <p className="text-gray-500 dark:text-gray-400">{emptyMessage}</p>
+                <p className="text-gray-500 dark:text-gray-400">
+                    {emptyMessage}
+                </p>
             </div>
         );
     }
@@ -50,4 +48,4 @@ function GridComponent<T>({
     );
 }
 
-export const Grid = memo(GridComponent) as typeof GridComponent; 
+export const Grid = memo(GridComponent) as typeof GridComponent;

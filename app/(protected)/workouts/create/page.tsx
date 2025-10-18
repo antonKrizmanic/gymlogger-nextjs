@@ -1,6 +1,6 @@
 import { Container } from '@/src/components/common/container';
 import { ClientWorkoutForm } from '@/src/components/workout/client-workout-form';
-import { IWorkoutCreate } from '@/src/models/domain/workout';
+import type { IWorkoutCreate } from '@/src/models/domain/workout';
 
 export default function CreateWorkoutPage() {
     // Define initial form data - date will be set to current date on client side
@@ -8,7 +8,7 @@ export default function CreateWorkoutPage() {
         name: '',
         description: '',
         date: new Date(), // This will be overridden on client side
-        exercises: []
+        exercises: [],
     };
 
     return (

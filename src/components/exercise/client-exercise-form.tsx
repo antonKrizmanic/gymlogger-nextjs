@@ -1,11 +1,14 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ExerciseApiService } from '@/src/api/services/exercise-api-service';
-import { IExerciseCreate, IExerciseUpdate } from '@/src/models/domain/exercise';
-import { ExerciseForm } from './exercise-form';
+import { useState } from 'react';
 import { toast } from 'sonner';
+import { ExerciseApiService } from '@/src/api/services/exercise-api-service';
+import type {
+    IExerciseCreate,
+    IExerciseUpdate,
+} from '@/src/models/domain/exercise';
+import { ExerciseForm } from './exercise-form';
 
 interface ClientExerciseFormProps {
     title: string;
@@ -14,7 +17,12 @@ interface ClientExerciseFormProps {
     cancelHref: string;
 }
 
-export function ClientExerciseForm({ title, exercise, id, cancelHref }: ClientExerciseFormProps) {
+export function ClientExerciseForm({
+    title,
+    exercise,
+    id,
+    cancelHref,
+}: ClientExerciseFormProps) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
@@ -28,11 +36,11 @@ export function ClientExerciseForm({ title, exercise, id, cancelHref }: ClientEx
                 // Update existing exercise
                 const updateData: IExerciseUpdate = {
                     ...formData,
-                    id
+                    id,
                 };
                 await service.updateExercise(id, updateData);
                 toast.success('Exercise updated successfully!');
-                router.push('/exercises')
+                router.push('/exercises');
             } else {
                 // Create new exercise
                 await service.createExercise(formData);
@@ -40,8 +48,13 @@ export function ClientExerciseForm({ title, exercise, id, cancelHref }: ClientEx
                 router.push('/exercises');
             }
         } catch (error) {
-            console.error(`Failed to ${id ? 'update' : 'create'} exercise:`, error);
-            toast.error(`Failed to ${id ? 'update' : 'create'} exercise. Please try again.`);
+            console.error(
+                `Failed to ${id ? 'update' : 'create'} exercise:`,
+                error,
+            );
+            toast.error(
+                `Failed to ${id ? 'update' : 'create'} exercise. Please try again.`,
+            );
         } finally {
             setIsLoading(false);
         }

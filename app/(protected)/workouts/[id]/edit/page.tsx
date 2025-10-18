@@ -1,12 +1,14 @@
 import { Container } from '@/src/components/common/container';
 import { ClientWorkoutForm } from '@/src/components/workout/client-workout-form';
 import { getWorkout } from '@/src/data/workout';
-import { IWorkoutCreate } from '@/src/models/domain/workout';
+import type { IWorkoutCreate } from '@/src/models/domain/workout';
 
 // Force dynamic rendering to prevent caching
 export const dynamic = 'force-dynamic';
 
-export default async function EditWorkoutPage(props: { params: Promise<{ id: string }> }) {
+export default async function EditWorkoutPage(props: {
+    params: Promise<{ id: string }>;
+}) {
     const params = await props.params;
     const id = await params.id;
     const workout = await getWorkout(id);
@@ -14,7 +16,9 @@ export default async function EditWorkoutPage(props: { params: Promise<{ id: str
     if (!workout) {
         return (
             <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-                <p className="text-lg text-gray-600 dark:text-gray-400">Workout not found</p>
+                <p className="text-lg text-gray-600 dark:text-gray-400">
+                    Workout not found
+                </p>
             </div>
         );
     }
@@ -23,7 +27,7 @@ export default async function EditWorkoutPage(props: { params: Promise<{ id: str
         name: workout.name,
         description: workout.description,
         date: workout.date,
-        exercises: workout.exercises
+        exercises: workout.exercises,
     };
 
     return (

@@ -1,11 +1,8 @@
 /* eslint-disable tailwindcss/enforces-shorthand */
 /* eslint-disable tailwindcss/classnames-order */
-import * as React from 'react';
-import { PropsWithChildren } from 'react';
-import {
-    Body,
-    Container
-} from '@react-email/components';
+
+import { Body, Container } from '@react-email/components';
+import type { PropsWithChildren } from 'react';
 
 export function ContentCard({ children }: PropsWithChildren) {
     return (

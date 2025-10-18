@@ -1,10 +1,10 @@
-import { NewVerificationForm } from "@/src/components/auth/new-verification";
-import { Suspense } from "react";
+import { Suspense } from 'react';
+import { NewVerificationForm } from '@/src/components/auth/new-verification';
 
 export default async function NewVerificationPage() {
-    return(
+    return (
         <Suspense>
             <NewVerificationForm />
         </Suspense>
-    )
+    );
 }

@@ -1,10 +1,10 @@
 'use client';
 
+import { Activity, Clock, Eye, Pencil, Repeat, Weight } from 'lucide-react';
 import { ExerciseApiService } from '@/src/api/services/exercise-api-service';
-import { IExercise } from '@/src/models/domain/exercise';
+import type { IExercise } from '@/src/models/domain/exercise';
 import { ExerciseLogType } from '@/src/types/enums';
 import { getLogTypeInfo } from '@/src/utils/get-log-type-info';
-import { Activity, Clock, Eye, Pencil, Repeat, Weight } from 'lucide-react';
 import { DeleteButton } from '../common/delete-button';
 import { IconLinkButton } from '../common/icon-link-button';
 import { Badge } from '../ui/badge';
@@ -46,7 +46,10 @@ export function ExerciseCard({ exercise, onDelete }: ExerciseCardProps) {
                                     {exercise.muscleGroupName}
                                 </Badge>
                             )}
-                            <Badge variant={logTypeInfo.variant} className="text-xs flex items-center gap-1">
+                            <Badge
+                                variant={logTypeInfo.variant}
+                                className="text-xs flex items-center gap-1"
+                            >
                                 <LogTypeIcon className="h-3 w-3" />
                                 {logTypeInfo.label}
                             </Badge>
@@ -65,10 +68,18 @@ export function ExerciseCard({ exercise, onDelete }: ExerciseCardProps) {
 
             <CardFooter className="pt-4 gap-2">
                 <div className="flex-1">
-                    <IconLinkButton href={`/exercises/${exercise.id}`} icon={<Eye />} aria-label="View exercise" />
+                    <IconLinkButton
+                        href={`/exercises/${exercise.id}`}
+                        icon={<Eye />}
+                        aria-label="View exercise"
+                    />
                 </div>
                 <div className="flex-1">
-                    <IconLinkButton href={`/exercises/${exercise.id}/edit`} icon={<Pencil />} aria-label="Edit exercise" />
+                    <IconLinkButton
+                        href={`/exercises/${exercise.id}/edit`}
+                        icon={<Pencil />}
+                        aria-label="Edit exercise"
+                    />
                 </div>
                 <div className="flex-1">
                     <DeleteButton
