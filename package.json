@@ -60,7 +60,7 @@
         "@biomejs/biome": "2.2.6",        
         "@tailwindcss/postcss": "4.1.14",
         "@types/axios": "0.14.4",
-        "@types/node": "22.18.10",
+        "@types/node": "22.18.11",
         "@types/react": "19.2.2",
         "@types/react-dom": "19.2.2",        
         "prisma": "6.17.1",
