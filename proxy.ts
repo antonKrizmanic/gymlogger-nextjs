@@ -8,7 +8,7 @@ const authRoutes = ['/auth/register', '/auth/login', '/auth/error'];
 const apiAuthPrefix = '/api/auth';
 const DEFAULT_LOGIN_REDIRECT = '/dashboard';
 
-export default async function middleware(req: NextRequest) {
+export default async function proxy(req: NextRequest) {
     const { nextUrl } = req;
 
     // Decrypt session cookie with NEXTAUTH_SECRET
