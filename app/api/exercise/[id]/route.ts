@@ -2,7 +2,10 @@ import { type NextRequest, NextResponse } from 'next/server';
 import { getLoggedInUser } from '@/src/data/loggedInUser';
 import { prisma } from '@/src/lib/prisma';
 
-export async function GET(_request: NextRequest, props: { params: Promise<{ id: string }> }) {
+export async function GET(
+    _request: NextRequest,
+    props: { params: Promise<{ id: string }> },
+) {
     const params = await props.params;
 
     const loggedInUser = await getLoggedInUser();
@@ -108,7 +111,10 @@ export async function PUT(
     }
 }
 
-export async function DELETE(_request: NextRequest, props: { params: Promise<{ id: string }> }) {
+export async function DELETE(
+    _request: NextRequest,
+    props: { params: Promise<{ id: string }> },
+) {
     const params = await props.params;
 
     const loggedInUser = await getLoggedInUser();
