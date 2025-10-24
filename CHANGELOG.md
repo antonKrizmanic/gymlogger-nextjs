@@ -1,5 +1,20 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.50.0] - 2025-10-24
+### Added
+- [Dependencies] Nextjs16
+
+### Changed
+- [Dependencies] Updated react-email-components-0.x
+- [Dependencies] Updated node-22.x
+- [Dependencies] Updated react-email-4.x
+- [Dependencies] Updated lucide-monorepo
+- [Dependencies] Updated nextjs-monorepo
+- [Dependencies] Updated actions-setup-node-6.x
+- [Dependencies] Updated react-monorepo
+- [Dependencies] Updated pin-dependencies
+- [Dependencies] Updated recharts-3.x
+
 ## [0.49.0] - 2025-10-18
 ### Added
 - [CodeStyleChanges] Biome
