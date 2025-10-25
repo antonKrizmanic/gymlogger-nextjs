@@ -1,5 +1,9 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.51.0] - 2025-10-25
+### Changed
+- [Dependencies] Updated migrate-config
+
 ## [0.50.0] - 2025-10-24
 ### Added
 - [Dependencies] Nextjs16
