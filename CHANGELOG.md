@@ -1,5 +1,24 @@
 _NOTE: This is an automatically generated file. Do not modify contents of this file manually._
 
+## [0.52.0] - 2025-11-12
+### Changed
+- [Dependencies] Updated node-22.x
+- [Dependencies] Updated major-github-artifact-actions
+- [Dependencies] Updated tailwindcss-monorepo
+- [Dependencies] Updated lucide-monorepo
+- [Dependencies] Updated nextjs-monorepo
+- [Dependencies] Updated react-hook-form-7.x
+- [Dependencies] Updated resend-6.x
+- [Dependencies] Updated next-auth-5.x
+- [Dependencies] Updated biomejs-biome-2.x
+- [Dependencies] Updated radix-ui-primitives-monorepo
+- [Dependencies] Updated node-24.x
+- [Dependencies] Updated auth-prisma-adapter-2.x
+- [Dependencies] Updated bcryptjs-3.x
+- [Dependencies] Updated axios-1.x
+- [Dependencies] Updated pnpm-10.x
+- [Dependencies] Updated prisma-monorepo
+
 ## [0.51.0] - 2025-10-25
 ### Changed
 - [Dependencies] Updated migrate-config
