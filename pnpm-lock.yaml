@@ -87,8 +87,8 @@ importers:
         specifier: 19.2.0
         version: 19.2.0
       react-day-picker:
-        specifier: 9.11.2
-        version: 9.11.2(react@19.2.0)
+        specifier: 9.11.3
+        version: 9.11.3(react@19.2.0)
       react-dom:
         specifier: 19.2.0
         version: 19.2.0(react@19.2.0)
@@ -2095,6 +2095,7 @@ packages:
   next@16.0.5:
     resolution: {integrity: sha512-XUPsFqSqu/NDdPfn/cju9yfIedkDI7ytDoALD9todaSMxk1Z5e3WcbUjfI9xsanFTys7xz62lnRWNFqJordzkQ==}
     engines: {node: '>=20.9.0'}
+    deprecated: This version has a security vulnerability. Please upgrade to a patched version. See https://nextjs.org/blog/CVE-2025-66478 for more details.
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
@@ -2228,8 +2229,8 @@ packages:
   rc9@2.1.2:
     resolution: {integrity: sha512-btXCnMmRIBINM2LDZoEmOogIZU7Qe7zn4BpomSKZ/ykbLObuBdvG+mFq11DL6fjH1DRwHhrlgtYWG96bJiC7Cg==}
 
-  react-day-picker@9.11.2:
-    resolution: {integrity: sha512-TD/xMUGg2oiKX8jUR21MST5pj+7Y36097YtnDHQFlIcZOu3mbLLw2B2JqEByEGrR3HHveWYnKlyls6WqJgohAg==}
+  react-day-picker@9.11.3:
+    resolution: {integrity: sha512-7lD12UvGbkyXqgzbYIGQTbl+x29B9bAf+k0pP5Dcs1evfpKk6zv4EdH/edNc8NxcmCiTNXr2HIYPrSZ3XvmVBg==}
     engines: {node: '>=18'}
     peerDependencies:
       react: '>=16.8.0'
@@ -4392,7 +4393,7 @@ snapshots:
       defu: 6.1.4
       destr: 2.0.5
 
-  react-day-picker@9.11.2(react@19.2.0):
+  react-day-picker@9.11.3(react@19.2.0):
     dependencies:
       '@date-fns/tz': 1.4.1
       date-fns: 4.1.0
