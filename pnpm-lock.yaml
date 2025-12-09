@@ -16,7 +16,7 @@ importers:
         version: 2.2.0(react@19.2.1)
       '@hookform/resolvers':
         specifier: 5.2.2
-        version: 5.2.2(react-hook-form@7.66.1(react@19.2.1))
+        version: 5.2.2(react-hook-form@7.68.0(react@19.2.1))
       '@icons-pack/react-simple-icons':
         specifier: 13.8.0
         version: 13.8.0(react@19.2.1)
@@ -96,8 +96,8 @@ importers:
         specifier: 4.3.2
         version: 4.3.2
       react-hook-form:
-        specifier: 7.66.1
-        version: 7.66.1(react@19.2.1)
+        specifier: 7.68.0
+        version: 7.68.0(react@19.2.1)
       react-icons:
         specifier: 5.5.0
         version: 5.5.0(react@19.2.1)
@@ -2244,8 +2244,8 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
-  react-hook-form@7.66.1:
-    resolution: {integrity: sha512-2KnjpgG2Rhbi+CIiIBQQ9Df6sMGH5ExNyFl4Hw9qO7pIqMBR8Bvu9RQyjl3JM4vehzCh9soiNUM/xYMswb2EiA==}
+  react-hook-form@7.68.0:
+    resolution: {integrity: sha512-oNN3fjrZ/Xo40SWlHf1yCjlMK417JxoSJVUXQjGdvdRCU07NTFei1i1f8ApUAts+IVh14e4EdakeLEA+BEAs/Q==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
@@ -2806,10 +2806,10 @@ snapshots:
     dependencies:
       react: 19.2.1
 
-  '@hookform/resolvers@5.2.2(react-hook-form@7.66.1(react@19.2.1))':
+  '@hookform/resolvers@5.2.2(react-hook-form@7.68.0(react@19.2.1))':
     dependencies:
       '@standard-schema/utils': 0.3.0
-      react-hook-form: 7.66.1(react@19.2.1)
+      react-hook-form: 7.68.0(react@19.2.1)
 
   '@icons-pack/react-simple-icons@13.8.0(react@19.2.1)':
     dependencies:
@@ -4427,7 +4427,7 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  react-hook-form@7.66.1(react@19.2.1):
+  react-hook-form@7.68.0(react@19.2.1):
     dependencies:
       react: 19.2.1
 
