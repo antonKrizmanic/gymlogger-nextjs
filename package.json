@@ -61,7 +61,7 @@
         "@tailwindcss/postcss": "4.1.18",
         "@types/axios": "0.14.4",
         "@types/node": "24.10.6",
-        "@types/react": "19.2.7",
+        "@types/react": "19.2.8",
         "@types/react-dom": "19.2.3",
         "prisma": "6.19.1",
         "tailwindcss": "4.1.18",
