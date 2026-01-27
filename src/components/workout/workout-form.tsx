@@ -2,68 +2,109 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Dumbbell, Loader2, StickyNote } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { WorkoutTemplateApiService } from '@/src/api/services/workout-template-api-service';
 
 import { CollapsibleNote } from '@/src/components/common/collapsible-note';
 import { DatePicker } from '@/src/components/form/date-picker';
 import { Button } from '@/src/components/ui/button';
 import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
+	Card,
+	CardContent,
+	CardHeader,
+	CardTitle,
 } from '@/src/components/ui/card';
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormMessage,
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormMessage,
 } from '@/src/components/ui/form';
 import { IconInput } from '@/src/components/ui/icon-input';
 import type { IWorkoutCreate } from '@/src/models/domain/workout';
 import { type WorkoutSchema, workoutSchema } from '@/src/schemas/index';
+import { WorkoutTemplateSelect } from '../workout-template/workout-template-select';
 import { ExerciseList } from './exercise-list';
 
 interface WorkoutFormProps {
-    workoutId: string | null;
-    title: string;
-    workout: IWorkoutCreate;
-    isLoading: boolean;
-    onSubmit: (workout: IWorkoutCreate) => void;
-    cancelHref: string;
+	workoutId: string | null;
+	title: string;
+	workout: IWorkoutCreate;
+	isLoading: boolean;
+	onSubmit: (workout: IWorkoutCreate) => void;
+	cancelHref: string;
 }
 
 export function WorkoutForm({
-    workoutId,
-    title,
-    workout,
-    isLoading,
-    onSubmit,
-    cancelHref,
+	workoutId,
+	title,
+	workout,
+	isLoading,
+	onSubmit,
+	cancelHref,
 }: WorkoutFormProps) {
-    const form = useForm<WorkoutSchema>({
-        resolver: zodResolver(workoutSchema),
-        defaultValues: {
-            name: workout.name || '',
-            date: workout.date ? new Date(workout.date) : new Date(),
-            description: workout.description || '',
-            exercises: workout.exercises || [],
-        },
-    });
+	const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
 
-    const handleSubmit = (data: WorkoutSchema) => {
-        // Ensure exercises are in the correct order before submitting
-        const orderedExercises = [...data.exercises].sort(
-            (a, b) => a.index - b.index,
-        );
-        const formattedData = {
-            ...data,
-            exercises: orderedExercises,
-        };
+	const form = useForm<WorkoutSchema>({
+		resolver: zodResolver(workoutSchema),
+		defaultValues: {
+			name: workout.name || '',
+			date: workout.date ? new Date(workout.date) : new Date(),
+			description: workout.description || '',
+			exercises: workout.exercises || [],
+		},
+	});
 
-        onSubmit(formattedData as IWorkoutCreate);
-    };
+	const handleSubmit = (data: WorkoutSchema) => {
+		// Ensure exercises are in the correct order before submitting
+		const orderedExercises = [...data.exercises].sort(
+			(a, b) => a.index - b.index,
+		);
+		const formattedData = {
+			...data,
+			exercises: orderedExercises,
+		};
+
+		onSubmit(formattedData as IWorkoutCreate);
+	};
+
+	const handleTemplateSelect = async (templateId: string) => {
+		if (!templateId) return;
+
+		setIsLoadingTemplate(true);
+		try {
+			const service = new WorkoutTemplateApiService();
+			const template = await service.getWorkoutTemplate(templateId);
+
+			// Populate name from template
+			form.setValue('name', template.name);
+
+			// Convert template exercises to workout exercises with empty sets
+			const workoutExercises = template.exercises.map((exercise, index) => ({
+				exerciseId: exercise.exerciseId,
+				index,
+				note: '',
+				sets: Array.from({ length: exercise.sets }, (_, setIndex) => ({
+					index: setIndex,
+					weight: 0,
+					reps: exercise.reps,
+					time: 0,
+					note: '',
+				})),
+			}));
+
+			form.setValue('exercises', workoutExercises);
+			toast.success(`Loaded template: ${template.name}`);
+		} catch (error) {
+			console.error('Failed to load template:', error);
+			toast.error('Failed to load template');
+		} finally {
+			setIsLoadingTemplate(false);
+		}
+	};
 
     return (
         <div className="space-y-6">
@@ -127,11 +168,28 @@ export function WorkoutForm({
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
-                                    )}
-                                />
-                            </div>
+						</FormItem>
+					)}
+				/>
+			</div>
 
-                            {/* Description field */}
+			{/* Template Selector - Only show for new workouts */}
+			{!workoutId && (
+				<div className="space-y-2">
+					<WorkoutTemplateSelect
+						onTemplateSelect={handleTemplateSelect}
+						placeholder="Select a template to load exercises..."
+					/>
+					{isLoadingTemplate && (
+						<p className="text-sm text-muted-foreground flex items-center">
+							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+							Loading template...
+						</p>
+					)}
+				</div>
+			)}
+
+			{/* Description field */}
                             <FormField
                                 control={form.control}
                                 name="description"
