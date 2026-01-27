@@ -73,7 +73,7 @@ pnpm run email        # Start email development server on port 3100
 ## Coding Style
 
 ### General
-- **Indentation**: Use tabs, not spaces
+- **Indentation**: Use 4 spaces (configured in Biome, not tabs)
 - **Variable naming**: Use camelCase for variables and functions
 - **Functions**: Prefer arrow functions over traditional function expressions
 - **TypeScript**: Strict mode is enabled - always provide proper types
@@ -81,7 +81,6 @@ pnpm run email        # Start email development server on port 3100
 
 ### Formatting
 - **Quotes**: Single quotes for JavaScript, double quotes for JSX
-- **Indent width**: 4 spaces (configured in Biome)
 - **Line endings**: LF (Unix-style)
 
 ### Component Guidelines
@@ -201,5 +200,5 @@ The following are auto-generated and should not be edited:
 - Tailwind CSS v4 has some differences from v3 (e.g., @import syntax)
 - Auth.js v5 is in beta and has breaking changes from v4
 - Always check the package.json for exact dependency versions
-- The project uses tabs (not spaces) for indentation - this is enforced
+- The project uses 4 spaces for indentation (configured in Biome)
 - UI components follow shadcn/ui patterns and should not be modified directly
