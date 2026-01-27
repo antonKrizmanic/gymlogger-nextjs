@@ -81,22 +81,22 @@ export type WorkoutSchema = z.infer<typeof workoutSchema>;
 
 // Workout Template Exercise Schema
 export const workoutTemplateExerciseSchema = z.object({
-	exerciseId: z.string().min(1, 'Exercise is required'),
-	sets: z.number().min(1, 'Sets must be at least 1'),
-	reps: z.number().min(1, 'Reps must be at least 1'),
-	index: z.number(),
+    exerciseId: z.string().min(1, 'Exercise is required'),
+    sets: z.number().min(1, 'Sets must be at least 1'),
+    reps: z.number().min(1, 'Reps must be at least 1'),
+    index: z.number(),
 });
 
 export type WorkoutTemplateExerciseSchema = z.infer<
-	typeof workoutTemplateExerciseSchema
+    typeof workoutTemplateExerciseSchema
 >;
 
 // Workout Template Schema
 export const workoutTemplateSchema = z.object({
-	name: z.string().min(1, 'Template name is required'),
-	exercises: z
-		.array(workoutTemplateExerciseSchema)
-		.min(1, 'At least one exercise is required'),
+    name: z.string().min(1, 'Template name is required'),
+    exercises: z
+        .array(workoutTemplateExerciseSchema)
+        .min(1, 'At least one exercise is required'),
 });
 
 export type WorkoutTemplateSchema = z.infer<typeof workoutTemplateSchema>;

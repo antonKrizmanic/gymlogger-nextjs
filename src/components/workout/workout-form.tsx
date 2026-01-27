@@ -168,28 +168,27 @@ export function WorkoutForm({
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
-						</FormItem>
-					)}
-				/>
-			</div>
+                                    )}
+                                />
+                            </div>
 
-			{/* Template Selector - Only show for new workouts */}
-			{!workoutId && (
-				<div className="space-y-2">
-					<WorkoutTemplateSelect
-						onTemplateSelect={handleTemplateSelect}
-						placeholder="Select a template to load exercises..."
-					/>
-					{isLoadingTemplate && (
-						<p className="text-sm text-muted-foreground flex items-center">
-							<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-							Loading template...
-						</p>
-					)}
-				</div>
-			)}
+                            {/* Template Selector - Only show for new workouts */}
+                            {!workoutId && (
+                                <div className="space-y-2">
+                                    <WorkoutTemplateSelect
+                                        onTemplateSelect={handleTemplateSelect}
+                                        placeholder="Select a template to load exercises..."
+                                    />
+                                    {isLoadingTemplate && (
+                                        <p className="text-sm text-muted-foreground flex items-center">
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            Loading template...
+                                        </p>
+                                    )}
+                                </div>
+                            )}
 
-			{/* Description field */}
+                            {/* Description field */}
                             <FormField
                                 control={form.control}
                                 name="description"
