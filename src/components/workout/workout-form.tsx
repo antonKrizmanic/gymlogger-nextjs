@@ -11,17 +11,17 @@ import { CollapsibleNote } from '@/src/components/common/collapsible-note';
 import { DatePicker } from '@/src/components/form/date-picker';
 import { Button } from '@/src/components/ui/button';
 import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
 } from '@/src/components/ui/card';
 import {
-	Form,
-	FormControl,
-	FormField,
-	FormItem,
-	FormMessage,
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormMessage,
 } from '@/src/components/ui/form';
 import { IconInput } from '@/src/components/ui/icon-input';
 import type { IWorkoutCreate } from '@/src/models/domain/workout';
@@ -30,81 +30,86 @@ import { WorkoutTemplateSelect } from '../workout-template/workout-template-sele
 import { ExerciseList } from './exercise-list';
 
 interface WorkoutFormProps {
-	workoutId: string | null;
-	title: string;
-	workout: IWorkoutCreate;
-	isLoading: boolean;
-	onSubmit: (workout: IWorkoutCreate) => void;
-	cancelHref: string;
+    workoutId: string | null;
+    title: string;
+    workout: IWorkoutCreate;
+    isLoading: boolean;
+    onSubmit: (workout: IWorkoutCreate) => void;
+    cancelHref: string;
 }
 
 export function WorkoutForm({
-	workoutId,
-	title,
-	workout,
-	isLoading,
-	onSubmit,
-	cancelHref,
+    workoutId,
+    title,
+    workout,
+    isLoading,
+    onSubmit,
+    cancelHref,
 }: WorkoutFormProps) {
-	const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
+    const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
 
-	const form = useForm<WorkoutSchema>({
-		resolver: zodResolver(workoutSchema),
-		defaultValues: {
-			name: workout.name || '',
-			date: workout.date ? new Date(workout.date) : new Date(),
-			description: workout.description || '',
-			exercises: workout.exercises || [],
-		},
-	});
+    const form = useForm<WorkoutSchema>({
+        resolver: zodResolver(workoutSchema),
+        defaultValues: {
+            name: workout.name || '',
+            date: workout.date ? new Date(workout.date) : new Date(),
+            description: workout.description || '',
+            exercises: workout.exercises || [],
+        },
+    });
 
-	const handleSubmit = (data: WorkoutSchema) => {
-		// Ensure exercises are in the correct order before submitting
-		const orderedExercises = [...data.exercises].sort(
-			(a, b) => a.index - b.index,
-		);
-		const formattedData = {
-			...data,
-			exercises: orderedExercises,
-		};
+    const handleSubmit = (data: WorkoutSchema) => {
+        // Ensure exercises are in the correct order before submitting
+        const orderedExercises = [...data.exercises].sort(
+            (a, b) => a.index - b.index,
+        );
+        const formattedData = {
+            ...data,
+            exercises: orderedExercises,
+        };
 
-		onSubmit(formattedData as IWorkoutCreate);
-	};
+        onSubmit(formattedData as IWorkoutCreate);
+    };
 
-	const handleTemplateSelect = async (templateId: string) => {
-		if (!templateId) return;
+    const handleTemplateSelect = async (templateId: string) => {
+        if (!templateId) return;
 
-		setIsLoadingTemplate(true);
-		try {
-			const service = new WorkoutTemplateApiService();
-			const template = await service.getWorkoutTemplate(templateId);
+        setIsLoadingTemplate(true);
+        try {
+            const service = new WorkoutTemplateApiService();
+            const template = await service.getWorkoutTemplate(templateId);
 
-			// Populate name from template
-			form.setValue('name', template.name);
+            // Populate name from template
+            form.setValue('name', template.name);
 
-			// Convert template exercises to workout exercises with empty sets
-			const workoutExercises = template.exercises.map((exercise, index) => ({
-				exerciseId: exercise.exerciseId,
-				index,
-				note: '',
-				sets: Array.from({ length: exercise.sets }, (_, setIndex) => ({
-					index: setIndex,
-					weight: 0,
-					reps: exercise.reps,
-					time: 0,
-					note: '',
-				})),
-			}));
+            // Convert template exercises to workout exercises with empty sets
+            const workoutExercises = template.exercises.map(
+                (exercise, index) => ({
+                    exerciseId: exercise.exerciseId,
+                    index,
+                    note: '',
+                    sets: Array.from(
+                        { length: exercise.sets },
+                        (_, setIndex) => ({
+                            index: setIndex,
+                            weight: 0,
+                            reps: exercise.reps,
+                            time: 0,
+                            note: '',
+                        }),
+                    ),
+                }),
+            );
 
-			form.setValue('exercises', workoutExercises);
-			toast.success(`Loaded template: ${template.name}`);
-		} catch (error) {
-			console.error('Failed to load template:', error);
-			toast.error('Failed to load template');
-		} finally {
-			setIsLoadingTemplate(false);
-		}
-	};
+            form.setValue('exercises', workoutExercises);
+            toast.success(`Loaded template: ${template.name}`);
+        } catch (error) {
+            console.error('Failed to load template:', error);
+            toast.error('Failed to load template');
+        } finally {
+            setIsLoadingTemplate(false);
+        }
+    };
 
     return (
         <div className="space-y-6">

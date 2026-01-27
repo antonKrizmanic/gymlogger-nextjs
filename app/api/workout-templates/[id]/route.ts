@@ -74,6 +74,14 @@ export async function PUT(
             },
         });
 
+        // Validate data structure
+        interface ExerciseData {
+            exerciseId: string;
+            sets: number;
+            reps: number;
+            index: number;
+        }
+
         // Update template
         const template = await prisma.workoutTemplate.update({
             where: { id },
@@ -81,7 +89,7 @@ export async function PUT(
                 name: data.name,
                 updatedAt: new Date(),
                 workoutTemplateExercises: {
-                    create: data.exercises?.map((exercise: any) => ({
+                    create: data.exercises?.map((exercise: ExerciseData) => ({
                         id: uuidv4(),
                         exerciseId: exercise.exerciseId,
                         sets: exercise.sets,

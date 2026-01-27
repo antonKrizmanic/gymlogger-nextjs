@@ -37,8 +37,31 @@ export interface IWorkoutTemplateExerciseCreate {
     index: number;
 }
 
+// Type for Prisma result
+interface PrismaWorkoutTemplateExercise {
+    id: string;
+    workoutTemplateId: string;
+    exerciseId: string;
+    sets: number;
+    reps: number;
+    index: number;
+    exercise?: {
+        name: string;
+        description: string | null;
+    };
+}
+
+interface PrismaWorkoutTemplate {
+    id: string;
+    name: string;
+    belongsToUserId: string;
+    createdAt: Date;
+    updatedAt: Date;
+    workoutTemplateExercises?: PrismaWorkoutTemplateExercise[];
+}
+
 export const mapWorkoutTemplateToIWorkoutTemplate = (
-    template: any,
+    template: PrismaWorkoutTemplate,
 ): IWorkoutTemplate => {
     return {
         id: template.id,
@@ -47,7 +70,7 @@ export const mapWorkoutTemplateToIWorkoutTemplate = (
         createdAt: template.createdAt,
         updatedAt: template.updatedAt,
         exercises:
-            template.workoutTemplateExercises?.map((exercise: any) => ({
+            template.workoutTemplateExercises?.map((exercise) => ({
                 id: exercise.id,
                 workoutTemplateId: exercise.workoutTemplateId,
                 exerciseId: exercise.exerciseId,
