@@ -18,8 +18,8 @@ importers:
         specifier: 5.2.2
         version: 5.2.2(react-hook-form@7.71.1(react@19.2.4))
       '@icons-pack/react-simple-icons':
-        specifier: 13.8.0
-        version: 13.8.0(react@19.2.4)
+        specifier: 13.11.2
+        version: 13.11.2(react@19.2.4)
       '@prisma/client':
         specifier: 6.19.2
         version: 6.19.2(prisma@6.19.2(typescript@5.9.3))(typescript@5.9.3)
@@ -481,8 +481,9 @@ packages:
     peerDependencies:
       react-hook-form: ^7.55.0
 
-  '@icons-pack/react-simple-icons@13.8.0':
-    resolution: {integrity: sha512-iZrhL1fSklfCCVn68IYHaAoKfcby3RakUTn2tRPyHBkhr2tkYqeQbjJWf+NizIYBzKBn2IarDJXmTdXd6CuEfw==}
+  '@icons-pack/react-simple-icons@13.11.2':
+    resolution: {integrity: sha512-IiYWH7Dlp4HvTxsL9Mh/1tjKKhLikKzL+578H1ngQkoREhfXaS9yNl1SXkjNGEAYqNH2w5/tBQc0uXLWAkcSFA==}
+    engines: {node: '>=24', pnpm: '>=10'}
     peerDependencies:
       react: ^16.13 || ^17 || ^18 || ^19
 
@@ -2970,7 +2971,7 @@ snapshots:
       '@standard-schema/utils': 0.3.0
       react-hook-form: 7.71.1(react@19.2.4)
 
-  '@icons-pack/react-simple-icons@13.8.0(react@19.2.4)':
+  '@icons-pack/react-simple-icons@13.11.2(react@19.2.4)':
     dependencies:
       react: 19.2.4
 
