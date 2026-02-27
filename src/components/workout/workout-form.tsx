@@ -54,7 +54,7 @@ export function WorkoutForm({
 
     const handleSubmit = (data: WorkoutSchema) => {
         // Ensure exercises are in the correct order before submitting
-        const orderedExercises = [...data.exercises].sort(
+        const orderedExercises = data.exercises.toSorted(
             (a, b) => a.index - b.index,
         );
         const formattedData = {

@@ -2,7 +2,7 @@
 
 import { BarChart3, Dumbbell, Target, TrendingUp } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
     Area,
     AreaChart,
@@ -61,61 +61,59 @@ export function WorkoutChart({ data }: WorkoutChartProps) {
     const { resolvedTheme } = useTheme();
     const isDarkMode = resolvedTheme === 'dark';
 
-    // Process data to count workouts per day
-    const processedData = data.reduce((acc: ChartDataItem[], curr) => {
-        // Find if we already have this date in our accumulator
-        const existingDateIndex = acc.findIndex(
-            (item) => item.date === curr.date,
-        );
+    // Memoize expensive data processing so it only re-runs when `data` changes,
+    // not on every metric/chartType state update (rules 5.5, 7.12)
+    const formattedData = useMemo(() => {
+        const processed = data.reduce((acc: ChartDataItem[], curr) => {
+            const existingDateIndex = acc.findIndex(
+                (item) => item.date === curr.date,
+            );
 
-        if (existingDateIndex >= 0) {
-            // If date exists, increment workout count
-            acc[existingDateIndex].workouts =
-                (acc[existingDateIndex].workouts || 0) + 1;
+            if (existingDateIndex >= 0) {
+                acc[existingDateIndex].workouts =
+                    (acc[existingDateIndex].workouts || 0) + 1;
 
-            // Add other metrics if they exist, ensuring proper number conversion
-            if (curr.weight !== undefined) {
-                acc[existingDateIndex].weight =
-                    (acc[existingDateIndex].weight || 0) +
-                    safeNumberConversion(curr.weight);
+                if (curr.weight !== undefined) {
+                    acc[existingDateIndex].weight =
+                        (acc[existingDateIndex].weight || 0) +
+                        safeNumberConversion(curr.weight);
+                }
+                if (curr.series !== undefined) {
+                    acc[existingDateIndex].series =
+                        (acc[existingDateIndex].series || 0) +
+                        safeNumberConversion(curr.series);
+                }
+                if (curr.reps !== undefined) {
+                    acc[existingDateIndex].reps =
+                        (acc[existingDateIndex].reps || 0) +
+                        safeNumberConversion(curr.reps);
+                }
+            } else {
+                acc.push({
+                    date: curr.date,
+                    workouts: 1,
+                    weight: safeNumberConversion(curr.weight) || 0,
+                    series: safeNumberConversion(curr.series) || 0,
+                    reps: safeNumberConversion(curr.reps) || 0,
+                });
             }
-            if (curr.series !== undefined) {
-                acc[existingDateIndex].series =
-                    (acc[existingDateIndex].series || 0) +
-                    safeNumberConversion(curr.series);
-            }
-            if (curr.reps !== undefined) {
-                acc[existingDateIndex].reps =
-                    (acc[existingDateIndex].reps || 0) +
-                    safeNumberConversion(curr.reps);
-            }
-        } else {
-            // If date doesn't exist, add a new entry
-            acc.push({
-                date: curr.date,
-                workouts: 1,
-                weight: safeNumberConversion(curr.weight) || 0,
-                series: safeNumberConversion(curr.series) || 0,
-                reps: safeNumberConversion(curr.reps) || 0,
-            });
-        }
 
-        return acc;
-    }, []);
+            return acc;
+        }, []);
 
-    // Sort by date
-    processedData.sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-    );
-
-    // Format dates for display
-    const formattedData = processedData.map((item) => ({
-        ...item,
-        date: new Date(item.date).toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-        }),
-    }));
+        return processed
+            .toSorted(
+                (a, b) =>
+                    new Date(a.date).getTime() - new Date(b.date).getTime(),
+            )
+            .map((item) => ({
+                ...item,
+                date: new Date(item.date).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                }),
+            }));
+    }, [data]);
 
     // Get colors based on metric and theme - using primary teal color for all
     const getChartColors = () => {

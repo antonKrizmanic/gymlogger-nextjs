@@ -3,7 +3,7 @@
 import { format } from 'date-fns';
 import { BarChart3, Repeat, TrendingUp, Weight } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
     Area,
     AreaChart,
@@ -62,7 +62,6 @@ export function ExerciseProgress({ exerciseId }: ExerciseProgressProps) {
     const [exerciseWorkouts, setExerciseWorkouts] = useState<
         IExerciseWorkout[]
     >([]);
-    const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
     const [metric, setMetric] = useState<MetricType>('maxWeight');
     const [exerciseType, setExerciseType] = useState<ExerciseLogType>(
         ExerciseLogType.WeightAndReps,
@@ -102,53 +101,47 @@ export function ExerciseProgress({ exerciseId }: ExerciseProgressProps) {
         fetchAllExerciseWorkouts();
     }, [exerciseId]);
 
-    // Process the data for charts
-    useEffect(() => {
-        if (!exerciseWorkouts.length) return;
+    // Derive chart data from exerciseWorkouts during render (rule 5.1: avoid state+effect for derived values)
+    const chartData = useMemo<ChartDataPoint[]>(() => {
+        if (!exerciseWorkouts.length) return [];
 
-        // Sort workouts by date (oldest first)
-        const sortedWorkouts = [...exerciseWorkouts].sort((a, b) => {
-            return (
-                new Date(a.workoutDate || 0).getTime() -
-                new Date(b.workoutDate || 0).getTime()
-            );
-        });
+        return exerciseWorkouts
+            .toSorted(
+                (a, b) =>
+                    new Date(a.workoutDate || 0).getTime() -
+                    new Date(b.workoutDate || 0).getTime(),
+            )
+            .map((workout) => {
+                const workoutDate = workout.workoutDate
+                    ? new Date(workout.workoutDate)
+                    : new Date();
+                const formattedDate = format(workoutDate, 'MMM d, yyyy');
+                const dateStr = format(workoutDate, 'yyyy-MM-dd');
 
-        // Create chart data points
-        const data: ChartDataPoint[] = sortedWorkouts.map((workout) => {
-            const workoutDate = workout.workoutDate
-                ? new Date(workout.workoutDate)
-                : new Date();
-            const formattedDate = format(workoutDate, 'MMM d, yyyy');
-            const dateStr = format(workoutDate, 'yyyy-MM-dd');
+                let maxWeight = 0;
+                let maxReps = 0;
 
-            // Find max weight from sets
-            let maxWeight = 0;
-            let maxReps = 0;
+                if (workout.sets && workout.sets.length > 0) {
+                    workout.sets.forEach((set) => {
+                        if (set.weight && set.weight > maxWeight) {
+                            maxWeight = set.weight;
+                        }
+                        if (set.reps && set.reps > maxReps) {
+                            maxReps = set.reps;
+                        }
+                    });
+                }
 
-            if (workout.sets && workout.sets.length > 0) {
-                workout.sets.forEach((set) => {
-                    if (set.weight && set.weight > maxWeight) {
-                        maxWeight = set.weight;
-                    }
-                    if (set.reps && set.reps > maxReps) {
-                        maxReps = set.reps;
-                    }
-                });
-            }
-
-            return {
-                date: dateStr,
-                formattedDate,
-                maxWeight,
-                totalWeight: workout.totalWeight || 0,
-                totalReps: workout.totalReps || 0,
-                maxReps,
-                totalSets: workout.totalSets || 0,
-            };
-        });
-
-        setChartData(data);
+                return {
+                    date: dateStr,
+                    formattedDate,
+                    maxWeight,
+                    totalWeight: workout.totalWeight || 0,
+                    totalReps: workout.totalReps || 0,
+                    maxReps,
+                    totalSets: workout.totalSets || 0,
+                };
+            });
     }, [exerciseWorkouts]);
 
     const handleMetricChange = (value: string) => {
