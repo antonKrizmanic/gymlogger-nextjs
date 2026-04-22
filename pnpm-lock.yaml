@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@auth/prisma-adapter':
         specifier: 2.11.2
-        version: 2.11.2(@prisma/client@6.19.3(prisma@6.19.3(typescript@6.0.2))(typescript@6.0.2))
+        version: 2.11.2(@prisma/client@6.19.3(prisma@6.19.3(typescript@6.0.3))(typescript@6.0.3))
       '@heroicons/react':
         specifier: 2.2.0
         version: 2.2.0(react@19.2.5)
@@ -22,7 +22,7 @@ importers:
         version: 13.13.0(react@19.2.5)
       '@prisma/client':
         specifier: 6.19.3
-        version: 6.19.3(prisma@6.19.3(typescript@6.0.2))(typescript@6.0.2)
+        version: 6.19.3(prisma@6.19.3(typescript@6.0.3))(typescript@6.0.3)
       '@radix-ui/react-avatar':
         specifier: 1.1.11
         version: 1.1.11(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
@@ -146,16 +146,16 @@ importers:
         version: 19.2.3(@types/react@19.2.14)
       prisma:
         specifier: 6.19.3
-        version: 6.19.3(typescript@6.0.2)
+        version: 6.19.3(typescript@6.0.3)
       tailwindcss:
         specifier: 4.2.2
         version: 4.2.2
       ts-node:
         specifier: 10.9.2
-        version: 10.9.2(@types/node@24.12.2)(typescript@6.0.2)
+        version: 10.9.2(@types/node@24.12.2)(typescript@6.0.3)
       typescript:
-        specifier: 6.0.2
-        version: 6.0.2
+        specifier: 6.0.3
+        version: 6.0.3
 
 packages:
 
@@ -2572,8 +2572,8 @@ packages:
     resolution: {integrity: sha512-VCn+LMHbd4t6sF3wfU/+HKT63C9OoyrSIf4b+vtWHpt2U7/4InZG467YDNMFMR70DdHjAdpPWmw2lzRdg0Xqqg==}
     engines: {node: '>=20'}
 
-  typescript@6.0.2:
-    resolution: {integrity: sha512-bGdAIrZ0wiGDo5l8c++HWtbaNCWTS4UTv7RaTH/ThVIgjkveJt83m74bBHMJkuCbslY8ixgLBVZJIOiQlQTjfQ==}
+  typescript@6.0.3:
+    resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -2671,10 +2671,10 @@ snapshots:
       preact: 10.24.3
       preact-render-to-string: 6.5.11(preact@10.24.3)
 
-  '@auth/prisma-adapter@2.11.2(@prisma/client@6.19.3(prisma@6.19.3(typescript@6.0.2))(typescript@6.0.2))':
+  '@auth/prisma-adapter@2.11.2(@prisma/client@6.19.3(prisma@6.19.3(typescript@6.0.3))(typescript@6.0.3))':
     dependencies:
       '@auth/core': 0.41.2
-      '@prisma/client': 6.19.3(prisma@6.19.3(typescript@6.0.2))(typescript@6.0.2)
+      '@prisma/client': 6.19.3(prisma@6.19.3(typescript@6.0.3))(typescript@6.0.3)
     transitivePeerDependencies:
       - '@simplewebauthn/browser'
       - '@simplewebauthn/server'
@@ -3032,10 +3032,10 @@ snapshots:
 
   '@panva/hkdf@1.2.1': {}
 
-  '@prisma/client@6.19.3(prisma@6.19.3(typescript@6.0.2))(typescript@6.0.2)':
+  '@prisma/client@6.19.3(prisma@6.19.3(typescript@6.0.3))(typescript@6.0.3)':
     optionalDependencies:
-      prisma: 6.19.3(typescript@6.0.2)
-      typescript: 6.0.2
+      prisma: 6.19.3(typescript@6.0.3)
+      typescript: 6.0.3
 
   '@prisma/config@6.19.3':
     dependencies:
@@ -4459,12 +4459,12 @@ snapshots:
 
   prettier@3.6.2: {}
 
-  prisma@6.19.3(typescript@6.0.2):
+  prisma@6.19.3(typescript@6.0.3):
     dependencies:
       '@prisma/config': 6.19.3
       '@prisma/engines': 6.19.3
     optionalDependencies:
-      typescript: 6.0.2
+      typescript: 6.0.3
     transitivePeerDependencies:
       - magicast
 
@@ -4754,7 +4754,7 @@ snapshots:
 
   tinyexec@1.1.1: {}
 
-  ts-node@10.9.2(@types/node@24.12.2)(typescript@6.0.2):
+  ts-node@10.9.2(@types/node@24.12.2)(typescript@6.0.3):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
@@ -4768,7 +4768,7 @@ snapshots:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 6.0.2
+      typescript: 6.0.3
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
 
@@ -4784,7 +4784,7 @@ snapshots:
     dependencies:
       tagged-tag: 1.0.0
 
-  typescript@6.0.2: {}
+  typescript@6.0.3: {}
 
   uint8array-extras@1.5.0: {}
 
