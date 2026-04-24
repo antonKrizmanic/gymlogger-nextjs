@@ -54,8 +54,8 @@ importers:
         specifier: 1.0.12
         version: 1.0.12(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       axios:
-        specifier: 1.15.0
-        version: 1.15.0
+        specifier: 1.15.1
+        version: 1.15.1
       bcryptjs:
         specifier: 3.0.3
         version: 3.0.3
@@ -1568,8 +1568,8 @@ packages:
   atomically@2.1.0:
     resolution: {integrity: sha512-+gDffFXRW6sl/HCwbta7zK4uNqbPjv4YJEAdz7Vu+FLQHe77eZ4bvbJGi4hE0QPeJlMYMA3piXEr1UL3dAwx7Q==}
 
-  axios@1.15.0:
-    resolution: {integrity: sha512-wWyJDlAatxk30ZJer+GeCWS209sA42X+N5jU2jy6oHTp7ufw8uzUTVFBX9+wTfAlhiJXGS0Bq7X6efruWjuK9Q==}
+  axios@1.15.1:
+    resolution: {integrity: sha512-WOG+Jj8ZOvR0a3rAn+Tuf1UQJRxw5venr6DgdbJzngJE3qG7X0kL83CZGpdHMxEm+ZK3seAbvFsw4FfOfP9vxg==}
 
   balanced-match@4.0.4:
     resolution: {integrity: sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==}
@@ -3722,7 +3722,7 @@ snapshots:
 
   '@types/axios@0.14.4':
     dependencies:
-      axios: 1.15.0
+      axios: 1.15.1
     transitivePeerDependencies:
       - debug
 
@@ -3805,7 +3805,7 @@ snapshots:
       stubborn-fs: 2.0.0
       when-exit: 2.1.5
 
-  axios@1.15.0:
+  axios@1.15.1:
     dependencies:
       follow-redirects: 1.15.11
       form-data: 4.0.5
