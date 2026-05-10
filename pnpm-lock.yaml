@@ -93,8 +93,8 @@ importers:
         specifier: 19.2.5
         version: 19.2.5(react@19.2.5)
       react-email:
-        specifier: 6.0.5
-        version: 6.0.5(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+        specifier: 6.0.8
+        version: 6.0.8(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       react-hook-form:
         specifier: 7.75.0
         version: 7.75.0(react@19.2.5)
@@ -2193,11 +2193,6 @@ packages:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
 
-  nypm@0.6.5:
-    resolution: {integrity: sha512-K6AJy1GMVyfyMXRVB88700BJqNUkByijGJM8kEHpLdcAt+vSQAVfkWWHYzuRXHSY6xA2sNc5RjTj0p9rE2izVQ==}
-    engines: {node: '>=18'}
-    hasBin: true
-
   nypm@0.6.6:
     resolution: {integrity: sha512-vRyr0r4cbBapw07Xw8xrj9Teq3o7MUD35rSaTcanDbW+aK2XHDgJFiU6ZTj2GBw7Q12ysdsyFss+Vdz4hQ0Y6Q==}
     engines: {node: '>=18'}
@@ -2302,8 +2297,8 @@ packages:
     peerDependencies:
       react: ^19.2.5
 
-  react-email@6.0.5:
-    resolution: {integrity: sha512-uQRqBcd9buZ7tbjvxprVrz1BclNWPXHtGeveZJjV1qtTczZjdWp3KddmanD5nlH1UbqHx32pC0Nh93PoMRbVGw==}
+  react-email@6.0.8:
+    resolution: {integrity: sha512-/kArasUY1ahkrs8z8OG0wz+d7hedV/wUSZ8qaXI2TtB6omUMmMtm//FBHSSdnsEvkUnAZ5LzCyge1h6oQNhpTA==}
     engines: {node: '>=20.0.0'}
     hasBin: true
     peerDependencies:
@@ -4113,7 +4108,7 @@ snapshots:
       consola: 3.4.2
       defu: 6.1.4
       node-fetch-native: 1.6.7
-      nypm: 0.6.5
+      nypm: 0.6.6
       pathe: 2.0.3
 
   glob@13.0.6:
@@ -4318,12 +4313,6 @@ snapshots:
 
   normalize-path@3.0.0: {}
 
-  nypm@0.6.5:
-    dependencies:
-      citty: 0.2.2
-      pathe: 2.0.3
-      tinyexec: 1.1.1
-
   nypm@0.6.6:
     dependencies:
       citty: 0.2.2
@@ -4422,7 +4411,7 @@ snapshots:
       react: 19.2.5
       scheduler: 0.27.0
 
-  react-email@6.0.5(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
+  react-email@6.0.8(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
       '@babel/parser': 7.27.0
       '@babel/traverse': 7.27.0
