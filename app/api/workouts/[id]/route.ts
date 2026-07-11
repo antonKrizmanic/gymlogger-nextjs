@@ -39,6 +39,9 @@ export async function GET(
                     },
                 },
                 exerciseWorkouts: {
+                    orderBy: {
+                        index: 'asc',
+                    },
                     select: {
                         index: true,
                         totalReps: true,
@@ -46,6 +49,9 @@ export async function GET(
                         totalSets: true,
                         note: true,
                         exerciseSets: {
+                            orderBy: {
+                                index: 'asc',
+                            },
                             select: {
                                 id: true,
                                 weight: true,
