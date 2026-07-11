@@ -43,31 +43,10 @@ export const getPagedWorkoutTemplates = async (pagedRequest: IPagedRequest) => {
         belongsToUserId: loggedInUser.id,
     };
 
-    if (pagedRequest.search) {
-        where.name = {
-            contains: pagedRequest.search,
-            mode: 'insensitive',
-        };
-    }
-
     const totalItems = await prisma.workoutTemplate.count({ where });
 
     const templates = await prisma.workoutTemplate.findMany({
         where,
-        include: {
-            workoutTemplateExercises: {
-                include: {
-                    exercise: {
-                        select: {
-                            name: true,
-                        },
-                    },
-                },
-                orderBy: {
-                    index: 'asc',
-                },
-            },
-        },
         orderBy: {
             createdAt: 'desc',
         },

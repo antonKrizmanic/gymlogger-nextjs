@@ -1,6 +1,6 @@
 'use client';
 
-import { Activity, Dumbbell, Home, Menu, X } from 'lucide-react';
+import { Activity, Dumbbell, FileText, Home, Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { SessionProvider } from 'next-auth/react';
@@ -27,6 +27,7 @@ export function Navbar() {
     const navItems = [
         { name: 'Dashboard', href: '/dashboard', icon: Home },
         { name: 'Workouts', href: '/workouts', icon: Dumbbell },
+        { name: 'Templates', href: '/workout-templates', icon: FileText },
         { name: 'Exercises', href: '/exercises', icon: Activity },
     ];
 

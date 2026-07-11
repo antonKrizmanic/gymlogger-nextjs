@@ -57,7 +57,7 @@ export function WorkoutTemplateForm({
         },
     });
 
-    const { fields, append, remove } = useFieldArray({
+    const { fields, append, replace } = useFieldArray({
         control: form.control,
         name: 'exercises',
     });
@@ -77,7 +77,14 @@ export function WorkoutTemplateForm({
 
     const handleAddExercise = () => {
         if (!selectedExerciseId) return;
+        if (fields.some((field) => field.exerciseId === selectedExerciseId)) {
+            form.setError('exercises', {
+                message: 'Each exercise can only be added once',
+            });
+            return;
+        }
 
+        form.clearErrors('exercises');
         append({
             exerciseId: selectedExerciseId,
             sets: 3,
@@ -88,20 +95,21 @@ export function WorkoutTemplateForm({
     };
 
     const handleRemoveExercise = (index: number) => {
-        remove(index);
-        // Re-index remaining exercises
-        const currentExercises = form.getValues('exercises');
-        currentExercises.forEach((_, idx) => {
-            if (idx > index) {
-                form.setValue(`exercises.${idx}.index`, idx - 1);
-            }
-        });
+        const remainingExercises = form
+            .getValues('exercises')
+            .filter((_, exerciseIndex) => exerciseIndex !== index)
+            .map((exercise, exerciseIndex) => ({
+                ...exercise,
+                index: exerciseIndex,
+            }));
+        replace(remainingExercises);
     };
 
     const handleSubmit = (data: WorkoutTemplateSchema) => {
-        const orderedExercises = [...data.exercises].sort(
-            (a, b) => a.index - b.index,
-        );
+        const orderedExercises = data.exercises.map((exercise, index) => ({
+            ...exercise,
+            index,
+        }));
         const formattedData = {
             ...data,
             exercises: orderedExercises,
@@ -228,12 +236,10 @@ export function WorkoutTemplateForm({
                                                 ? 'Updating...'
                                                 : 'Creating...'}
                                         </>
+                                    ) : templateId ? (
+                                        'Update Template'
                                     ) : (
-                                        <>
-                                            {templateId
-                                                ? 'Update Template'
-                                                : 'Create Template'}
-                                        </>
+                                        'Create Template'
                                     )}
                                 </Button>
                                 <Button

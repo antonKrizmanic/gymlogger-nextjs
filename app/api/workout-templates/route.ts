@@ -3,6 +3,22 @@ import { v4 as uuidv4 } from 'uuid';
 import { getLoggedInUser } from '@/src/data/loggedInUser';
 import { getPagedWorkoutTemplates } from '@/src/data/workout-template';
 import { prisma } from '@/src/lib/prisma';
+import { mapWorkoutTemplateToIWorkoutTemplate } from '@/src/models/domain/workout-template';
+import { workoutTemplateSchema } from '@/src/schemas';
+import { SortDirection } from '@/src/types/enums';
+
+const DEFAULT_PAGE_SIZE = 12;
+const MAX_PAGE_SIZE = 100;
+
+const getPositiveInteger = (
+    value: string | null,
+    fallback: number,
+    maximum?: number,
+) => {
+    const parsed = Number(value);
+    if (!Number.isInteger(parsed) || parsed < 0) return fallback;
+    return maximum ? Math.min(parsed, maximum) : parsed;
+};
 
 export async function GET(request: NextRequest) {
     try {
@@ -14,14 +30,18 @@ export async function GET(request: NextRequest) {
             );
 
         const { searchParams } = request.nextUrl;
-        const page = Number(searchParams.get('page')) || 0;
-        const pageSize = Number(searchParams.get('pageSize')) || 12;
-        const search = searchParams.get('search') || '';
+        const page = getPositiveInteger(searchParams.get('page'), 0);
+        const pageSize = getPositiveInteger(
+            searchParams.get('pageSize'),
+            DEFAULT_PAGE_SIZE,
+            MAX_PAGE_SIZE,
+        );
 
         const result = await getPagedWorkoutTemplates({
             page,
-            pageSize,
-            search,
+            pageSize: Math.max(1, pageSize),
+            sortColumn: 'createdAt',
+            sortDirection: SortDirection.Descending,
         });
 
         if (result) {
@@ -53,14 +73,36 @@ export async function POST(request: Request) {
                 { status: 401 },
             );
 
-        const data = await request.json();
+        const parsed = workoutTemplateSchema.safeParse(await request.json());
+        if (!parsed.success) {
+            return NextResponse.json(
+                {
+                    error: 'Invalid workout template',
+                    details: parsed.error.issues,
+                },
+                { status: 400 },
+            );
+        }
 
-        // Validate data structure
-        interface ExerciseData {
-            exerciseId: string;
-            sets: number;
-            reps: number;
-            index: number;
+        const data = parsed.data;
+        const exerciseIds = [
+            ...new Set(data.exercises.map((e) => e.exerciseId)),
+        ];
+        const accessibleExerciseCount = await prisma.exercise.count({
+            where: {
+                id: { in: exerciseIds },
+                OR: [
+                    { belongsToUserId: loggedInUser.id },
+                    { belongsToUserId: null },
+                ],
+            },
+        });
+
+        if (accessibleExerciseCount !== exerciseIds.length) {
+            return NextResponse.json(
+                { error: 'One or more exercises are unavailable' },
+                { status: 400 },
+            );
         }
 
         // Create workout template
@@ -72,7 +114,7 @@ export async function POST(request: Request) {
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 workoutTemplateExercises: {
-                    create: data.exercises?.map((exercise: ExerciseData) => ({
+                    create: data.exercises.map((exercise) => ({
                         id: uuidv4(),
                         exerciseId: exercise.exerciseId,
                         sets: exercise.sets,
@@ -88,14 +130,15 @@ export async function POST(request: Request) {
                     include: {
                         exercise: true,
                     },
+                    orderBy: { index: 'asc' },
                 },
             },
         });
 
-        return NextResponse.json({
-            message: 'Workout template created',
-            template,
-        });
+        return NextResponse.json(
+            mapWorkoutTemplateToIWorkoutTemplate(template),
+            { status: 201 },
+        );
     } catch (error) {
         console.error('Error creating workout template:', error);
         return NextResponse.json(

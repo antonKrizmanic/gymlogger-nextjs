@@ -15,6 +15,7 @@ import {
 import { WorkoutTemplateCard } from '@/src/components/workout-template/workout-template-card';
 import type { IWorkoutTemplateSimple } from '@/src/models/domain/workout-template';
 import type { IPagedResponse } from '@/src/types/common';
+import { SortDirection } from '@/src/types/enums';
 
 export default function WorkoutTemplatesPage() {
     const [templates, setTemplates] = useState<IWorkoutTemplateSimple[]>([]);
@@ -30,6 +31,8 @@ export default function WorkoutTemplatesPage() {
                 await service.getWorkoutTemplates({
                     page,
                     pageSize: 12,
+                    sortColumn: 'createdAt',
+                    sortDirection: SortDirection.Descending,
                 });
 
             setTemplates(response.items);

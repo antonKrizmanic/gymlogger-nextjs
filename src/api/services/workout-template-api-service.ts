@@ -1,6 +1,7 @@
 import type {
     IWorkoutTemplate,
     IWorkoutTemplateCreate,
+    IWorkoutTemplateSimple,
     IWorkoutTemplateUpdate,
 } from '../../models/domain/workout-template';
 import type { IPagedRequest, IPagedResponse } from '../../types/common';
@@ -10,7 +11,7 @@ import { BaseApiService } from './base-api-service';
 export class WorkoutTemplateApiService extends BaseApiService {
     public async getWorkoutTemplates(
         request: IPagedRequest,
-    ): Promise<IPagedResponse<IWorkoutTemplate>> {
+    ): Promise<IPagedResponse<IWorkoutTemplateSimple>> {
         const params = new URLSearchParams(
             Object.entries(request).flatMap(([key, value]) =>
                 Array.isArray(value)
@@ -18,7 +19,7 @@ export class WorkoutTemplateApiService extends BaseApiService {
                     : [[key, value ?? '']],
             ),
         );
-        return this.get<IPagedResponse<IWorkoutTemplate>>(
+        return this.get<IPagedResponse<IWorkoutTemplateSimple>>(
             Endpoints.WorkoutTemplate.Base,
             params,
         );
@@ -40,8 +41,8 @@ export class WorkoutTemplateApiService extends BaseApiService {
     public async updateWorkoutTemplate(
         id: string,
         template: IWorkoutTemplateUpdate,
-    ): Promise<void> {
-        return this.put<void, IWorkoutTemplateUpdate>(
+    ): Promise<IWorkoutTemplate> {
+        return this.put<IWorkoutTemplate, IWorkoutTemplateUpdate>(
             Endpoints.WorkoutTemplate.ById(id),
             template,
         );

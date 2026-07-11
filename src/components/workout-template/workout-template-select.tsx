@@ -8,6 +8,7 @@ import {
     ResponsiveCombobox,
 } from '@/src/components/form/responsive-combobox';
 import type { IWorkoutTemplateSimple } from '@/src/models/domain/workout-template';
+import { SortDirection } from '@/src/types/enums';
 
 interface WorkoutTemplateSelectProps {
     selectedTemplateId?: string;
@@ -25,17 +26,45 @@ export function WorkoutTemplateSelect({
     className,
 }: WorkoutTemplateSelectProps) {
     const [templates, setTemplates] = useState<IWorkoutTemplateSimple[]>([]);
+    const [internalSelectedId, setInternalSelectedId] = useState(
+        selectedTemplateId || '',
+    );
+
+    useEffect(() => {
+        setInternalSelectedId(selectedTemplateId || '');
+    }, [selectedTemplateId]);
 
     useEffect(() => {
         const fetchTemplates = async () => {
             try {
                 const service = new WorkoutTemplateApiService();
-                const response = await service.getWorkoutTemplates({
+                const request = {
                     page: 0,
-                    pageSize: 100, // Get all templates for now
-                });
+                    pageSize: 100,
+                    sortColumn: 'createdAt',
+                    sortDirection: SortDirection.Descending,
+                };
+                const firstPage = await service.getWorkoutTemplates(request);
+                const remainingPages = await Promise.all(
+                    Array.from(
+                        {
+                            length: Math.max(
+                                0,
+                                firstPage.pagingData.totalPages - 1,
+                            ),
+                        },
+                        (_, index) =>
+                            service.getWorkoutTemplates({
+                                ...request,
+                                page: index + 1,
+                            }),
+                    ),
+                );
 
-                setTemplates(response.items || []);
+                setTemplates([
+                    ...firstPage.items,
+                    ...remainingPages.flatMap((page) => page.items),
+                ]);
             } catch (error) {
                 console.error('Failed to fetch templates:', error);
             }
@@ -50,7 +79,7 @@ export function WorkoutTemplateSelect({
     }));
 
     const selectedItem =
-        selectOptions.find((o) => o.value === selectedTemplateId) || null;
+        selectOptions.find((o) => o.value === internalSelectedId) || null;
 
     return (
         <ResponsiveCombobox
@@ -60,7 +89,11 @@ export function WorkoutTemplateSelect({
             emptyMessage="No templates found"
             filterPlaceholder="Search templates..."
             value={selectedItem}
-            onValueChange={(item) => onTemplateSelect(item?.value || '')}
+            onValueChange={(item) => {
+                const templateId = item?.value || '';
+                setInternalSelectedId(templateId);
+                onTemplateSelect(templateId);
+            }}
             items={selectOptions}
             className={className}
         />

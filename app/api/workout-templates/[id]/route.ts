@@ -4,6 +4,7 @@ import { getLoggedInUser } from '@/src/data/loggedInUser';
 import { getWorkoutTemplate } from '@/src/data/workout-template';
 import { prisma } from '@/src/lib/prisma';
 import { mapWorkoutTemplateToIWorkoutTemplate } from '@/src/models/domain/workout-template';
+import { workoutTemplateSchema } from '@/src/schemas';
 
 export async function GET(
     _request: Request,
@@ -50,7 +51,18 @@ export async function PUT(
             );
 
         const { id } = await params;
-        const data = await request.json();
+        const parsed = workoutTemplateSchema.safeParse(await request.json());
+        if (!parsed.success) {
+            return NextResponse.json(
+                {
+                    error: 'Invalid workout template',
+                    details: parsed.error.issues,
+                },
+                { status: 400 },
+            );
+        }
+
+        const data = parsed.data;
 
         // Check if template exists and belongs to user
         const existingTemplate = await prisma.workoutTemplate.findFirst({
@@ -67,29 +79,35 @@ export async function PUT(
             );
         }
 
-        // Delete existing exercises and create new ones
-        await prisma.workoutTemplateExercise.deleteMany({
+        const exerciseIds = [
+            ...new Set(data.exercises.map((e) => e.exerciseId)),
+        ];
+        const accessibleExerciseCount = await prisma.exercise.count({
             where: {
-                workoutTemplateId: id,
+                id: { in: exerciseIds },
+                OR: [
+                    { belongsToUserId: loggedInUser.id },
+                    { belongsToUserId: null },
+                ],
             },
         });
 
-        // Validate data structure
-        interface ExerciseData {
-            exerciseId: string;
-            sets: number;
-            reps: number;
-            index: number;
+        if (accessibleExerciseCount !== exerciseIds.length) {
+            return NextResponse.json(
+                { error: 'One or more exercises are unavailable' },
+                { status: 400 },
+            );
         }
 
-        // Update template
+        // Nested deletion and creation are committed atomically with the update.
         const template = await prisma.workoutTemplate.update({
-            where: { id },
+            where: { id, belongsToUserId: loggedInUser.id },
             data: {
                 name: data.name,
                 updatedAt: new Date(),
                 workoutTemplateExercises: {
-                    create: data.exercises?.map((exercise: ExerciseData) => ({
+                    deleteMany: {},
+                    create: data.exercises.map((exercise) => ({
                         id: uuidv4(),
                         exerciseId: exercise.exerciseId,
                         sets: exercise.sets,
@@ -105,14 +123,14 @@ export async function PUT(
                     include: {
                         exercise: true,
                     },
+                    orderBy: { index: 'asc' },
                 },
             },
         });
 
-        return NextResponse.json({
-            message: 'Workout template updated',
-            template: mapWorkoutTemplateToIWorkoutTemplate(template),
-        });
+        return NextResponse.json(
+            mapWorkoutTemplateToIWorkoutTemplate(template),
+        );
     } catch (error) {
         console.error('Error updating workout template:', error);
         return NextResponse.json(
@@ -153,7 +171,7 @@ export async function DELETE(
 
         // Delete template (cascade will delete exercises)
         await prisma.workoutTemplate.delete({
-            where: { id },
+            where: { id, belongsToUserId: loggedInUser.id },
         });
 
         return NextResponse.json({ message: 'Workout template deleted' });
