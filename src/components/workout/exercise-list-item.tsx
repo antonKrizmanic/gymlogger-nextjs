@@ -1,6 +1,6 @@
 'use client';
 
-import { Copy, Info, Pencil, PlusCircle, StickyNote, X } from 'lucide-react';
+import { Info, PlusCircle, StickyNote, X } from 'lucide-react';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ExerciseApiService } from '@/src/api/services/exercise-api-service';
@@ -20,13 +20,9 @@ import {
     CollapsibleTrigger,
 } from '@/src/components/ui/collapsible';
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/src/components/ui/table';
+    copyPreviousSets,
+    hasMeaningfulExerciseValues,
+} from '@/src/lib/workout-source';
 import type { IExercise } from '@/src/models/domain/exercise';
 import type {
     IExerciseSetCreate,
@@ -36,12 +32,13 @@ import type {
 import { ExerciseLogType } from '@/src/types/enums';
 import { ExerciseSelect } from './exercise-select';
 import { ExerciseSetEdit } from './exercise-set-edit';
-import { ExerciseSetSheet } from './exercise-set-sheet';
 import { ExerciseSets } from './exercise-sets';
+import { MobileExerciseSetEdit } from './mobile-exercise-set-edit';
 
 interface ExerciseListItemProps {
     exercise: IExerciseWorkoutCreate;
     index: number;
+    isDirty?: boolean;
     workoutId: string | null;
     onExerciseChange: (exercise: IExerciseWorkoutCreate, index: number) => void;
     onRemoveExercise: (index: number) => void;
@@ -51,6 +48,7 @@ interface ExerciseListItemProps {
 export const ExerciseListItem = memo(function ExerciseListItem({
     exercise,
     index,
+    isDirty = false,
     workoutId,
     onExerciseChange,
     onRemoveExercise,
@@ -63,8 +61,6 @@ export const ExerciseListItem = memo(function ExerciseListItem({
         null,
     );
     const [isLastWorkoutOpen, setIsLastWorkoutOpen] = useState(false);
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [currentSetIndex, setCurrentSetIndex] = useState<number | null>(null);
     // CollapsibleNote manages notes UI state internally
 
     useEffect(() => {
@@ -118,31 +114,16 @@ export const ExerciseListItem = memo(function ExerciseListItem({
     // Legacy note handlers removed in favor of CollapsibleNote
 
     const handleAddSet = useCallback(() => {
-        // For mobile, open the dialog with a new set
-        if (window.innerWidth < 768) {
-            // Create a temporary set for the dialog
-            setCurrentSetIndex(null); // null indicates a new set
-
-            // Open the dialog with a new empty set
-            setIsDialogOpen(true);
-        } else {
-            // For desktop, add the set directly as before
-            const newSet: IExerciseSetCreate = {
-                index: exercise.sets?.length || 0,
-                note: '',
-            };
-            const updatedExercise = {
-                ...exercise,
-                sets: [...(exercise.sets || []), newSet],
-            };
-            onExerciseChange(updatedExercise, index);
-        }
+        const newSet: IExerciseSetCreate = {
+            index: exercise.sets?.length || 0,
+            note: '',
+        };
+        const updatedExercise = {
+            ...exercise,
+            sets: [...(exercise.sets || []), newSet],
+        };
+        onExerciseChange(updatedExercise, index);
     }, [exercise, index, onExerciseChange]);
-
-    const handleEditSet = useCallback((setIndex: number) => {
-        setCurrentSetIndex(setIndex);
-        setIsDialogOpen(true);
-    }, []);
 
     const handleSetChange = useCallback(
         (setIndex: number, updatedSet: IExerciseSetCreate) => {
@@ -153,37 +134,6 @@ export const ExerciseListItem = memo(function ExerciseListItem({
             onExerciseChange(updatedExercise, index);
         },
         [exercise, index, onExerciseChange],
-    );
-
-    const handleDialogSave = useCallback(
-        (updatedSet: IExerciseSetCreate) => {
-            let updatedSets: IExerciseSetCreate[];
-
-            if (currentSetIndex === null) {
-                // Adding a new set
-                const newSet = {
-                    ...updatedSet,
-                    index: exercise.sets?.length || 0,
-                };
-                updatedSets = [...(exercise.sets || []), newSet];
-            } else {
-                // Updating an existing set
-                updatedSets =
-                    exercise.sets?.map((set, i) =>
-                        i === currentSetIndex ? updatedSet : set,
-                    ) || [];
-            }
-
-            // Update indices to ensure they're sequential
-            updatedSets.forEach((set, i) => {
-                set.index = i;
-            });
-
-            const updatedExercise = { ...exercise, sets: updatedSets };
-            onExerciseChange(updatedExercise, index);
-            setIsDialogOpen(false);
-        },
-        [currentSetIndex, exercise, index, onExerciseChange],
     );
 
     const handleCopySet = useCallback(
@@ -227,20 +177,30 @@ export const ExerciseListItem = memo(function ExerciseListItem({
         [exercise, index, onExerciseChange],
     );
 
+    const handleUseLastSets = useCallback(() => {
+        if (!lastExercise?.sets?.length) return;
+
+        if (
+            isDirty &&
+            hasMeaningfulExerciseValues(exercise) &&
+            !window.confirm(
+                'Replace the values you entered for this exercise with the last workout?',
+            )
+        ) {
+            return;
+        }
+
+        onExerciseChange(
+            { ...exercise, sets: copyPreviousSets(lastExercise.sets) },
+            index,
+        );
+    }, [exercise, index, isDirty, lastExercise, onExerciseChange]);
+
     // Get the exercise type for the sets - memoized for performance
     const exerciseLogType = useMemo(
         () =>
             selectedExercise?.exerciseLogType || ExerciseLogType.WeightAndReps,
         [selectedExercise?.exerciseLogType],
-    );
-
-    // Get the current set for the dialog - memoized for performance
-    const currentSet = useMemo(
-        () =>
-            currentSetIndex !== null && exercise.sets
-                ? exercise.sets[currentSetIndex]
-                : { index: exercise.sets?.length || 0, note: '' },
-        [currentSetIndex, exercise.sets],
     );
 
     // Memoize exercise display properties
@@ -302,26 +262,41 @@ export const ExerciseListItem = memo(function ExerciseListItem({
                 />
 
                 {lastExercise && (
-                    <Collapsible
-                        open={isLastWorkoutOpen}
-                        onOpenChange={setIsLastWorkoutOpen}
-                        className="p-2"
-                    >
-                        <CollapsibleTrigger asChild>
+                    <div className="space-y-2 p-2">
+                        <div className="flex gap-2">
                             <Button
                                 variant="ghost"
-                                className="flex w-full justify-between p-2"
+                                type="button"
+                                className="flex flex-1 justify-between p-2"
+                                onClick={() =>
+                                    setIsLastWorkoutOpen((open) => !open)
+                                }
                             >
                                 <span className="text-sm font-medium">
                                     Last workout
                                 </span>
                                 <Info className="h-4 w-4" />
                             </Button>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className="pt-2">
-                            <ExerciseSets exercise={lastExercise} />
-                        </CollapsibleContent>
-                    </Collapsible>
+                            <Button
+                                variant="outline"
+                                type="button"
+                                onClick={handleUseLastSets}
+                            >
+                                Use last sets
+                            </Button>
+                        </div>
+                        <Collapsible
+                            open={isLastWorkoutOpen}
+                            onOpenChange={setIsLastWorkoutOpen}
+                        >
+                            <CollapsibleTrigger className="sr-only">
+                                Toggle previous workout
+                            </CollapsibleTrigger>
+                            <CollapsibleContent>
+                                <ExerciseSets exercise={lastExercise} />
+                            </CollapsibleContent>
+                        </Collapsible>
+                    </div>
                 )}
 
                 {/* Sets section */}
@@ -339,6 +314,7 @@ export const ExerciseListItem = memo(function ExerciseListItem({
                                     set={set}
                                     index={setIndex}
                                     exerciseType={exerciseLogType}
+                                    previousSet={lastExercise?.sets?.[setIndex]}
                                     onSetChange={(updatedSet) =>
                                         handleSetChange(setIndex, updatedSet)
                                     }
@@ -348,205 +324,23 @@ export const ExerciseListItem = memo(function ExerciseListItem({
                             ))}
                         </div>
 
-                        {/* Mobile view - show a table of sets */}
-                        <div className="md:hidden">
-                            {exercise.sets && exercise.sets.length > 0 ? (
-                                <div className="border rounded-md overflow-hidden">
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead className="w-[50px] text-gray-500 dark:text-white">
-                                                    Set
-                                                </TableHead>
-
-                                                {exerciseLogType ===
-                                                    ExerciseLogType.WeightAndReps && (
-                                                    <>
-                                                        <TableHead className="text-gray-500 dark:text-white">
-                                                            Reps
-                                                        </TableHead>
-                                                        <TableHead className="text-gray-500 dark:text-white">
-                                                            Kg
-                                                        </TableHead>
-                                                    </>
-                                                )}
-
-                                                {exerciseLogType ===
-                                                    ExerciseLogType.BodyWeight && (
-                                                    <TableHead className="text-gray-500 dark:text-white">
-                                                        Reps
-                                                    </TableHead>
-                                                )}
-
-                                                {exerciseLogType ===
-                                                    ExerciseLogType.BodyWeightWithAdditionalWeight && (
-                                                    <>
-                                                        <TableHead className="text-gray-500 dark:text-white">
-                                                            Reps
-                                                        </TableHead>
-                                                        <TableHead className="text-gray-500 dark:text-white">
-                                                            Extra Kg
-                                                        </TableHead>
-                                                    </>
-                                                )}
-
-                                                {exerciseLogType ===
-                                                    ExerciseLogType.BodyWeightWithAssistance && (
-                                                    <>
-                                                        <TableHead className="text-gray-500 dark:text-white">
-                                                            Reps
-                                                        </TableHead>
-                                                        <TableHead className="text-gray-500 dark:text-white">
-                                                            Assistance Kg
-                                                        </TableHead>
-                                                    </>
-                                                )}
-
-                                                {exerciseLogType ===
-                                                    ExerciseLogType.RepsOnly && (
-                                                    <TableHead className="text-gray-500 dark:text-white">
-                                                        Reps
-                                                    </TableHead>
-                                                )}
-
-                                                {exerciseLogType ===
-                                                    ExerciseLogType.TimeOnly && (
-                                                    <TableHead className="text-gray-500 dark:text-white">
-                                                        Time
-                                                    </TableHead>
-                                                )}
-
-                                                <TableHead className="w-[70px] text-gray-500 dark:text-white">
-                                                    Actions
-                                                </TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {exercise.sets.map(
-                                                (set, setIndex) => (
-                                                    <TableRow key={setIndex}>
-                                                        <TableCell>
-                                                            {setIndex + 1}
-                                                        </TableCell>
-
-                                                        {exerciseLogType ===
-                                                            ExerciseLogType.WeightAndReps && (
-                                                            <>
-                                                                <TableCell>
-                                                                    {set.reps ||
-                                                                        '-'}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                    {set.weight ||
-                                                                        '-'}
-                                                                </TableCell>
-                                                            </>
-                                                        )}
-
-                                                        {exerciseLogType ===
-                                                            ExerciseLogType.BodyWeight && (
-                                                            <TableCell>
-                                                                {set.reps ||
-                                                                    '-'}
-                                                            </TableCell>
-                                                        )}
-
-                                                        {exerciseLogType ===
-                                                            ExerciseLogType.BodyWeightWithAdditionalWeight && (
-                                                            <>
-                                                                <TableCell>
-                                                                    {set.reps ||
-                                                                        '-'}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                    {set.weight ||
-                                                                        '-'}
-                                                                </TableCell>
-                                                            </>
-                                                        )}
-
-                                                        {exerciseLogType ===
-                                                            ExerciseLogType.BodyWeightWithAssistance && (
-                                                            <>
-                                                                <TableCell>
-                                                                    {set.reps ||
-                                                                        '-'}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                    {set.weight ||
-                                                                        '-'}
-                                                                </TableCell>
-                                                            </>
-                                                        )}
-
-                                                        {exerciseLogType ===
-                                                            ExerciseLogType.RepsOnly && (
-                                                            <TableCell>
-                                                                {set.reps ||
-                                                                    '-'}
-                                                            </TableCell>
-                                                        )}
-
-                                                        {exerciseLogType ===
-                                                            ExerciseLogType.TimeOnly && (
-                                                            <TableCell>
-                                                                {set.time
-                                                                    ? `${set.time}s`
-                                                                    : '-'}
-                                                            </TableCell>
-                                                        )}
-
-                                                        <TableCell>
-                                                            <div className="flex items-center space-x-1">
-                                                                <Button
-                                                                    type="button"
-                                                                    onClick={() =>
-                                                                        handleCopySet(
-                                                                            setIndex,
-                                                                        )
-                                                                    }
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                                                                >
-                                                                    <Copy className="h-4 w-4" />
-                                                                </Button>
-                                                                <Button
-                                                                    onClick={() =>
-                                                                        handleEditSet(
-                                                                            setIndex,
-                                                                        )
-                                                                    }
-                                                                    type="button"
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    className="h-8 w-8"
-                                                                >
-                                                                    <Pencil className="h-4 w-4" />
-                                                                </Button>
-                                                                <Button
-                                                                    onClick={() =>
-                                                                        handleRemoveSet(
-                                                                            setIndex,
-                                                                        )
-                                                                    }
-                                                                    type="button"
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    className="h-8 w-8 text-destructive"
-                                                                >
-                                                                    <X className="h-4 w-4" />
-                                                                </Button>
-                                                            </div>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ),
-                                            )}
-                                        </TableBody>
-                                    </Table>
-                                </div>
-                            ) : (
-                                <p className="text-sm text-muted-foreground text-center py-4">
+                        <div className="space-y-3 md:hidden">
+                            {exercise.sets?.map((set, setIndex) => (
+                                <MobileExerciseSetEdit
+                                    key={setIndex}
+                                    set={set}
+                                    index={setIndex}
+                                    exerciseType={exerciseLogType}
+                                    previousSet={lastExercise?.sets?.[setIndex]}
+                                    onSetChange={(updatedSet) =>
+                                        handleSetChange(setIndex, updatedSet)
+                                    }
+                                    onCopy={() => handleCopySet(setIndex)}
+                                    onRemove={() => handleRemoveSet(setIndex)}
+                                />
+                            ))}
+                            {!exercise.sets?.length && (
+                                <p className="py-4 text-center text-sm text-muted-foreground">
                                     No sets added yet
                                 </p>
                             )}
@@ -564,21 +358,6 @@ export const ExerciseListItem = memo(function ExerciseListItem({
                     </div>
                 )}
             </CardContent>
-
-            {/* Dialog for adding/editing sets on mobile */}
-            <ExerciseSetSheet
-                open={isDialogOpen}
-                onOpenChange={setIsDialogOpen}
-                set={currentSet}
-                index={
-                    currentSetIndex !== null
-                        ? currentSetIndex
-                        : exercise.sets?.length || 0
-                }
-                exerciseType={exerciseLogType}
-                onSave={handleDialogSave}
-                isNew={currentSetIndex === null}
-            />
         </Card>
     );
 });

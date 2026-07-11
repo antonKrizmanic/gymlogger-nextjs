@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { WorkoutTemplateApiService } from '@/src/api/services/workout-template-api-service';
-
 import { CollapsibleNote } from '@/src/components/common/collapsible-note';
 import { DatePicker } from '@/src/components/form/date-picker';
 import { Button } from '@/src/components/ui/button';
@@ -24,7 +23,11 @@ import {
     FormMessage,
 } from '@/src/components/ui/form';
 import { IconInput } from '@/src/components/ui/icon-input';
-import type { IWorkoutCreate } from '@/src/models/domain/workout';
+import { useWorkoutDraft } from '@/src/hooks/use-workout-draft';
+import type {
+    IWorkoutCreate,
+    WorkoutCreateSource,
+} from '@/src/models/domain/workout';
 import { type WorkoutSchema, workoutSchema } from '@/src/schemas/index';
 import { WorkoutTemplateSelect } from '../workout-template/workout-template-select';
 import { ExerciseList } from './exercise-list';
@@ -34,8 +37,10 @@ interface WorkoutFormProps {
     title: string;
     workout: IWorkoutCreate;
     isLoading: boolean;
-    onSubmit: (workout: IWorkoutCreate) => void;
+    onSubmit: (workout: IWorkoutCreate) => Promise<boolean>;
     cancelHref: string;
+    userId?: string;
+    source?: WorkoutCreateSource;
 }
 
 export function WorkoutForm({
@@ -45,8 +50,11 @@ export function WorkoutForm({
     isLoading,
     onSubmit,
     cancelHref,
+    userId,
+    source = null,
 }: WorkoutFormProps) {
     const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
+    const [activeSource, setActiveSource] = useState(source);
 
     const form = useForm<WorkoutSchema>({
         resolver: zodResolver(workoutSchema),
@@ -58,7 +66,15 @@ export function WorkoutForm({
         },
     });
 
-    const handleSubmit = (data: WorkoutSchema) => {
+    const { pendingDraft, lastSavedAt, resumeDraft, discardDraft, clearDraft } =
+        useWorkoutDraft({
+            enabled: !workoutId,
+            userId,
+            source: activeSource,
+            form,
+        });
+
+    const handleSubmit = async (data: WorkoutSchema) => {
         // Ensure exercises are in the correct order before submitting
         const orderedExercises = [...data.exercises].sort(
             (a, b) => a.index - b.index,
@@ -68,7 +84,8 @@ export function WorkoutForm({
             exercises: orderedExercises,
         };
 
-        onSubmit(formattedData as IWorkoutCreate);
+        const saved = await onSubmit(formattedData as IWorkoutCreate);
+        if (saved && !workoutId) clearDraft();
     };
 
     const handleTemplateSelect = async (templateId: string) => {
@@ -102,6 +119,7 @@ export function WorkoutForm({
             );
 
             form.setValue('exercises', workoutExercises);
+            setActiveSource({ type: 'template', id: templateId });
             toast.success(`Loaded template: ${template.name}`);
         } catch (error) {
             console.error('Failed to load template:', error);
@@ -113,6 +131,35 @@ export function WorkoutForm({
 
     return (
         <div className="space-y-6">
+            {pendingDraft && (
+                <div className="rounded-lg border border-primary/30 bg-primary/5 p-4">
+                    <p className="font-medium">
+                        Resume your unfinished workout?
+                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                        Saved {new Date(pendingDraft.savedAt).toLocaleString()}
+                    </p>
+                    <div className="mt-3 flex gap-2">
+                        <Button
+                            type="button"
+                            onClick={() => {
+                                const resumedSource = resumeDraft();
+                                if (resumedSource)
+                                    setActiveSource(resumedSource);
+                            }}
+                        >
+                            Resume
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={discardDraft}
+                        >
+                            Discard
+                        </Button>
+                    </div>
+                </div>
+            )}
             {/* Hero Section */}
             <div className="text-center space-y-2">
                 <h1 className="text-3xl font-bold">{title}</h1>
@@ -223,6 +270,10 @@ export function WorkoutForm({
                                             <ExerciseList
                                                 workoutId={workoutId}
                                                 exercises={field.value}
+                                                dirtyExercises={
+                                                    form.formState.dirtyFields
+                                                        .exercises
+                                                }
                                                 onExercisesChange={
                                                     field.onChange
                                                 }
@@ -234,7 +285,14 @@ export function WorkoutForm({
                             </div>
 
                             {/* Submit and Cancel buttons */}
-                            <div className="flex md:flex-row flex-col-reverse justify-end gap-4">
+                            <div className="sticky bottom-0 z-20 -mx-6 flex flex-col-reverse gap-3 border-t bg-background/95 p-4 backdrop-blur md:static md:mx-0 md:flex-row md:justify-end md:border-0 md:bg-transparent md:p-0">
+                                {!workoutId && (
+                                    <p className="self-center text-xs text-muted-foreground md:mr-auto">
+                                        {lastSavedAt
+                                            ? `Draft saved at ${lastSavedAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+                                            : 'Draft saves automatically'}
+                                    </p>
+                                )}
                                 <Button variant="outline" type="button">
                                     <Link
                                         className="flex items-center justify-center w-full h-full"

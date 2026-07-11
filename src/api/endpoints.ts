@@ -19,6 +19,7 @@ export const Endpoints = {
         Base: `/api/exercise`,
         GetAll: `/api/exercise/getAll`,
         ById: (id: string) => `/api/exercise/${id}`,
+        Analytics: (id: string) => `/api/exercise/${id}/analytics`,
     },
     ExerciseWorkout: {
         Base: `/api/exerciseWorkout`,

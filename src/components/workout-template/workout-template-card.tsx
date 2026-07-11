@@ -1,6 +1,6 @@
 'use client';
 
-import { Edit, Eye, Trash2 } from 'lucide-react';
+import { Dumbbell, Edit, Eye, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -63,6 +63,12 @@ export function WorkoutTemplateCard({
                 </p>
             </CardContent>
             <CardFooter className="flex gap-2">
+                <Button asChild size="sm" className="flex-1">
+                    <Link href={`/workouts/create?templateId=${template.id}`}>
+                        <Dumbbell className="h-4 w-4 mr-2" />
+                        Start
+                    </Link>
+                </Button>
                 <Button asChild variant="outline" size="sm" className="flex-1">
                     <Link href={`/workout-templates/${template.id}`}>
                         <Eye className="h-4 w-4 mr-2" />

@@ -28,6 +28,23 @@ export interface IWorkoutUpdate extends IWorkoutCreate {
     id: string;
 }
 
+export interface IWorkoutMutationResponse {
+    id: string;
+}
+
+export type WorkoutCreateSource =
+    | { type: 'template'; id: string }
+    | { type: 'repeat'; id: string }
+    | null;
+
+export interface IWorkoutDraft {
+    version: 1;
+    userId: string;
+    source: WorkoutCreateSource;
+    values: IWorkoutCreate;
+    savedAt: string;
+}
+
 export interface IExerciseSet {
     id: string;
     index: number;

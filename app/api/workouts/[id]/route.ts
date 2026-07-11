@@ -244,7 +244,7 @@ export async function PUT(
 
         // Update workout
         const updatedWorkout = await prisma.workout.update({
-            where: { id: id },
+            where: { id, belongsToUserId: loggedInUser.id },
             data: {
                 name: body.name,
                 muscleGroupId: body.muscleGroupId,
@@ -283,13 +283,7 @@ export async function PUT(
             },
         });
 
-        return NextResponse.json({
-            id: updatedWorkout.id,
-            name: updatedWorkout.name,
-            muscleGroupId: updatedWorkout.muscleGroupId,
-            description: updatedWorkout.description,
-            date: updatedWorkout.date,
-        });
+        return NextResponse.json({ id: updatedWorkout.id });
     } catch (error) {
         console.error('Error updating workout:', error);
         return NextResponse.json(
@@ -324,7 +318,8 @@ export async function DELETE(
 
         await prisma.workout.delete({
             where: {
-                id: id,
+                id,
+                belongsToUserId: loggedInUser.id,
             },
         });
         return NextResponse.json({ message: 'Workout deleted successfully' });

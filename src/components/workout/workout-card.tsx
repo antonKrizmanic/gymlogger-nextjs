@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { Calendar, Eye, Pencil, Target } from 'lucide-react';
+import { Calendar, Copy, Eye, Pencil, Target } from 'lucide-react';
 import { WorkoutApiService } from '@/src/api/services/workout-api-service';
 import type { IWorkoutSimple } from '@/src/models/domain/workout';
 import { DeleteButton } from '../common/delete-button';
@@ -103,6 +103,13 @@ export function WorkoutCard({ workout, onDelete }: WorkoutCardProps) {
             </CardContent>
 
             <CardFooter className="pt-4 gap-2">
+                <div className="flex-1">
+                    <IconLinkButton
+                        href={`/workouts/create?repeatWorkoutId=${workout.id}`}
+                        icon={<Copy />}
+                        aria-label="Repeat workout"
+                    />
+                </div>
                 <div className="flex-1">
                     <IconLinkButton
                         href={`/workouts/${workout.id}`}
