@@ -38,4 +38,8 @@ export const Endpoints = {
         ById: (id: string) => `/api/workouts/${id}`,
         GetForEdit: (id: string) => `/api/workouts/GetForEdit/${id}`,
     },
+    WorkoutTemplate: {
+        Base: `/api/workout-templates`,
+        ById: (id: string) => `/api/workout-templates/${id}`,
+    },
 } as const;

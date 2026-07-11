@@ -78,3 +78,39 @@ export const workoutSchema = z.object({
 });
 
 export type WorkoutSchema = z.infer<typeof workoutSchema>;
+
+// Workout Template Exercise Schema
+export const workoutTemplateExerciseSchema = z.object({
+    exerciseId: z.uuid('Exercise is required'),
+    sets: z.number().int().min(1, 'Sets must be at least 1'),
+    reps: z.number().int().min(1, 'Reps must be at least 1'),
+    index: z.number().int().nonnegative(),
+});
+
+export type WorkoutTemplateExerciseSchema = z.infer<
+    typeof workoutTemplateExerciseSchema
+>;
+
+// Workout Template Schema
+export const workoutTemplateSchema = z
+    .object({
+        name: z.string().trim().min(1, 'Template name is required'),
+        exercises: z
+            .array(workoutTemplateExerciseSchema)
+            .min(1, 'At least one exercise is required'),
+    })
+    .superRefine(({ exercises }, context) => {
+        const exerciseIds = new Set<string>();
+        exercises.forEach((exercise, index) => {
+            if (exerciseIds.has(exercise.exerciseId)) {
+                context.addIssue({
+                    code: 'custom',
+                    message: 'Each exercise can only be added once',
+                    path: ['exercises', index, 'exerciseId'],
+                });
+            }
+            exerciseIds.add(exercise.exerciseId);
+        });
+    });
+
+export type WorkoutTemplateSchema = z.infer<typeof workoutTemplateSchema>;

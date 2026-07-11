@@ -46,16 +46,17 @@ model ExerciseWorkout {
 }
 
 model Exercise {
-  id               String            @id(map: "PK_Exercises") @default(uuid()) @db.Uuid
-  name             String
-  muscleGroupId    String            @db.Uuid
-  exerciseLogType  Int
-  description      String?
-  belongsToUserId  String?
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-  exerciseWorkouts ExerciseWorkout[]
-  muscleGroup      MuscleGroup       @relation(fields: [muscleGroupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Exercises_MuscleGroups_MuscleGroupId")
+  id                        String                     @id(map: "PK_Exercises") @default(uuid()) @db.Uuid
+  name                      String
+  muscleGroupId             String                     @db.Uuid
+  exerciseLogType           Int
+  description               String?
+  belongsToUserId           String?
+  createdAt                 DateTime                   @default(now())
+  updatedAt                 DateTime                   @updatedAt
+  exerciseWorkouts          ExerciseWorkout[]
+  workoutTemplateExercises  WorkoutTemplateExercise[]
+  muscleGroup               MuscleGroup                @relation(fields: [muscleGroupId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_Exercises_MuscleGroups_MuscleGroupId")
 
   @@index([muscleGroupId], map: "IX_Exercises_MuscleGroupId")
   @@index([belongsToUserId, name])
@@ -152,4 +153,32 @@ model VerificationToken {
   expires DateTime
 
   @@unique([email, token])
+}
+
+model WorkoutTemplate {
+  id                        String                     @id(map: "PK_WorkoutTemplates") @default(uuid()) @db.Uuid
+  name                      String
+  belongsToUserId           String
+  createdAt                 DateTime                   @default(now())
+  updatedAt                 DateTime                   @updatedAt
+  workoutTemplateExercises  WorkoutTemplateExercise[]
+
+  @@index([belongsToUserId, name])
+  @@index([belongsToUserId, createdAt])
+}
+
+model WorkoutTemplateExercise {
+  id                String           @id(map: "PK_WorkoutTemplateExercises") @default(uuid()) @db.Uuid
+  workoutTemplateId String           @db.Uuid
+  exerciseId        String           @db.Uuid
+  sets              Int              @default(0)
+  reps              Int              @default(0)
+  index             Int              @default(0)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  exercise          Exercise         @relation(fields: [exerciseId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_WorkoutTemplateExercises_Exercises_ExerciseId")
+  workoutTemplate   WorkoutTemplate  @relation(fields: [workoutTemplateId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "FK_WorkoutTemplateExercises_WorkoutTemplates_WorkoutTemplateId")
+
+  @@index([workoutTemplateId], map: "IX_WorkoutTemplateExercises_WorkoutTemplateId")
+  @@index([exerciseId], map: "IX_WorkoutTemplateExercises_ExerciseId")
 }

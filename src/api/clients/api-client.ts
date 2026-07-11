@@ -1,7 +1,7 @@
 type RequestConfig = {
     method?: string;
     headers?: Record<string, string>;
-    body?: any;
+    body?: unknown;
 };
 
 export class ApiClient {
@@ -33,17 +33,31 @@ export class ApiClient {
         return response;
     }
 
+    private async parseResponse<T>(response: Response): Promise<T> {
+        if (!response.ok) {
+            const body = await response.json().catch(() => null);
+            const message =
+                body && typeof body.error === 'string'
+                    ? body.error
+                    : `Request failed with status ${response.status}`;
+            throw new Error(message);
+        }
+
+        if (response.status === 204) return undefined as T;
+        return response.json() as Promise<T>;
+    }
+
     async get<T>(endpoint: string, config: RequestConfig = {}): Promise<T> {
         const response = await this.fetchWithAuth(endpoint, {
             ...config,
             method: 'GET',
         });
-        return response.json();
+        return this.parseResponse<T>(response);
     }
 
     async post<T>(
         endpoint: string,
-        data: any,
+        data: unknown,
         config: RequestConfig = {},
     ): Promise<T> {
         const response = await this.fetchWithAuth(endpoint, {
@@ -51,12 +65,12 @@ export class ApiClient {
             method: 'POST',
             body: data,
         });
-        return response.json();
+        return this.parseResponse<T>(response);
     }
 
     async put<T>(
         endpoint: string,
-        data: any,
+        data: unknown,
         config: RequestConfig = {},
     ): Promise<T> {
         const response = await this.fetchWithAuth(endpoint, {
@@ -64,7 +78,7 @@ export class ApiClient {
             method: 'PUT',
             body: data,
         });
-        return response.json();
+        return this.parseResponse<T>(response);
     }
 
     async delete<T>(endpoint: string, config: RequestConfig = {}): Promise<T> {
@@ -72,7 +86,7 @@ export class ApiClient {
             ...config,
             method: 'DELETE',
         });
-        return response.json();
+        return this.parseResponse<T>(response);
     }
 }
 
