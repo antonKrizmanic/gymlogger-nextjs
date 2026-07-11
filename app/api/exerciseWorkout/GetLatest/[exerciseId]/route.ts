@@ -33,6 +33,7 @@ export async function GET(
             workout = await prisma.workout.findUnique({
                 where: {
                     id: workoutId,
+                    belongsToUserId: loggedInUser.id,
                 },
                 select: {
                     id: true,
@@ -65,7 +66,7 @@ export async function GET(
             },
             include: {
                 exercise: true,
-                exerciseSets: true,
+                exerciseSets: { orderBy: { index: Prisma.SortOrder.asc } },
                 workout: true,
             },
             take: 1,

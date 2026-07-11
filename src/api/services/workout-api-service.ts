@@ -2,6 +2,7 @@ import type { IWorkoutRequest } from '@/src/data/workout';
 import type {
     IWorkout,
     IWorkoutCreate,
+    IWorkoutMutationResponse,
     IWorkoutUpdate,
 } from '../../models/domain/workout';
 import type { IPagedResponse } from '../../types/common';
@@ -29,8 +30,10 @@ export class WorkoutApiService extends BaseApiService {
         return this.get<IWorkout>(Endpoints.Workout.ById(id));
     }
 
-    public async createWorkout(workout: IWorkoutCreate): Promise<IWorkout> {
-        return this.post<IWorkout, IWorkoutCreate>(
+    public async createWorkout(
+        workout: IWorkoutCreate,
+    ): Promise<IWorkoutMutationResponse> {
+        return this.post<IWorkoutMutationResponse, IWorkoutCreate>(
             Endpoints.Workout.Base,
             workout,
         );
@@ -39,8 +42,8 @@ export class WorkoutApiService extends BaseApiService {
     public async updateWorkout(
         id: string,
         workout: IWorkoutUpdate,
-    ): Promise<void> {
-        return this.put<void, IWorkoutUpdate>(
+    ): Promise<IWorkoutMutationResponse> {
+        return this.put<IWorkoutMutationResponse, IWorkoutUpdate>(
             Endpoints.Workout.ById(id),
             workout,
         );

@@ -13,6 +13,7 @@ interface DateBoundaries {
     monthStart: Date;
     nextMonthStart: Date;
     yearStart: Date;
+    previousFourWeekStart: Date;
 }
 
 type NumericPrimitive = Prisma.Decimal | bigint | number | null | undefined;
@@ -38,6 +39,7 @@ export const getDashboard = async (): Promise<IDashboard | null> => {
         seriesTotals,
         weightTotals,
         workoutsByDate,
+        muscleGroupBalance,
     ] = await Promise.all([
         loadLastWorkout(loggedInUser.id),
         loadFavoriteMuscleGroupName(loggedInUser.id),
@@ -45,6 +47,7 @@ export const getDashboard = async (): Promise<IDashboard | null> => {
         loadSeriesTotals(loggedInUser.id, boundaries),
         loadWeightTotals(loggedInUser.id, boundaries),
         loadWorkoutsByDate(loggedInUser.id, boundaries),
+        loadMuscleGroupBalance(loggedInUser.id, boundaries),
     ]);
 
     return {
@@ -55,6 +58,7 @@ export const getDashboard = async (): Promise<IDashboard | null> => {
         ...seriesTotals,
         ...weightTotals,
         workoutsByDate,
+        muscleGroupBalance,
     };
 };
 
@@ -74,8 +78,68 @@ function getDateBoundaries(reference = new Date()): DateBoundaries {
         1,
     );
     const yearStart = new Date(today.getFullYear(), 0, 1);
+    const previousFourWeekStart = new Date(weekStart);
+    previousFourWeekStart.setDate(previousFourWeekStart.getDate() - 28);
 
-    return { today, weekStart, monthStart, nextMonthStart, yearStart };
+    return {
+        today,
+        weekStart,
+        monthStart,
+        nextMonthStart,
+        yearStart,
+        previousFourWeekStart,
+    };
+}
+
+async function loadMuscleGroupBalance(
+    userId: string,
+    boundaries: DateBoundaries,
+) {
+    const rows = await prisma.$queryRaw<
+        Array<{
+            muscle_group_id: string;
+            muscle_group_name: string;
+            current_sets: NumericPrimitive;
+            previous_sets: NumericPrimitive;
+        }>
+    >`
+    SELECT
+      mg."id" AS muscle_group_id,
+      mg."name" AS muscle_group_name,
+      COUNT(es."id") FILTER (WHERE w."date" >= ${boundaries.weekStart}) AS current_sets,
+      COUNT(es."id") FILTER (
+        WHERE w."date" >= ${boundaries.previousFourWeekStart}
+          AND w."date" < ${boundaries.weekStart}
+      ) AS previous_sets
+    FROM "Workout" w
+    JOIN "ExerciseWorkout" ew ON ew."workoutId" = w."id"
+    JOIN "ExerciseSet" es ON es."exerciseWorkoutId" = ew."id"
+    JOIN "Exercise" e ON e."id" = ew."exerciseId"
+    JOIN "MuscleGroup" mg ON mg."id" = e."muscleGroupId"
+    WHERE w."belongsToUserId" = ${userId}
+      AND w."date" >= ${boundaries.previousFourWeekStart}
+    GROUP BY mg."id", mg."name"
+    ORDER BY current_sets DESC, muscle_group_name ASC
+  `;
+
+    return rows.map((row) => {
+        const currentWeekSets = toNumber(row.current_sets);
+        const previousFourWeekAverage = toNumber(row.previous_sets) / 4;
+        return {
+            muscleGroupId: row.muscle_group_id,
+            muscleGroupName: row.muscle_group_name,
+            currentWeekSets,
+            previousFourWeekAverage,
+            changePercent:
+                previousFourWeekAverage > 0
+                    ? Math.round(
+                          ((currentWeekSets - previousFourWeekAverage) /
+                              previousFourWeekAverage) *
+                              100,
+                      )
+                    : undefined,
+        };
+    });
 }
 
 async function loadLastWorkout(

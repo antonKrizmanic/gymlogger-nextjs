@@ -5,6 +5,7 @@ import { WorkoutChartSection } from '@/src/components/dashboard/workout-chart-se
 import { Button } from '@/src/components/ui/button';
 import { getDashboard } from '@/src/data/dashboard';
 import { LatestWorkoutCard } from './components/latest-workout-card';
+import { MuscleGroupBalanceCard } from './components/muscle-group-balance-card';
 import { StatsGrid } from './components/stats-grid';
 
 export default async function HomePage() {
@@ -36,6 +37,11 @@ export default async function HomePage() {
                                 weightThisYear: dashboard.weightThisYear,
                             }}
                         />
+                        <div className="mb-8">
+                            <MuscleGroupBalanceCard
+                                items={dashboard.muscleGroupBalance || []}
+                            />
+                        </div>
                         <PerformanceAnalytics dashboard={dashboard} />
                     </>
                 )}

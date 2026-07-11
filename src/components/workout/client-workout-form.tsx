@@ -7,6 +7,7 @@ import { WorkoutApiService } from '@/src/api/services/workout-api-service';
 import type {
     IWorkoutCreate,
     IWorkoutUpdate,
+    WorkoutCreateSource,
 } from '@/src/models/domain/workout';
 import { WorkoutForm } from './workout-form';
 
@@ -15,6 +16,8 @@ interface ClientWorkoutFormProps {
     workout: IWorkoutCreate;
     id?: string; // Optional id for edit mode
     cancelHref: string;
+    userId?: string;
+    source?: WorkoutCreateSource;
 }
 
 export function ClientWorkoutForm({
@@ -22,6 +25,8 @@ export function ClientWorkoutForm({
     workout,
     id,
     cancelHref,
+    userId,
+    source = null,
 }: ClientWorkoutFormProps) {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
@@ -34,11 +39,11 @@ export function ClientWorkoutForm({
               date: new Date(),
           };
 
-    const handleSubmit = async (formData: IWorkoutCreate) => {
+    const handleSubmit = async (formData: IWorkoutCreate): Promise<boolean> => {
         // Basic validation
         if (!formData.name || !formData.date) {
             toast.error('Name and date are required');
-            return;
+            return false;
         }
 
         setIsLoading(true);
@@ -52,16 +57,17 @@ export function ClientWorkoutForm({
                     ...formData,
                     id,
                 };
-                await service.updateWorkout(id, updateData);
+                const result = await service.updateWorkout(id, updateData);
                 toast.success('Workout updated successfully!');
-                router.push('/workouts');
+                router.push(`/workouts/${result.id}`);
             } else {
                 // Create new workout
-                await service.createWorkout(formData);
+                const result = await service.createWorkout(formData);
 
                 toast.success('Workout created successfully!');
-                router.push('/workouts');
+                router.push(`/workouts/${result.id}`);
             }
+            return true;
         } catch (error) {
             console.error(
                 `Failed to ${id ? 'update' : 'create'} workout:`,
@@ -70,6 +76,7 @@ export function ClientWorkoutForm({
             toast.error(
                 `Failed to ${id ? 'update' : 'create'} workout. Please try again.`,
             );
+            return false;
         } finally {
             setIsLoading(false);
         }
@@ -83,6 +90,8 @@ export function ClientWorkoutForm({
             onSubmit={handleSubmit}
             cancelHref={cancelHref}
             isLoading={isLoading}
+            userId={userId}
+            source={source}
         />
     );
 }

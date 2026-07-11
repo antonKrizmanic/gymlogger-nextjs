@@ -17,8 +17,10 @@ import {
     CardHeader,
     CardTitle,
 } from '@/src/components/ui/card';
+import { PersonalRecords } from '@/src/components/workout/personal-records';
 import { WorkoutDeleteButton } from '@/src/components/workout/workout-delete-button';
 import { WorkoutExerciseList } from '@/src/components/workout/workout-exercise-list';
+import { getWorkoutPersonalRecords } from '@/src/data/performance';
 import { getWorkout } from '@/src/data/workout';
 
 // Force dynamic rendering to prevent caching
@@ -30,6 +32,7 @@ export default async function WorkoutDetailPage(props: {
     const params = await props.params;
     const id = await params.id;
     const workout = await getWorkout(id);
+    const personalRecords = workout ? await getWorkoutPersonalRecords(id) : [];
 
     if (!workout) {
         return (
@@ -143,6 +146,8 @@ export default async function WorkoutDetailPage(props: {
                         </div>
                     </div>
                 </div>
+
+                <PersonalRecords records={personalRecords} />
 
                 {/* Workout Stats */}
                 <Card className="border-0 shadow-lg mb-8">

@@ -223,7 +223,7 @@ export async function POST(request: Request) {
             },
         });
 
-        return NextResponse.json({ message: 'Workout created', workout });
+        return NextResponse.json({ id: workout.id }, { status: 201 });
     } catch (error) {
         console.error('Error creating workout:', error);
         return NextResponse.json(

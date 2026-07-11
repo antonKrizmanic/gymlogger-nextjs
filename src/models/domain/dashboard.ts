@@ -7,6 +7,14 @@ export interface IDashboardDateItem {
     reps?: number;
 }
 
+export interface IMuscleGroupBalance {
+    muscleGroupId: string;
+    muscleGroupName: string;
+    currentWeekSets: number;
+    previousFourWeekAverage: number;
+    changePercent?: number;
+}
+
 export interface IDashboard {
     lastWorkout?: IWorkoutSimple;
     favoriteMuscleGroupName?: string;
@@ -21,4 +29,5 @@ export interface IDashboard {
     weightThisMonth?: number;
     weightThisYear?: number;
     workoutsByDate?: IDashboardDateItem[];
+    muscleGroupBalance?: IMuscleGroupBalance[];
 }

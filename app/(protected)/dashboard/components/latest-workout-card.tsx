@@ -1,4 +1,4 @@
-import { Clock, Dumbbell, Eye, Pencil, Trophy } from 'lucide-react';
+import { Clock, Copy, Dumbbell, Eye, Pencil, Trophy } from 'lucide-react';
 import { IconLinkButton } from '@/src/components/common/icon-link-button';
 import {
     Card,
@@ -47,6 +47,13 @@ export function LatestWorkoutCard({ workout }: LatestWorkoutCardProps) {
                 </CardContent>
 
                 <CardFooter className="flex gap-3 pt-0">
+                    <div className="flex-1">
+                        <IconLinkButton
+                            href={`/workouts/create?repeatWorkoutId=${workout.id}`}
+                            icon={<Copy />}
+                            aria-label="Repeat latest workout"
+                        />
+                    </div>
                     <div className="flex-1">
                         <IconLinkButton
                             href={`/workouts/${workout.id}`}

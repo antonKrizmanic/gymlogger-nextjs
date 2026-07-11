@@ -40,6 +40,7 @@ export const getWorkout = async (id: string) => {
         },
     });
 
+    if (!workout) return null;
     return mapWorkoutToIWorkout(workout);
 };
 

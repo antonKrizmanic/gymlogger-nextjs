@@ -18,6 +18,7 @@ import type {
     NameType,
     ValueType,
 } from 'recharts/types/component/DefaultTooltipContent';
+import { ExerciseApiService } from '@/src/api/services/exercise-api-service';
 import { ExerciseApiWorkoutService } from '@/src/api/services/exercise-workout-api-service';
 import {
     Card,
@@ -32,6 +33,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/src/components/ui/select';
+import type { IExerciseAnalytics } from '@/src/models/domain/performance';
 import type { IExerciseWorkout } from '@/src/models/domain/workout';
 import { ExerciseLogType } from '@/src/types/enums';
 import { Label } from '../ui/label';
@@ -63,6 +65,7 @@ export function ExerciseProgress({ exerciseId }: ExerciseProgressProps) {
         IExerciseWorkout[]
     >([]);
     const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
+    const [analytics, setAnalytics] = useState<IExerciseAnalytics | null>(null);
     const [metric, setMetric] = useState<MetricType>('maxWeight');
     const [exerciseType, setExerciseType] = useState<ExerciseLogType>(
         ExerciseLogType.WeightAndReps,
@@ -76,15 +79,16 @@ export function ExerciseProgress({ exerciseId }: ExerciseProgressProps) {
             setIsLoading(true);
             try {
                 const service = new ExerciseApiWorkoutService();
+                const exerciseService = new ExerciseApiService();
                 // We need to fetch all records to show proper progress
                 // Using a large page size to get as many records as possible
-                const response = await service.getPaginatedExerciseWorkouts(
-                    exerciseId,
-                    0,
-                    100,
-                );
+                const [response, analyticsResponse] = await Promise.all([
+                    service.getPaginatedExerciseWorkouts(exerciseId, 0, 100),
+                    exerciseService.getExerciseAnalytics(exerciseId),
+                ]);
 
                 setExerciseWorkouts(response.items);
+                setAnalytics(analyticsResponse);
 
                 if (response.items.length > 0) {
                     setExerciseType(response.items[0].exerciseLogType);
@@ -394,6 +398,32 @@ export function ExerciseProgress({ exerciseId }: ExerciseProgressProps) {
             </CardHeader>
 
             <CardContent>
+                {analytics?.records.length ? (
+                    <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                        {analytics.records.map((record) => (
+                            <div
+                                key={record.kind}
+                                className="rounded-lg border bg-primary/5 p-3"
+                            >
+                                <p className="text-xs uppercase text-muted-foreground">
+                                    {record.kind === 'estimatedOneRepMax'
+                                        ? 'Estimated 1RM'
+                                        : record.kind === 'maxWeight'
+                                          ? 'Max weight'
+                                          : record.kind === 'maxTime'
+                                            ? 'Max duration'
+                                            : 'Max reps'}
+                                </p>
+                                <p className="text-xl font-bold text-primary">
+                                    {record.value} {record.unit}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                    {new Date(record.date).toLocaleDateString()}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                ) : null}
                 <div className="h-80 mt-4">
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart

@@ -8,12 +8,14 @@ import { ExerciseListItem } from './exercise-list-item';
 
 interface ExerciseListProps {
     exercises: IExerciseWorkoutCreate[];
+    dirtyExercises?: ReadonlyArray<unknown>;
     onExercisesChange: (exercises: IExerciseWorkoutCreate[]) => void;
     workoutId: string | null;
 }
 
 export const ExerciseList = memo(function ExerciseList({
     exercises,
+    dirtyExercises,
     onExercisesChange,
     workoutId,
 }: ExerciseListProps) {
@@ -106,6 +108,7 @@ export const ExerciseList = memo(function ExerciseList({
                             }
                             exercise={exercise}
                             index={index}
+                            isDirty={Boolean(dirtyExercises?.[index])}
                             onExerciseChange={onExerciseChange}
                             onRemoveExercise={handleRemoveExercise}
                             onAddExercise={handleExerciseSelect}
