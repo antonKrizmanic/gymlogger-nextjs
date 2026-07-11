@@ -25,9 +25,16 @@ export const getWorkout = async (id: string) => {
         include: {
             muscleGroup: true,
             exerciseWorkouts: {
+                orderBy: {
+                    index: 'asc',
+                },
                 include: {
                     exercise: true,
-                    exerciseSets: true,
+                    exerciseSets: {
+                        orderBy: {
+                            index: 'asc',
+                        },
+                    },
                 },
             },
         },
