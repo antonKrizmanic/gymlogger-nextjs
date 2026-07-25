@@ -18,7 +18,7 @@
         "email": "email dev -p 3100"
     },
     "dependencies": {
-        "@auth/prisma-adapter": "2.11.2",
+        "@auth/prisma-adapter": "2.11.3",
         "@heroicons/react": "2.2.0",
         "@hookform/resolvers": "5.4.0",
         "@icons-pack/react-simple-icons": "13.13.0",
